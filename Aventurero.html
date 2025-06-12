@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         body {
             background-color: #1e1e2f; color: #dcdcdc; font-family: 'Press+Start+2P', cursive;
-            display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap; padding: 20px; gap: 20px;
+            display: flex; justify-content: center; align-items: flex-start; padding: 20px;
         }
         .main-container {
             width: 100%;
@@ -18,8 +18,10 @@
             align-items: flex-start;
         }
         .sidebar {
-            width: 250px;
+            width: 280px; /* Un poco más de espacio */
             flex-shrink: 0;
+            position: sticky; /* Hacemos que la sidebar entera sea sticky */
+            top: 20px;
         }
         .main-content {
             flex-grow: 1;
@@ -27,6 +29,7 @@
         .container {
             border: 3px solid #4f4f6f; background-color: #2a2a40; padding: 20px;
             width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border-radius: 8px; margin-bottom: 20px;
+            box-sizing: border-box;
         }
         h1, h2 {
             color: #ffdd57; text-align: center; border-bottom: 2px solid #4f4f6f;
@@ -55,14 +58,24 @@
             display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; border-radius: 4px;
         }
         .skill-icon { margin-right: 10px; }
-        .log-panel { position: sticky; top: 20px; }
         .log-panel ul { max-height: 200px; }
         .level-up { color: #32ff7e; font-weight: bold; text-align: center; font-size: 0.8em !important; border-left-color: #32ff7e !important; }
         #gdrive-status { text-align: center; font-size: 0.7em; padding: 10px; color: #a0a0c0; min-height: 20px; }
         .progress-bar-bg { background-color: #1e1e2f; border-radius: 5px; height: 10px; width: 100px; border: 1px solid #4f4f6f; }
         .progress-bar-fg { background-color: #32ff7e; height: 100%; border-radius: 5px; }
-        .page-content { display: none; } /* Ocultar todas las páginas por defecto */
-        .page-content.active { display: block; } /* Mostrar solo la página activa */
+        .page-content { display: none; }
+        .page-content.active { display: block; }
+        
+        /* --- ESTILOS RESPONSIVOS PARA MÓVILES Y TABLETS --- */
+        @media (max-width: 800px) {
+            .main-container {
+                flex-direction: column; /* Apila la sidebar y el contenido principal */
+            }
+            .sidebar {
+                width: 100%; /* La sidebar ocupa todo el ancho */
+                position: static; /* Se desactiva el 'sticky' en móvil */
+            }
+        }
     </style>
 </head>
 <body>
@@ -300,7 +313,7 @@
     window.onload = () => { populateSelect(); updateDisplay(); addLogEntry('¡Bienvenido, aventurero!'); };
     </script>
     
-    <!-- Scripts de Google (movidos al final) -->
+    <!-- Scripts de Google (sin cambios) -->
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
