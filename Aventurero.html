@@ -174,7 +174,7 @@
         'Herbología (Nutrición)': { xp: 0, level: 1, icon: '🌿', subSkills: [], img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'apoyo', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
         'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'apoyo', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
         'Pesca (Hobbies)': { xp: 0, level: 1, icon: '🎣', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🎣', category: 'apoyo', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo.' },
-        'Herrería (Estudio)': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=�', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.' },
+        'Herrería (Estudio)': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.' },
         'Creación (Proyectos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido.' },
         'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY).'},
         'Disciplina (Hábitos)': { xp: 0, level: 1, icon: '🔥', subSkills: [], img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina.' }
@@ -242,55 +242,19 @@
                     item.className = 'description-item';
                     item.setAttribute('data-skill', skillName);
 
-                    // Se construye el elemento paso a paso para evitar errores
-                    const headerDiv = document.createElement('div');
-                    headerDiv.className = 'description-header';
-
-                    const img = document.createElement('img');
-                    img.src = skill.img;
-                    img.alt = `Icono de ${skillName}`;
-                    img.className = 'description-img';
-
-                    const textDiv = document.createElement('div');
-                    const strong = document.createElement('strong');
-                    strong.textContent = `${skillName}:`;
-                    textDiv.appendChild(strong);
-                    textDiv.append(` ${skill.description}`);
-
-                    headerDiv.appendChild(img);
-                    headerDiv.appendChild(textDiv);
-
-                    const subskillContainerDiv = document.createElement('div');
-                    subskillContainerDiv.className = 'subskill-container';
-
-                    const subskillTitle = document.createElement('h4');
-                    subskillTitle.textContent = 'Habilidades Concretas:';
-
-                    const subskillList = document.createElement('ul');
-                    subskillList.className = 'subskill-list';
-
-                    const inputGroupDiv = document.createElement('div');
-                    inputGroupDiv.className = 'subskill-input-group';
-                    
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.placeholder = 'Añadir nueva habilidad...';
-                    input.maxLength = 50;
-
-                    const addButton = document.createElement('button');
-                    addButton.className = 'add-subskill-btn';
-                    addButton.textContent = '+';
-
-                    inputGroupDiv.appendChild(input);
-                    inputGroupDiv.appendChild(addButton);
-
-                    subskillContainerDiv.appendChild(subskillTitle);
-                    subskillContainerDiv.appendChild(subskillList);
-                    subskillContainerDiv.appendChild(inputGroupDiv);
-
-                    item.appendChild(headerDiv);
-                    item.appendChild(subskillContainerDiv);
-
+                    item.innerHTML = `
+                        <div class="description-header">
+                            <img src="${skill.img}" alt="Icono de ${skillName}" class="description-img">
+                            <div><strong>${skillName}:</strong> ${skill.description}</div>
+                        </div>
+                        <div class="subskill-container">
+                            <h4>Habilidades Concretas:</h4>
+                            <ul class="subskill-list"></ul>
+                            <div class="subskill-input-group">
+                                <input type="text" placeholder="Añadir nueva habilidad..." maxlength="50">
+                                <button class="add-subskill-btn">+</button>
+                            </div>
+                        </div>`;
                     categoryList.appendChild(item);
                 }
             }
@@ -325,6 +289,7 @@
                 if (value && skills[skillName].subSkills.length < 10) {
                     skills[skillName].subSkills.push(value);
                     renderSubSkillList(skillName);
+                    populateSubSkillSelect(skillSelect.value); // Actualizar desplegable de entrenamiento
                     input.value = '';
                 }
             }
@@ -332,6 +297,7 @@
                 const index = parseInt(target.getAttribute('data-index'));
                 skills[skillName].subSkills.splice(index, 1);
                 renderSubSkillList(skillName);
+                populateSubSkillSelect(skillSelect.value); // Actualizar desplegable de entrenamiento
             }
         });
     }
@@ -413,11 +379,18 @@
             const response = await gapi.client.drive.files.get({ fileId: fileId, alt: 'media' });
             const loadedSkills = JSON.parse(response.body);
             if (loadedSkills && typeof loadedSkills === 'object') {
-                skills = loadedSkills;
-                for (const skillName in initialSkills) {
-                    if (!skills[skillName]) { skills[skillName] = initialSkills[skillName]; } 
-                    else if (!skills[skillName].subSkills) { skills[skillName].subSkills = []; }
+                // CORRECCIÓN: Lógica de hidratación de datos
+                const hydratedSkills = JSON.parse(JSON.stringify(initialSkills)); // Empezar con la plantilla más nueva
+                for (const skillName in hydratedSkills) {
+                    if (loadedSkills[skillName]) {
+                        // Si la habilidad existe en el guardado, se preserva el progreso
+                        hydratedSkills[skillName].xp = loadedSkills[skillName].xp || 0;
+                        hydratedSkills[skillName].level = loadedSkills[skillName].level || 1;
+                        hydratedSkills[skillName].subSkills = loadedSkills[skillName].subSkills || [];
+                    }
                 }
+                skills = hydratedSkills;
+
                 updateDisplay(); populateSelect(); renderDescriptionPage();
                 statusDiv.textContent = '¡Progreso cargado desde Drive!'; addLogEntry('📂 Progreso cargado.');
             } else { throw new Error("Invalid data format in Drive file."); }
@@ -506,4 +479,3 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
-�
