@@ -36,6 +36,7 @@
             padding-bottom: 10px; margin-top: 0; font-size: 1.5em; text-shadow: 2px 2px #c23616;
         }
         h2 { font-size: 1.2em; }
+        h3 { font-size: 1em; color: #4a90e2; margin-top: 20px; }
         label { display: block; margin-bottom: 8px; color: #a0a0c0; font-size: 0.8em; }
         select, input[type="number"] {
             width: 100%; padding: 12px; margin-bottom: 15px; background-color: #1e1e2f;
@@ -52,10 +53,29 @@
         .nav-btn { background-color: #6a4f9a; border-bottom: 4px solid #4a2f7a; }
         .nav-btn.active { background-color: #8a6fba; transform: translateY(2px); border-bottom-width: 2px;}
         button:disabled { background-color: #555; border-bottom-color: #444; color: #888; cursor: not-allowed; }
-        .skills-panel ul, .log-panel ul { list-style: none; padding: 0; max-height: 450px; overflow-y: auto; }
+        .skills-panel ul, .log-panel ul, .description-content ul { list-style: none; padding: 0; max-height: 450px; overflow-y: auto; }
         .skills-panel li {
             background-color: #33334f; padding: 10px 15px; margin-bottom: 6px; border-left: 5px solid #ffdd57;
             display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; border-radius: 4px;
+        }
+        /* --- ESTILOS PARA LA SECCIÓN DE DESCRIPCIÓN --- */
+        .description-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #33334f;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 5px solid #ffdd57;
+            border-radius: 4px;
+            font-size: 0.75em;
+            line-height: 1.5;
+        }
+        .description-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            flex-shrink: 0;
         }
         .skill-icon { margin-right: 10px; }
         .log-panel ul { max-height: 200px; }
@@ -86,7 +106,7 @@
                 <h2>Navegación</h2>
                 <button class="nav-btn active" data-page="entrenamiento">Entrenamiento</button>
                 <button class="nav-btn" data-page="misiones">Misiones</button>
-                <!-- Puedes añadir más botones aquí (Tienda, Banco, etc.) -->
+                <button class="nav-btn" data-page="descripcion">Descripción</button>
             </div>
             <div class="container gdrive-section">
                 <div id="gdrive-status">Inicia sesión para sincronizar.</div>
@@ -126,9 +146,84 @@
                     <h1>Misiones</h1>
                     <p style="text-align:center;">¡Aquí podrás ver y gestionar tus misiones!</p>
                     <p style="text-align:center; color: #a0a0c0;">(Próximamente...)</p>
-                    <!-- Aquí podrías añadir una lista de misiones, un botón para crear nuevas, etc. -->
                 </div>
             </div>
+
+            <!-- Página de Descripción de Habilidades -->
+            <div id="page-descripcion" class="page-content">
+                <div class="container description-content">
+                    <h1>Descripción de Habilidades</h1>
+                    
+                    <h3>Habilidades de "Combate"</h3>
+                    <ul>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/c23616/FFFFFF?text=⚔️" alt="Icono de Ataque" class="description-img">
+                            <div><strong>Ataque (Carrera Profesional):</strong> Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/e84118/FFFFFF?text=💪" alt="Icono de Fuerza" class="description-img">
+                            <div><strong>Fuerza (Fitness Físico):</strong> Entrenamiento de fuerza, levantamiento de pesas, calistenia.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️" alt="Icono de Defensa" class="description-img">
+                            <div><strong>Defensa (Finanzas Personales):</strong> Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.</div>
+                        </li>
+                         <li class="description-item">
+                            <img src="https://placehold.co/80x80/ff4757/FFFFFF?text=❤️" alt="Icono de Constitución" class="description-img">
+                            <div><strong>Constitución (Salud y Resistencia):</strong> Dormir bien, mantenerse hidratado, mejorar la resistencia general, chequeos médicos.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃" alt="Icono de Agilidad" class="description-img">
+                            <div><strong>Agilidad (Cardio y Flexibilidad):</strong> Correr, nadar, yoga, ciclismo, estiramientos.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨" alt="Icono de Magia" class="description-img">
+                            <div><strong>Magia (Habilidades Sociales):</strong> Comunicación, oratoria, negociación, empatía, inteligencia emocional.</div>
+                        </li>
+                    </ul>
+
+                    <h3>Habilidades de "Apoyo"</h3>
+                     <ul>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/718093/FFFFFF?text=🧘" alt="Icono de Oración" class="description-img">
+                            <div><strong>Oración (Mindfulness y Salud Mental):</strong> Meditar, escribir un diario, practicar la gratitud, terapia.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/27ae60/FFFFFF?text=🌿" alt="Icono de Herbología" class="description-img">
+                            <div><strong>Herbología (Nutrición):</strong> Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/fbc531/FFFFFF?text=🍳" alt="Icono de Cocina" class="description-img">
+                            <div><strong>Cocina (Cocina Práctica):</strong> Preparar tus propias comidas, aprender nuevas recetas, batch cooking.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/3498db/FFFFFF?text=🎣" alt="Icono de Pesca" class="description-img">
+                            <div><strong>Pesca (Hobbies y Relajación):</strong> Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo.</div>
+                        </li>
+                    </ul>
+
+                    <h3>Habilidades de "Artesanía"</h3>
+                    <ul>
+                         <li class="description-item">
+                            <img src="https://placehold.co/80x80/9b59b6/FFFFFF?text=📚" alt="Icono de Herrería" class="description-img">
+                            <div><strong>Herrería (Estudio Profundo):</strong> Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨" alt="Icono de Creación" class="description-img">
+                            <div><strong>Creación (Proyectos Creativos):</strong> Escribir, dibujar, componer música, crear contenido.</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/f39c12/FFFFFF?text=🏡" alt="Icono de Construcción" class="description-img">
+                            <div><strong>Construcción (Organización y Entorno):</strong> Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY).</div>
+                        </li>
+                        <li class="description-item">
+                            <img src="https://placehold.co/80x80/d35400/FFFFFF?text=🔥" alt="Icono de Creación de Fuego" class="description-img">
+                            <div><strong>Creación de Fuego (Disciplina y Hábitos):</strong> La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </div>
 
