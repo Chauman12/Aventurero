@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v7.3 (SPA)</title>
+    <title>Panel de Aventurero v7.5 (SPA)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        /* Se establece una base para el tamaño de fuente, permitiendo que las unidades 'rem' funcionen de manera predecible. */
+        html {
+            font-size: 100%; /* Generalmente equivale a 16px en la mayoría de los navegadores */
+            scroll-behavior: smooth; /* Habilita el desplazamiento suave en toda la página */
+        }
+
         body {
             background-color: #1e1e2f; color: #dcdcdc; font-family: 'Press+Start+2P', cursive;
             display: flex; justify-content: center; align-items: flex-start; padding: 20px;
@@ -31,18 +38,19 @@
             width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border-radius: 8px; margin-bottom: 20px;
             box-sizing: border-box;
         }
+        /* Se cambian unidades 'em' a 'rem' para que el tamaño sea relativo a la raíz (html) y no al padre. */
         h1, h2 {
             color: #ffdd57; text-align: center; border-bottom: 2px solid #4f4f6f;
-            padding-bottom: 10px; margin-top: 0; font-size: 1.5em; text-shadow: 2px 2px #c23616;
+            padding-bottom: 10px; margin-top: 0; font-size: 1.5rem; text-shadow: 2px 2px #c23616;
         }
-        h2 { font-size: 1.2em; }
-        h3 { font-size: 1em; color: #4a90e2; margin-top: 20px; }
-        h4 { font-size: 0.8em; color: #a0a0c0; margin-bottom: 10px; border-top: 1px solid #4f4f6f; padding-top: 15px; margin-top: 15px;}
-        label { display: block; margin-bottom: 8px; color: #a0a0c0; font-size: 0.8em; }
+        h2 { font-size: 1.2rem; }
+        h3 { font-size: 1rem; color: #4a90e2; margin-top: 20px; }
+        h4 { font-size: 0.8rem; color: #a0a0c0; margin-bottom: 10px; border-top: 1px solid #4f4f6f; padding-top: 15px; margin-top: 15px;}
+        label { display: block; margin-bottom: 8px; color: #a0a0c0; font-size: 0.8rem; }
         select, input[type="number"], input[type="text"] {
             width: 100%; padding: 12px; margin-bottom: 15px; background-color: #1e1e2f;
             color: #dcdcdc; border: 2px solid #4f4f6f; border-radius: 4px;
-            font-family: inherit; font-size: 0.9em; box-sizing: border-box;
+            font-family: inherit; font-size: 0.9rem; box-sizing: border-box;
         }
         button, .nav-btn {
             width: 100%; padding: 12px; margin-bottom: 10px; color: #fff; font-weight: bold;
@@ -57,13 +65,13 @@
         .skills-panel ul, .log-panel ul { list-style: none; padding: 0; max-height: 450px; overflow-y: auto; }
         .skills-panel li {
             background-color: #33334f; padding: 10px 15px; margin-bottom: 6px; border-left: 5px solid #ffdd57;
-            display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; border-radius: 4px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; border-radius: 4px;
         }
         .description-item {
             display: flex; flex-direction: column; align-items: flex-start; gap: 15px;
             background-color: #33334f; padding: 15px; margin-bottom: 10px;
             border-left: 5px solid #ffdd57; border-radius: 4px;
-            font-size: 0.75em; line-height: 1.5;
+            font-size: 0.75rem; line-height: 1.5;
         }
         .description-header { display: flex; align-items: center; gap: 15px; width: 100%;}
         .description-img { width: 80px; height: 80px; border-radius: 4px; flex-shrink: 0; }
@@ -76,7 +84,7 @@
             padding: 8px; 
             border-radius: 3px; 
             margin-bottom: 5px; 
-            font-size: 0.9em;
+            font-size: 0.9rem;
             gap: 10px;
         }
         .subskill-input-group { display: flex; gap: 10px; }
@@ -88,23 +96,23 @@
             border-radius: 3px; 
             cursor: pointer; 
             font-family: inherit; 
-            font-size: 0.8em;
+            font-size: 0.8rem;
             width: auto;
             margin-left: auto;
             flex-shrink: 0;
         }
-        .add-subskill-btn { flex-shrink: 0; width: auto; padding: 0 15px; font-size: 1.2em; background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
+        .add-subskill-btn { flex-shrink: 0; width: auto; padding: 0 15px; font-size: 1.2rem; background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
         .skill-icon { margin-right: 10px; }
         .log-panel ul { max-height: 200px; }
-        .level-up { color: #32ff7e; font-weight: bold; text-align: center; font-size: 0.8em !important; border-left-color: #32ff7e !important; }
-        #gdrive-status { text-align: center; font-size: 0.7em; padding: 10px; color: #a0a0c0; min-height: 20px; }
+        .level-up { color: #32ff7e; font-weight: bold; text-align: center; font-size: 0.8rem !important; border-left-color: #32ff7e !important; }
+        #gdrive-status { text-align: center; font-size: 0.7rem; padding: 10px; color: #a0a0c0; min-height: 20px; }
         .progress-bar-bg { background-color: #1e1e2f; border-radius: 5px; height: 10px; width: 100px; border: 1px solid #4f4f6f; }
         .progress-bar-fg { background-color: #32ff7e; height: 100%; border-radius: 5px; }
         .page-content { display: none; }
         .page-content.active { display: block; }
         
         #version-info {
-            font-size: 0.65em;
+            font-size: 0.65rem;
             color: #8a8a9e;
             text-align: right;
             margin-top: 15px;
@@ -117,6 +125,11 @@
             .main-container { flex-direction: column; }
             .sidebar { width: 100%; position: static; }
             .description-header { flex-direction: column; text-align: center; }
+
+            /* Aumenta el tamaño de la fuente raíz en pantallas pequeñas para mejorar la legibilidad en móviles. */
+            html {
+                font-size: 110%;
+            }
         }
     </style>
 </head>
@@ -140,7 +153,7 @@
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                    v7.3 (Añadidos comentarios explicativos en el código)
+                    v7.5 (Añadido scroll en navegación móvil)
                 </div>
             </div>
         </div>
@@ -190,18 +203,12 @@
     <script>
     //================================================================================//
     //   SECCIÓN 1: CONFIGURACIÓN DE ACCESO A GOOGLE DRIVE API                      //
-    //   Estas son las "llaves" que permiten a nuestra app conectarse con Google.   //
-    //   CLIENT_ID identifica nuestra aplicación.                                   //
-    //   API_KEY autoriza el uso de la API de Google Drive.                         //
     //================================================================================//
     const CLIENT_ID = '432634777489-acq7bb59h2ggc223oafccitlvskvqh6p.apps.googleusercontent.com';
     const API_KEY = 'AIzaSyB17ehizwOK9efPy7Bo7Zss2zveYSVhwE8';
     
     //================================================================================//
     //   SECCIÓN 2: ESTRUCTURA DE DATOS INICIAL                                     //
-    //   Este es el "molde" o plantilla para todas las habilidades del juego.       //
-    //   Cuando la app se inicia por primera vez o se resetea, usa esta estructura. //
-    //   Define el nombre, icono, descripción, etc., de cada habilidad.             //
     //================================================================================//
     const initialSkills = {
         'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: [], img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
@@ -212,8 +219,8 @@
         'Magia (Habilidades Sociales)': { xp: 0, level: 1, icon: '✨', subSkills: [], img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia.' },
         'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: [], img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias.' },
         'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: [], img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
-        'Cocina (Práctica)': { xp: 0, level: 1, icon: '�', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
-        'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
+        'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
+        'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '�', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
         'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
         'Creación (Proyectos Creativos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
         'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
@@ -222,9 +229,6 @@
     
     //================================================================================//
     //   SECCIÓN 3: MAPA DE MIGRACIÓN DE DATOS                                        //
-    //   Esto sirve para actualizar datos de versiones antiguas. Si un usuario       //
-    //   carga un archivo guardado con un nombre de habilidad viejo (ej: "Ataque"), //
-    //   este mapa lo convierte al nombre nuevo (ej: "Avance") sin perder el XP.    //
     //================================================================================//
     const MIGRATION_MAP = {
         "Ataque (Carrera)": "Avance (Formación)",
@@ -242,8 +246,6 @@
     
     //================================================================================//
     //   SECCIÓN 4: REFERENCIAS A ELEMENTOS DEL HTML (DOM)                            //
-    //   Aquí "guardamos" en variables de JavaScript los elementos importantes de la  //
-    //   página (botones, listas, inputs) para poder manipularlos fácilmente.        //
     //================================================================================//
     const authBtn = document.getElementById('auth-btn');
     const saveBtn = document.getElementById('save-drive-btn');
@@ -259,26 +261,31 @@
     
     //================================================================================//
     //   SECCIÓN 5: LÓGICA DE NAVEGACIÓN (SPA - Single Page Application)              //
-    //   Este código hace que los botones "Entrenamiento", "Misiones" y             //
-    //   "Descripción" muestren su contenido sin que la página web se recargue.     //
     //================================================================================//
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page-content');
     navButtons.forEach(button => {
         button.addEventListener('click', () => {
+            // 1. Cambia el estado activo de los botones y las páginas
             const targetPage = button.getAttribute('data-page');
             navButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             pages.forEach(page => {
                 page.classList.toggle('active', page.id === 'page-' + targetPage);
             });
+
+            // 2. Si la pantalla es pequeña (móvil), se desplaza a la sección de contenido
+            if (window.matchMedia('(max-width: 800px)').matches) {
+                const targetElement = document.getElementById('page-' + targetPage);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
         });
     });
 
     //================================================================================//
     //   SECCIÓN 6: LÓGICA DE LA PÁGINA "DESCRIPCIÓN"                                 //
-    //   Controla todo lo que pasa en la pestaña de descripción: muestra las         //
-    //   habilidades, sus detalles y permite añadir o borrar "Habilidades Concretas".//
     //================================================================================//
     function renderDescriptionPage() {
         descriptionContainer.innerHTML = '';
@@ -366,8 +373,6 @@
 
     //================================================================================//
     //   SECCIÓN 7: INICIALIZACIÓN DE LA API DE GOOGLE                                //
-    //   Este bloque se encarga de cargar y preparar las herramientas de Google      //
-    //   para que podamos usarlas (iniciar sesión, guardar/cargar archivos).        //
     //================================================================================//
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
     const SCOPES = 'https://www.googleapis.com/auth/drive.file';
@@ -402,8 +407,6 @@
     
     //================================================================================//
     //   SECCIÓN 8: FUNCIONES PRINCIPALES DE GOOGLE DRIVE                             //
-    //   Aquí está la magia para conectar con la nube. Estas funciones buscan el     //
-    //   archivo de guardado, lo crean si no existe, guardan el progreso y lo cargan.//
     //================================================================================//
     async function findFileId() {
         try {
@@ -481,29 +484,24 @@
 
     //================================================================================//
     //   SECCIÓN 9: LÓGICA CENTRAL DE LA APLICACIÓN (EL "MOTOR" DEL JUEGO)            //
-    //   Este es el corazón del panel. Calcula los niveles, actualiza la lista de   //
-    //   habilidades, rellena los menús desplegables y gestiona el registro de XP.  //
     //================================================================================//
     const XP_PER_15_MINS = 100;
     
-    // Calcula a qué nivel corresponde una cantidad de XP.
     function getLevelFromXp(xp) {
         let level = 1; while (true) { let xpForNextLevel = Math.pow(level, 2) * 1000; if (xp < xpForNextLevel) return level; level++; if (level > 200) return 200; }
     }
 
-    // Dibuja y actualiza la lista de habilidades en la página principal.
     function updateDisplay() {
         skillsList.innerHTML = ''; const sortedSkills = Object.entries(skills).sort(([,a],[,b]) => b.xp - a.xp);
         for (const [skillName, skill] of sortedSkills) {
             const li = document.createElement('li'); const xpForCurrentLevel = skill.level > 1 ? Math.pow(skill.level - 1, 2) * 1000 : 0;
             const xpForNextLevel = Math.pow(skill.level, 2) * 1000; const xpInCurrentLevel = skill.xp - xpForCurrentLevel;
             const xpNeededForLevel = xpForNextLevel - xpForCurrentLevel; const progressPercentage = (xpInCurrentLevel / xpNeededForLevel) * 100;
-            li.innerHTML = `<div style="flex-grow: 1;"><span><span class="skill-icon">${skill.icon || '❔'}</span>${skillName}</span><div style="font-size: 0.8em; color: #a0a0c0;">Lvl: ${skill.level} (${skill.xp.toLocaleString()} XP)</div></div><div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${progressPercentage}%;"></div></div>`;
+            li.innerHTML = `<div style="flex-grow: 1;"><span><span class="skill-icon">${skill.icon || '❔'}</span>${skillName}</span><div style="font-size: 0.8rem; color: #a0a0c0;">Lvl: ${skill.level} (${skill.xp.toLocaleString()} XP)</div></div><div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${progressPercentage}%;"></div></div>`;
             skillsList.appendChild(li);
         }
     }
 
-    // Rellena los menús desplegables de "Habilidad General" y "Habilidad Concreta".
     function populateSelect() {
         skillSelect.innerHTML = ''; const skillNames = Object.keys(skills); skillNames.sort();
         for (const skillName of skillNames) { const option = document.createElement('option'); option.value = skillName; option.textContent = skillName; skillSelect.appendChild(option); }
@@ -528,12 +526,10 @@
         }
     }
     
-    // Actualiza el menú de sub-habilidades cuando cambia la habilidad general.
     skillSelect.addEventListener('change', (e) => {
         populateSubSkillSelect(e.target.value);
     });
 
-    // Añade una nueva línea de texto al panel de "Registro" en la barra lateral.
     function addLogEntry(message, type = '') {
         const logEntry = document.createElement('li'); logEntry.textContent = message; if (type) logEntry.classList.add(type);
         logList.prepend(logEntry); if (logList.children.length > 20) logList.removeChild(logList.lastChild);
@@ -541,8 +537,6 @@
 
     //================================================================================//
     //   SECCIÓN 10: EVENTO PRINCIPAL - REGISTRAR EXPERIENCIA (XP)                    //
-    //   Esta es la acción que se dispara al pulsar el botón "Registrar XP".         //
-    //   Toma los datos de los inputs, calcula el XP ganado y actualiza todo.        //
     //================================================================================//
     registerBtn.addEventListener('click', () => {
         const selectedSkill = skillSelect.value;
@@ -565,8 +559,6 @@
     
     //================================================================================//
     //   SECCIÓN 11: INICIALIZACIÓN PRINCIPAL DE LA APLICACIÓN                        //
-    //   Esto es lo primero que se ejecuta cuando la página ha cargado por completo.  //
-    //   Prepara la aplicación para que el usuario pueda empezar a usarla.           //
     //================================================================================//
     window.onload = () => { 
         skills = JSON.parse(JSON.stringify(initialSkills));
