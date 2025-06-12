@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v4 (SPA)</title>
+    <title>Panel de Aventurero v5 (SPA)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         body {
@@ -18,9 +18,9 @@
             align-items: flex-start;
         }
         .sidebar {
-            width: 280px; /* Un poco más de espacio */
+            width: 280px;
             flex-shrink: 0;
-            position: sticky; /* Hacemos que la sidebar entera sea sticky */
+            position: sticky;
             top: 20px;
         }
         .main-content {
@@ -37,8 +37,9 @@
         }
         h2 { font-size: 1.2em; }
         h3 { font-size: 1em; color: #4a90e2; margin-top: 20px; }
+        h4 { font-size: 0.8em; color: #a0a0c0; margin-bottom: 10px; border-top: 1px solid #4f4f6f; padding-top: 15px; margin-top: 15px;}
         label { display: block; margin-bottom: 8px; color: #a0a0c0; font-size: 0.8em; }
-        select, input[type="number"] {
+        select, input[type="number"], input[type="text"] {
             width: 100%; padding: 12px; margin-bottom: 15px; background-color: #1e1e2f;
             color: #dcdcdc; border: 2px solid #4f4f6f; border-radius: 4px;
             font-family: inherit; font-size: 0.9em; box-sizing: border-box;
@@ -53,30 +54,25 @@
         .nav-btn { background-color: #6a4f9a; border-bottom: 4px solid #4a2f7a; }
         .nav-btn.active { background-color: #8a6fba; transform: translateY(2px); border-bottom-width: 2px;}
         button:disabled { background-color: #555; border-bottom-color: #444; color: #888; cursor: not-allowed; }
-        .skills-panel ul, .log-panel ul, .description-content ul { list-style: none; padding: 0; max-height: 450px; overflow-y: auto; }
+        .skills-panel ul, .log-panel ul { list-style: none; padding: 0; max-height: 450px; overflow-y: auto; }
         .skills-panel li {
             background-color: #33334f; padding: 10px 15px; margin-bottom: 6px; border-left: 5px solid #ffdd57;
             display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; border-radius: 4px;
         }
-        /* --- ESTILOS PARA LA SECCIÓN DE DESCRIPCIÓN --- */
         .description-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background-color: #33334f;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-left: 5px solid #ffdd57;
-            border-radius: 4px;
-            font-size: 0.75em;
-            line-height: 1.5;
+            display: flex; flex-direction: column; align-items: flex-start; gap: 15px;
+            background-color: #33334f; padding: 15px; margin-bottom: 10px;
+            border-left: 5px solid #ffdd57; border-radius: 4px;
+            font-size: 0.75em; line-height: 1.5;
         }
-        .description-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
+        .description-header { display: flex; align-items: center; gap: 15px; width: 100%;}
+        .description-img { width: 80px; height: 80px; border-radius: 4px; flex-shrink: 0; }
+        .subskill-container { width: 100%; }
+        .subskill-list { list-style: none; padding: 0; }
+        .subskill-list li { display: flex; justify-content: space-between; align-items: center; background-color: #2a2a40; padding: 8px; border-radius: 3px; margin-bottom: 5px; font-size: 0.9em;}
+        .subskill-input-group { display: flex; gap: 10px; }
+        .delete-subskill-btn { background: #c23616; border: none; color: white; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 0.8em;}
+        .add-subskill-btn { flex-shrink: 0; width: auto; padding: 0 15px; font-size: 1.2em; background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
         .skill-icon { margin-right: 10px; }
         .log-panel ul { max-height: 200px; }
         .level-up { color: #32ff7e; font-weight: bold; text-align: center; font-size: 0.8em !important; border-left-color: #32ff7e !important; }
@@ -86,21 +82,16 @@
         .page-content { display: none; }
         .page-content.active { display: block; }
         
-        /* --- ESTILOS RESPONSIVOS PARA MÓVILES Y TABLETS --- */
         @media (max-width: 800px) {
-            .main-container {
-                flex-direction: column; /* Apila la sidebar y el contenido principal */
-            }
-            .sidebar {
-                width: 100%; /* La sidebar ocupa todo el ancho */
-                position: static; /* Se desactiva el 'sticky' en móvil */
-            }
+            .main-container { flex-direction: column; }
+            .sidebar { width: 100%; position: static; }
+            .description-header { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
     <div class="main-container">
-        <!-- Columna de la Izquierda (Sidebar) -->
+        <!-- Sidebar -->
         <div class="sidebar">
             <div class="container">
                 <h2>Navegación</h2>
@@ -120,7 +111,7 @@
             </div>
         </div>
 
-        <!-- Contenido Principal (Páginas) -->
+        <!-- Main Content -->
         <div class="main-content">
             <!-- Página de Entrenamiento -->
             <div id="page-entrenamiento" class="page-content active">
@@ -153,77 +144,9 @@
             <div id="page-descripcion" class="page-content">
                 <div class="container description-content">
                     <h1>Descripción de Habilidades</h1>
-                    
-                    <h3>Habilidades de "Combate"</h3>
-                    <ul>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/c23616/FFFFFF?text=⚔️" alt="Icono de Ataque" class="description-img">
-                            <div><strong>Ataque (Carrera Profesional):</strong> Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/e84118/FFFFFF?text=💪" alt="Icono de Fuerza" class="description-img">
-                            <div><strong>Fuerza (Fitness Físico):</strong> Entrenamiento de fuerza, levantamiento de pesas, calistenia.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️" alt="Icono de Defensa" class="description-img">
-                            <div><strong>Defensa (Finanzas Personales):</strong> Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.</div>
-                        </li>
-                         <li class="description-item">
-                            <img src="https://placehold.co/80x80/ff4757/FFFFFF?text=❤️" alt="Icono de Constitución" class="description-img">
-                            <div><strong>Constitución (Salud y Resistencia):</strong> Dormir bien, mantenerse hidratado, mejorar la resistencia general, chequeos médicos.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃" alt="Icono de Agilidad" class="description-img">
-                            <div><strong>Agilidad (Cardio y Flexibilidad):</strong> Correr, nadar, yoga, ciclismo, estiramientos.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨" alt="Icono de Magia" class="description-img">
-                            <div><strong>Magia (Habilidades Sociales):</strong> Comunicación, oratoria, negociación, empatía, inteligencia emocional.</div>
-                        </li>
-                    </ul>
-
-                    <h3>Habilidades de "Apoyo"</h3>
-                     <ul>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/718093/FFFFFF?text=🧘" alt="Icono de Oración" class="description-img">
-                            <div><strong>Oración (Mindfulness y Salud Mental):</strong> Meditar, escribir un diario, practicar la gratitud, terapia.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/27ae60/FFFFFF?text=🌿" alt="Icono de Herbología" class="description-img">
-                            <div><strong>Herbología (Nutrición):</strong> Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/fbc531/FFFFFF?text=🍳" alt="Icono de Cocina" class="description-img">
-                            <div><strong>Cocina (Cocina Práctica):</strong> Preparar tus propias comidas, aprender nuevas recetas, batch cooking.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/3498db/FFFFFF?text=🎣" alt="Icono de Pesca" class="description-img">
-                            <div><strong>Pesca (Hobbies y Relajación):</strong> Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo.</div>
-                        </li>
-                    </ul>
-
-                    <h3>Habilidades de "Artesanía"</h3>
-                    <ul>
-                         <li class="description-item">
-                            <img src="https://placehold.co/80x80/9b59b6/FFFFFF?text=📚" alt="Icono de Herrería" class="description-img">
-                            <div><strong>Herrería (Estudio Profundo):</strong> Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨" alt="Icono de Creación" class="description-img">
-                            <div><strong>Creación (Proyectos Creativos):</strong> Escribir, dibujar, componer música, crear contenido.</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/f39c12/FFFFFF?text=🏡" alt="Icono de Construcción" class="description-img">
-                            <div><strong>Construcción (Organización y Entorno):</strong> Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY).</div>
-                        </li>
-                        <li class="description-item">
-                            <img src="https://placehold.co/80x80/d35400/FFFFFF?text=🔥" alt="Icono de Creación de Fuego" class="description-img">
-                            <div><strong>Creación de Fuego (Disciplina y Hábitos):</strong> La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina.</div>
-                        </li>
-                    </ul>
+                    <!-- El contenido se generará dinámicamente con JavaScript -->
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -233,9 +156,32 @@
     // ===================================================================================
     const CLIENT_ID = '432634777489-acq7bb59h2ggc223oafccitlvskvqh6p.apps.googleusercontent.com';
     const API_KEY = 'AIzaSyB17ehizwOK9efPy7Bo7Zss2zveYSVhwE8';
+    
     // ===================================================================================
+    // ========================== ESTRUCTURA DE DATOS INICIAL ==========================
+    // ===================================================================================
+    const initialSkills = {
+        'Ataque (Carrera)': { xp: 0, level: 1, icon: '⚔️', subSkills: [], img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso.' },
+        'Fuerza (Fitness)': { xp: 0, level: 1, icon: '💪', subSkills: [], img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia.' },
+        'Defensa (Finanzas)': { xp: 0, level: 1, icon: '🛡️', subSkills: [], img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
+        'Constitución (Salud)': { xp: 0, level: 1, icon: '❤️', subSkills: [], img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, mejorar la resistencia general, chequeos médicos.' },
+        'Agilidad (Cardio)': { xp: 0, level: 1, icon: '🏃', subSkills: [], img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Correr, nadar, yoga, ciclismo, estiramientos.' },
+        'Magia (Social)': { xp: 0, level: 1, icon: '✨', subSkills: [], img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional.' },
+        'Oración (Mindfulness)': { xp: 0, level: 1, icon: '🧘', subSkills: [], img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'apoyo', description: 'Meditar, escribir un diario, practicar la gratitud, terapia.' },
+        'Herbología (Nutrición)': { xp: 0, level: 1, icon: '🌿', subSkills: [], img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'apoyo', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
+        'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'apoyo', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
+        'Pesca (Hobbies)': { xp: 0, level: 1, icon: '🎣', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🎣', category: 'apoyo', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo.' },
+        'Herrería (Estudio)': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.' },
+        'Creación (Proyectos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido.' },
+        'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY).'},
+        'Disciplina (Hábitos)': { xp: 0, level: 1, icon: '🔥', subSkills: [], img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina.' }
+    };
 
-    // Referencias a elementos
+    let skills = {};
+    
+    // ===================================================================================
+    // ============================= REFERENCIAS A ELEMENTOS =============================
+    // ===================================================================================
     const authBtn = document.getElementById('auth-btn');
     const saveBtn = document.getElementById('save-drive-btn');
     const loadBtn = document.getElementById('load-drive-btn');
@@ -245,31 +191,115 @@
     const registerBtn = document.getElementById('register-btn');
     const skillsList = document.getElementById('skills-list');
     const logList = document.getElementById('log-list');
+    const descriptionContainer = document.querySelector('#page-descripcion .description-content');
     
     // ===================================================================================
     // =========================== LÓGICA DE NAVEGACIÓN SPA ============================
     // ===================================================================================
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page-content');
-
     navButtons.forEach(button => {
         button.addEventListener('click', () => {
             const targetPage = button.getAttribute('data-page');
-
-            // Actualizar botones
             navButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-
-            // Mostrar la página correcta
             pages.forEach(page => {
-                if (page.id === 'page-' + targetPage) {
-                    page.classList.add('active');
-                } else {
-                    page.classList.remove('active');
-                }
+                page.classList.toggle('active', page.id === 'page-' + targetPage);
             });
         });
     });
+
+    // ===================================================================================
+    // ===================== LÓGICA DE LA PÁGINA DE DESCRIPCIÓN ========================
+    // ===================================================================================
+    function renderDescriptionPage() {
+        descriptionContainer.innerHTML = '<h1>Descripción de Habilidades</h1>'; // Limpiar y añadir título
+        const categories = {
+            combate: 'Habilidades de "Combate"',
+            apoyo: 'Habilidades de "Apoyo"',
+            artesania: 'Habilidades de "Artesanía"'
+        };
+
+        for (const categoryId in categories) {
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = categories[categoryId];
+            descriptionContainer.appendChild(categoryTitle);
+            
+            const categoryList = document.createElement('ul');
+            
+            for (const skillName in skills) {
+                if (skills[skillName].category === categoryId) {
+                    const skill = skills[skillName];
+                    const item = document.createElement('li');
+                    item.className = 'description-item';
+                    item.setAttribute('data-skill', skillName);
+
+                    item.innerHTML = `
+                        <div class="description-header">
+                            <img src="${skill.img}" alt="Icono de ${skillName}" class="description-img">
+                            <div><strong>${skillName}:</strong> ${skill.description}</div>
+                        </div>
+                        <div class="subskill-container">
+                            <h4>Habilidades Concretas:</h4>
+                            <ul class="subskill-list"></ul>
+                            <div class="subskill-input-group">
+                                <input type="text" placeholder="Añadir nueva habilidad..." maxlength="50">
+                                <button class="add-subskill-btn">+</button>
+                            </div>
+                        </div>
+                    `;
+                    categoryList.appendChild(item);
+                }
+            }
+            descriptionContainer.appendChild(categoryList);
+        }
+        renderAllSubSkillLists();
+        addDescriptionPageListeners();
+    }
+    
+    function renderSubSkillList(skillName) {
+        const listElement = document.querySelector(`.description-item[data-skill="${skillName}"] .subskill-list`);
+        if (!listElement) return;
+        listElement.innerHTML = '';
+        skills[skillName].subSkills.forEach((subSkill, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${subSkill}</span> <button class="delete-subskill-btn" data-index="${index}">X</button>`;
+            listElement.appendChild(li);
+        });
+    }
+
+    function renderAllSubSkillLists() {
+        for (const skillName in skills) {
+            renderSubSkillList(skillName);
+        }
+    }
+
+    function addDescriptionPageListeners() {
+        descriptionContainer.addEventListener('click', (e) => {
+            const target = e.target;
+            const parentItem = target.closest('.description-item');
+            if (!parentItem) return;
+            const skillName = parentItem.getAttribute('data-skill');
+
+            // Botón de añadir
+            if (target.classList.contains('add-subskill-btn')) {
+                const input = parentItem.querySelector('input[type="text"]');
+                const value = input.value.trim();
+                if (value && skills[skillName].subSkills.length < 10) {
+                    skills[skillName].subSkills.push(value);
+                    renderSubSkillList(skillName);
+                    input.value = '';
+                }
+            }
+
+            // Botón de eliminar
+            if (target.classList.contains('delete-subskill-btn')) {
+                const index = parseInt(target.getAttribute('data-index'));
+                skills[skillName].subSkills.splice(index, 1);
+                renderSubSkillList(skillName);
+            }
+        });
+    }
 
     // ===================================================================================
     // =========================== GOOGLE API INITIALIZATION ===========================
@@ -355,8 +385,20 @@
             const response = await gapi.client.drive.files.get({ fileId: fileId, alt: 'media' });
             const loadedSkills = JSON.parse(response.body);
             if (loadedSkills && typeof loadedSkills === 'object') {
-                skills = loadedSkills; updateDisplay(); populateSelect();
-                statusDiv.textContent = '¡Progreso cargado desde Drive!'; addLogEntry('📂 Progreso cargado.');
+                skills = loadedSkills;
+                // Lógica de compatibilidad para datos guardados antiguos
+                for (const skillName in initialSkills) {
+                    if (!skills[skillName]) { // Si se añade una habilidad nueva en el código
+                        skills[skillName] = initialSkills[skillName];
+                    } else if (!skills[skillName].subSkills) { // Si el guardado no tiene subSkills
+                        skills[skillName].subSkills = [];
+                    }
+                }
+                updateDisplay(); 
+                populateSelect();
+                renderDescriptionPage(); // Re-render descripción con los datos cargados
+                statusDiv.textContent = '¡Progreso cargado desde Drive!'; 
+                addLogEntry('📂 Progreso cargado.');
             } else { throw new Error("Invalid data format in Drive file."); }
         } catch (err) { statusDiv.textContent = `Error al cargar: ${err.message}`; addLogEntry(`❌ Error al cargar: ${err.message}`, 'level-up'); }
     };
@@ -364,16 +406,6 @@
     // ===================================================================================
     // ============================= CORE APP LOGIC ======================================
     // ===================================================================================
-    let skills = {};
-    const initialSkills = {
-        'Ataque (Carrera)': { xp: 0, level: 1, icon: '⚔️' }, 'Fuerza (Fitness)': { xp: 0, level: 1, icon: '💪' },
-        'Defensa (Finanzas)': { xp: 0, level: 1, icon: '🛡️' }, 'Constitución (Salud)': { xp: 0, level: 1, icon: '❤️' },
-        'Agilidad (Cardio)': { xp: 0, level: 1, icon: '🏃' }, 'Magia (Social)': { xp: 0, level: 1, icon: '✨' },
-        'Oración (Mindfulness)': { xp: 0, level: 1, icon: '🧘' }, 'Herbología (Nutrición)': { xp: 0, level: 1, icon: '🌿' },
-        'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳' }, 'Herrería (Estudio)': { xp: 0, level: 1, icon: '📚' },
-        'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡' }
-    };
-    skills = JSON.parse(JSON.stringify(initialSkills));
     const XP_PER_15_MINS = 100;
     function getLevelFromXp(xp) {
         let level = 1; while (true) { let xpForNextLevel = Math.pow(level, 2) * 1000; if (xp < xpForNextLevel) return level; level++; if (level > 200) return 200; }
@@ -405,10 +437,18 @@
         if (skillData.level > oldLevel) { addLogEntry(`¡Nivel ${skillData.level} en ${selectedSkill}!`, 'level-up'); }
         timeInput.value = ''; updateDisplay();
     });
-    window.onload = () => { populateSelect(); updateDisplay(); addLogEntry('¡Bienvenido, aventurero!'); };
+    
+    // --- INICIALIZACIÓN PRINCIPAL ---
+    window.onload = () => { 
+        skills = JSON.parse(JSON.stringify(initialSkills));
+        populateSelect(); 
+        updateDisplay(); 
+        renderDescriptionPage();
+        addLogEntry('¡Bienvenido, aventurero!'); 
+    };
     </script>
     
-    <!-- Scripts de Google (sin cambios) -->
+    <!-- Scripts de Google -->
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
