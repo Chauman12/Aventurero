@@ -165,7 +165,7 @@
     // ===================================================================================
     const initialSkills = {
         'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: [], img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
-        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '💪', subSkills: [], img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
+        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '💪', subSkills: [], img: 'https://placehold.co/80x80/e84118/FFFFFF?text=�', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
         'Defensa (Finanzas Personales)': { xp: 0, level: 1, icon: '🛡️', subSkills: [], img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
         'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: [], img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
         'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: [], img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
@@ -178,6 +178,20 @@
         'Creación (Proyectos Creativos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
         'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
         'Grabación de Fuego (Disciplina)': { xp: 0, level: 1, icon: '🔥', subSkills: [], img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina. La clave es la simplicidad y la consistencia.' }
+    };
+    
+    // ===================================================================================
+    // =========================== MAPA DE MIGRACIÓN DE DATOS ==========================
+    // ===================================================================================
+    const MIGRATION_MAP = {
+        "Ataque (Carrera)": "Avance (Formación)",
+        "Fuerza (Fitness)": "Fuerza (Salud centrada en el cuerpo)",
+        "Agilidad (Cardio)": "Agilidad (Salud centrada en cuerpo)",
+        "Oración (Mindfulness)": "Espiritual (Salud Mental)",
+        "Herbología (Nutrición)": "Nutrición (Salud corporal)",
+        "Pesca (Hobbies)": "Hobbies y Relajación",
+        "Herrería (Estudio)": "Estudio Profundo",
+        "Creación de Fuego (Disciplina y Hábitos)": "Grabación de Fuego (Disciplina)"
     };
 
     let skills = {};
@@ -221,28 +235,23 @@
         const mainTitle = document.createElement('h1');
         mainTitle.textContent = 'Descripción de Habilidades';
         descriptionContainer.appendChild(mainTitle);
-
         const categories = {
             combate: 'Habilidades de "Combate" (Proactivas y de Afrontamiento)',
             autocuidado: 'Habilidades de "Autocuidado"',
             artesania: 'Habilidades de "Artesanía" (Creación y Conocimiento)'
         };
-
         for (const categoryId in categories) {
             const categoryTitle = document.createElement('h3');
             categoryTitle.textContent = categories[categoryId];
             descriptionContainer.appendChild(categoryTitle);
-            
             const categoryList = document.createElement('ul');
-            categoryList.style.padding = '0'; // Reset padding for the UL
-            
+            categoryList.style.padding = '0';
             for (const skillName in skills) {
                 if (skills[skillName].category === categoryId) {
                     const skill = skills[skillName];
                     const item = document.createElement('li');
                     item.className = 'description-item';
                     item.setAttribute('data-skill', skillName);
-
                     item.innerHTML = `
                         <div class="description-header">
                             <img src="${skill.img}" alt="Icono de ${skillName}" class="description-img">
@@ -289,10 +298,10 @@
             if (target.classList.contains('add-subskill-btn')) {
                 const input = parentItem.querySelector('input[type="text"]');
                 const value = input.value.trim();
-                if (value && skills[skillName].subSkills.length < 25) {
+                if (value && skills[skillName].subSkills.length < 10) {
                     skills[skillName].subSkills.push(value);
                     renderSubSkillList(skillName);
-                    populateSubSkillSelect(skillSelect.value); // Actualizar desplegable de entrenamiento
+                    populateSubSkillSelect(skillSelect.value);
                     input.value = '';
                 }
             }
@@ -300,7 +309,7 @@
                 const index = parseInt(target.getAttribute('data-index'));
                 skills[skillName].subSkills.splice(index, 1);
                 renderSubSkillList(skillName);
-                populateSubSkillSelect(skillSelect.value); // Actualizar desplegable de entrenamiento
+                populateSubSkillSelect(skillSelect.value);
             }
         });
     }
@@ -382,19 +391,39 @@
             const response = await gapi.client.drive.files.get({ fileId: fileId, alt: 'media' });
             const loadedSkills = JSON.parse(response.body);
             if (loadedSkills && typeof loadedSkills === 'object') {
+                // FUNCIÓN DE MIGRACIÓN DE DATOS
                 const hydratedSkills = JSON.parse(JSON.stringify(initialSkills));
-                for (const skillName in hydratedSkills) {
-                    if (loadedSkills[skillName]) {
-                        hydratedSkills[skillName].xp = loadedSkills[skillName].xp || 0;
-                        hydratedSkills[skillName].level = loadedSkills[skillName].level || 1;
-                        hydratedSkills[skillName].subSkills = loadedSkills[skillName].subSkills || [];
+                let migrationApplied = false;
+                
+                for (const savedSkillName in loadedSkills) {
+                    let targetSkillName = savedSkillName;
+
+                    // 1. Verificar si el nombre antiguo está en el mapa de migración
+                    if (MIGRATION_MAP[savedSkillName]) {
+                        targetSkillName = MIGRATION_MAP[savedSkillName];
+                        migrationApplied = true;
+                    }
+                    
+                    // 2. Si el nombre (nuevo o antiguo) existe en la plantilla actual, copiar el progreso
+                    if (hydratedSkills[targetSkillName]) {
+                        const savedData = loadedSkills[savedSkillName];
+                        hydratedSkills[targetSkillName].xp = savedData.xp || 0;
+                        hydratedSkills[targetSkillName].level = savedData.level || 1;
+                        hydratedSkills[targetSkillName].subSkills = savedData.subSkills || [];
                     }
                 }
+                
                 skills = hydratedSkills;
-
-                updateDisplay(); populateSelect(); renderDescriptionPage();
-                statusDiv.textContent = '¡Progreso cargado desde Drive!'; addLogEntry('📂 Progreso cargado.');
-            } else { throw new Error("Invalid data format in Drive file."); }
+                
+                updateDisplay(); 
+                populateSelect(); 
+                renderDescriptionPage();
+                statusDiv.textContent = '¡Progreso cargado desde Drive!'; 
+                addLogEntry('📂 Progreso cargado.');
+                if (migrationApplied) {
+                    addLogEntry('✨ ¡Datos migrados a la nueva versión! Guarda para actualizar el archivo.', 'level-up');
+                }
+            } else { throw new Error("Formato de datos inválido en el archivo de Drive."); }
         } catch (err) { statusDiv.textContent = `Error al cargar: ${err.message}`; addLogEntry(`❌ Error al cargar: ${err.message}`, 'level-up'); }
     };
 
@@ -422,7 +451,7 @@
     }
     function populateSubSkillSelect(selectedSkill) {
         subSkillSelect.innerHTML = '';
-        if (skills[selectedSkill] && skills[selectedSkill].subSkills.length > 0) {
+        if (skills[selectedSkill] && skills[selectedSkill].subSkills && skills[selectedSkill].subSkills.length > 0) {
             skills[selectedSkill].subSkills.forEach(subSkill => {
                 const option = document.createElement('option');
                 option.value = subSkill;
@@ -480,3 +509,4 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
+�
