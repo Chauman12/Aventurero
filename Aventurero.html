@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Aventurero v3 (Google Drive)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        body {
+            background-color: #1e1e2f; color: #dcdcdc; font-family: 'Press Start 2P', cursive;
+            display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap; padding: 20px; gap: 20px;
+        }
+        .container {
+            border: 3px solid #4f4f6f; background-color: #2a2a40; padding: 20px;
+            width: 100%; max-width: 450px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border-radius: 8px;
+        }
+        h1, h2 {
+            color: #ffdd57; text-align: center; border-bottom: 2px solid #4f4f6f;
+            padding-bottom: 10px; margin-top: 0; font-size: 1.5em; text-shadow: 2px 2px #c23616;
+        }
+        h2 { font-size: 1.2em; }
+        label { display: block; margin-bottom: 8px; color: #a0a0c0; font-size: 0.8em; }
+        select, input[type="number"] {
+            width: 100%; padding: 12px; margin-bottom: 15px; background-color: #1e1e2f;
+            color: #dcdcdc; border: 2px solid #4f4f6f; border-radius: 4px;
+            font-family: inherit; font-size: 0.9em; box-sizing: border-box;
+        }
+        button {
+            width: 100%; padding: 12px; margin-bottom: 10px; color: #fff; font-weight: bold;
+            cursor: pointer; border: none; border-radius: 4px; font-family: inherit;
+            transition: all 0.1s ease-in-out;
+        }
+        #register-btn {
+            background: linear-gradient(145deg, #4a90e2, #3a7ac8); border-bottom: 4px solid #2a5a9a;
+        }
+        .gdrive-btn { background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
+        button:disabled { background-color: #555; border-bottom-color: #444; color: #888; cursor: not-allowed; }
+        .skills-panel ul, .log-panel ul { list-style: none; padding: 0; max-height: 350px; overflow-y: auto; }
+        .skills-panel li {
+            background-color: #33334f; padding: 10px 15px; margin-bottom: 6px; border-left: 5px solid #ffdd57;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; border-radius: 4px;
+        }
+        .skill-icon { margin-right: 10px; }
+        .log-panel li {
+            background-color: #33334f; padding: 8px 12px; margin-bottom: 5px; border-left: 5px solid #4a90e2;
+            font-size: 0.7em; border-radius: 4px;
+        }
+        .level-up { color: #32ff7e; font-weight: bold; text-align: center; font-size: 0.8em !important; border-left-color: #32ff7e !important; }
+        #gdrive-status { text-align: center; font-size: 0.7em; padding: 10px; color: #a0a0c0; min-height: 20px; }
+        .progress-bar-bg { background-color: #1e1e2f; border-radius: 5px; height: 10px; width: 100px; border: 1px solid #4f4f6f; }
+        .progress-bar-fg { background-color: #32ff7e; height: 100%; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <!-- Main App Container -->
+    <div class="container">
+        <h1>Panel de Aventurero</h1>
+        <div class="input-section">
+            <label for="skill-select">Habilidad Entrenada:</label>
+            <select id="skill-select"></select>
+            <label for="time-input">Minutos de práctica:</label>
+            <input type="number" id="time-input" min="1" placeholder="Ej: 30">
+            <button id="register-btn">Registrar XP</button>
+        </div>
+        <hr style="border-color: #4f4f6f;">
+        <div class="gdrive-section">
+            <div id="gdrive-status">Inicia sesión para sincronizar con Google Drive.</div>
+            <button id="auth-btn">Iniciar Sesión con Google</button>
+            <button id="save-drive-btn" class="gdrive-btn" disabled>Guardar en Drive</button>
+            <button id="load-drive-btn" class="gdrive-btn" disabled>Cargar desde Drive</button>
+        </div>
+    </div>
+
+    <!-- Skills and Log Container -->
+    <div class="container" style="max-width: 600px;">
+        <div class="skills-panel">
+            <h2>Habilidades</h2>
+            <ul id="skills-list"></ul>
+        </div>
+        <div class="log-panel" style="margin-top: 20px;">
+            <h2>Registro de Actividades</h2>
+            <ul id="log-list"></ul>
+        </div>
+    </div>
+
+    <!-- Google API Script -->
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+    <script>
+    // ===================================================================================
+    // ================== PASO 1: CONFIGURACIÓN DE GOOGLE DRIVE API ======================
+    // ===================================================================================
+    // REEMPLAZA ESTOS VALORES CON LAS CREDENCIALES QUE CREASTE EN GOOGLE CLOUD CONSOLE
+    // -----------------------------------------------------------------------------------
+    const CLIENT_ID = '432634777489-acq7bb59h2ggc223oafccitlvskvqh6p.apps.googleusercontent.com';
+    const API_KEY = 'AIzaSyB17ehizwOK9efPy7Bo7Zss2zveYSVhwE8';
+    // -----------------------------------------------------------------------------------
+
+    const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+    const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+    const FILENAME = 'progreso_agenda.json';
+
+    let tokenClient;
+    let gapiInited = false;
+    let gisInited = false;
+
+    // Element references
+    const authBtn = document.getElementById('auth-btn');
+    const saveBtn = document.getElementById('save-drive-btn');
+    const loadBtn = document.getElementById('load-drive-btn');
+    const statusDiv = document.getElementById('gdrive-status');
+    const skillSelect = document.getElementById('skill-select');
+    const timeInput = document.getElementById('time-input');
+    const registerBtn = document.getElementById('register-btn');
+    const skillsList = document.getElementById('skills-list');
+    const logList = document.getElementById('log-list');
+
+    // ===================================================================================
+    // =========================== GOOGLE API INITIALIZATION ===========================
+    // ===================================================================================
+
+    function gapiLoaded() {
+        gapi.load('client', initializeGapiClient);
+    }
+
+    async function initializeGapiClient() {
+        await gapi.client.init({
+            apiKey: API_KEY,
+            discoveryDocs: DISCOVERY_DOCS,
+        });
+        gapiInited = true;
+        maybeEnableButtons();
+    }
+
+    function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
+            scope: SCOPES,
+            callback: '', // defined later
+        });
+        gisInited = true;
+        maybeEnableButtons();
+    }
+
+    function maybeEnableButtons() {
+        if (gapiInited && gisInited) {
+            authBtn.style.display = 'block';
+        }
+    }
+
+    authBtn.onclick = () => handleAuthClick();
+
+    function handleAuthClick() {
+        tokenClient.callback = async (resp) => {
+            if (resp.error !== undefined) {
+                throw (resp);
+            }
+            authBtn.textContent = 'Refrescar Sesión';
+            saveBtn.disabled = false;
+            loadBtn.disabled = false;
+            statusDiv.textContent = '¡Sesión iniciada! Listo para sincronizar.';
+            // La línea 'await listFiles()' ha sido removida de aquí.
+        };
+
+        if (gapi.client.getToken() === null) {
+            tokenClient.requestAccessToken({prompt: 'consent'});
+        } else {
+            tokenClient.requestAccessToken({prompt: ''});
+        }
+    }
+
+    // ===================================================================================
+    // ========================= GOOGLE DRIVE CORE FUNCTIONS ===========================
+    // ===================================================================================
+    
+    async function findFileId() {
+        try {
+            const response = await gapi.client.drive.files.list({
+                'q': `name='${FILENAME}' and trashed=false`,
+                'fields': 'files(id, name)',
+                'spaces': 'drive'
+            });
+            if (response.result.files && response.result.files.length > 0) {
+                return response.result.files[0].id;
+            } else {
+                return null;
+            }
+        } catch (err) {
+            addLogEntry(`Error buscando archivo: ${err.message}`, 'level-up');
+            return null;
+        }
+    }
+
+    saveBtn.onclick = async () => {
+        statusDiv.textContent = 'Guardando en Google Drive...';
+        const fileId = await findFileId();
+        const fileContent = JSON.stringify(skills, null, 2);
+
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        let metadata;
+        let requestBody;
+
+        if (fileId) { // File exists, update it
+            metadata = { 'mimeType': 'application/json' };
+            requestBody = delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                JSON.stringify(metadata) +
+                delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                fileContent +
+                close_delim;
+            
+            const request = gapi.client.request({
+                'path': `/upload/drive/v3/files/${fileId}`,
+                'method': 'PATCH',
+                'params': { 'uploadType': 'multipart' },
+                'headers': { 'Content-Type': 'multipart/related; boundary="' + boundary + '"' },
+                'body': requestBody
+            });
+            
+            request.execute(() => {
+                statusDiv.textContent = '¡Progreso guardado en Drive!';
+                addLogEntry('💾 Progreso guardado en la nube.');
+            });
+        } else { // File does not exist, create it
+            metadata = {
+                'name': FILENAME,
+                'mimeType': 'application/json',
+            };
+            requestBody = delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                JSON.stringify(metadata) +
+                delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                fileContent +
+                close_delim;
+
+            const createRequest = gapi.client.request({
+                'path': '/upload/drive/v3/files',
+                'method': 'POST',
+                'params': { 'uploadType': 'multipart' },
+                'headers': { 'Content-Type': 'multipart/related; boundary="' + boundary + '"' },
+                'body': requestBody
+            });
+            createRequest.execute(() => {
+                statusDiv.textContent = '¡Archivo creado y guardado en Drive!';
+                addLogEntry('💾 Archivo de progreso creado en Drive.');
+            });
+        }
+    };
+
+    loadBtn.onclick = async () => {
+        statusDiv.textContent = 'Cargando desde Google Drive...';
+        const fileId = await findFileId();
+        if (!fileId) {
+            statusDiv.textContent = 'No se encontró archivo de progreso en Drive.';
+            addLogEntry('⚠️ No se encontró archivo en la nube.', 'level-up');
+            return;
+        }
+
+        try {
+            const response = await gapi.client.drive.files.get({
+                fileId: fileId,
+                alt: 'media'
+            });
+            const loadedSkills = JSON.parse(response.body);
+            // Data integrity check
+            if (loadedSkills && typeof loadedSkills === 'object') {
+                skills = loadedSkills;
+                updateDisplay();
+                populateSelect(); // Repopulate in case of new skills from a different client
+                statusDiv.textContent = '¡Progreso cargado desde Drive!';
+                addLogEntry('📂 Progreso cargado desde la nube.');
+            } else {
+                 throw new Error("Invalid data format in Drive file.");
+            }
+        } catch (err) {
+            statusDiv.textContent = `Error al cargar: ${err.message}`;
+            addLogEntry(`❌ Error al cargar: ${err.message}`, 'level-up');
+        }
+    };
+    
+    // ===================================================================================
+    // ============================= CORE APP LOGIC ======================================
+    // ===================================================================================
+    let skills = {};
+    const initialSkills = {
+        'Ataque (Carrera)':        { xp: 0, level: 1, icon: '⚔️' },
+        'Fuerza (Fitness)':        { xp: 0, level: 1, icon: '💪' },
+        'Defensa (Finanzas)':      { xp: 0, level: 1, icon: '🛡️' },
+        'Constitución (Salud)':    { xp: 0, level: 1, icon: '❤️' },
+        'Agilidad (Cardio)':       { xp: 0, level: 1, icon: '🏃' },
+        'Magia (Social)':          { xp: 0, level: 1, icon: '✨' },
+        'Oración (Mindfulness)':   { xp: 0, level: 1, icon: '🧘' },
+        'Herbología (Nutrición)':  { xp: 0, level: 1, icon: '🌿' },
+        'Cocina (Práctica)':       { xp: 0, level: 1, icon: '🍳' },
+        'Herrería (Estudio)':      { xp: 0, level: 1, icon: '📚' },
+        'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡' }
+    };
+    skills = JSON.parse(JSON.stringify(initialSkills)); // Start with initial skills
+
+    const XP_PER_15_MINS = 100;
+
+    function getLevelFromXp(xp) {
+        let level = 1;
+        while (true) {
+            let xpForNextLevel = Math.pow(level, 2) * 1000;
+            if (xp < xpForNextLevel) return level;
+            level++;
+            if (level > 200) return 200; 
+        }
+    }
+
+    function updateDisplay() {
+        skillsList.innerHTML = '';
+        const sortedSkills = Object.entries(skills).sort(([,a],[,b]) => b.xp - a.xp);
+        for (const [skillName, skill] of sortedSkills) {
+            const li = document.createElement('li');
+            const xpForCurrentLevel = skill.level > 1 ? Math.pow(skill.level - 1, 2) * 1000 : 0;
+            const xpForNextLevel = Math.pow(skill.level, 2) * 1000;
+            const xpInCurrentLevel = skill.xp - xpForCurrentLevel;
+            const xpNeededForLevel = xpForNextLevel - xpForCurrentLevel;
+            const progressPercentage = (xpInCurrentLevel / xpNeededForLevel) * 100;
+            
+            li.innerHTML = `
+                <div style="flex-grow: 1;">
+                    <span><span class="skill-icon">${skill.icon || '❔'}</span>${skillName}</span>
+                    <div style="font-size: 0.8em; color: #a0a0c0;">Lvl: ${skill.level} (${skill.xp.toLocaleString()} XP)</div>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${progressPercentage}%;"></div></div>`;
+            skillsList.appendChild(li);
+        }
+    }
+
+    function populateSelect() {
+        skillSelect.innerHTML = '';
+        const skillNames = Object.keys(skills);
+        skillNames.sort();
+        for (const skillName of skillNames) {
+            const option = document.createElement('option');
+            option.value = skillName;
+            option.textContent = skillName;
+            skillSelect.appendChild(option);
+        }
+    }
+
+    function addLogEntry(message, type = '') {
+        const logEntry = document.createElement('li');
+        logEntry.textContent = message;
+        if (type) logEntry.classList.add(type);
+        logList.prepend(logEntry);
+        if (logList.children.length > 20) logList.removeChild(logList.lastChild);
+    }
+
+    registerBtn.addEventListener('click', () => {
+        const selectedSkill = skillSelect.value;
+        const timeSpent = parseInt(timeInput.value);
+        if (!selectedSkill || isNaN(timeSpent) || timeSpent <= 0) {
+            addLogEntry('Entrada inválida. Revisa los datos.', 'level-up');
+            return;
+        }
+        const xpGained = Math.floor((timeSpent / 15) * XP_PER_15_MINS);
+        const skillData = skills[selectedSkill];
+        const oldLevel = skillData.level;
+        skillData.xp += xpGained;
+        skillData.level = getLevelFromXp(skillData.xp);
+        addLogEntry(`+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill} (${timeSpent} min).`);
+        if (skillData.level > oldLevel) {
+            addLogEntry(`¡Felicidades! ¡Has avanzado a Nivel ${skillData.level} en ${selectedSkill}!`, 'level-up');
+        }
+        timeInput.value = '';
+        updateDisplay();
+    });
+
+    window.onload = () => {
+        populateSelect();
+        updateDisplay();
+        addLogEntry('¡Bienvenido, aventurero! Inicia sesión para empezar.');
+    };
+    </script>
+</body>
+</html>
