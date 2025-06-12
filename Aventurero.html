@@ -147,7 +147,6 @@
             <!-- Página de Descripción de Habilidades -->
             <div id="page-descripcion" class="page-content">
                 <div class="container description-content">
-                    <h1>Descripción de Habilidades</h1>
                     <!-- El contenido se generará dinámicamente con JavaScript -->
                 </div>
             </div>
@@ -175,7 +174,7 @@
         'Herbología (Nutrición)': { xp: 0, level: 1, icon: '🌿', subSkills: [], img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'apoyo', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
         'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'apoyo', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
         'Pesca (Hobbies)': { xp: 0, level: 1, icon: '🎣', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🎣', category: 'apoyo', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo.' },
-        'Herrería (Estudio)': { xp: 0, level: 1, icon: '�', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.' },
+        'Herrería (Estudio)': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=�', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.' },
         'Creación (Proyectos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido.' },
         'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY).'},
         'Disciplina (Hábitos)': { xp: 0, level: 1, icon: '🔥', subSkills: [], img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina.' }
@@ -191,7 +190,7 @@
     const loadBtn = document.getElementById('load-drive-btn');
     const statusDiv = document.getElementById('gdrive-status');
     const skillSelect = document.getElementById('skill-select');
-    const subSkillSelect = document.getElementById('subskill-select'); // NUEVO
+    const subSkillSelect = document.getElementById('subskill-select');
     const timeInput = document.getElementById('time-input');
     const registerBtn = document.getElementById('register-btn');
     const skillsList = document.getElementById('skills-list');
@@ -218,32 +217,80 @@
     // ===================== LÓGICA DE LA PÁGINA DE DESCRIPCIÓN ========================
     // ===================================================================================
     function renderDescriptionPage() {
-        descriptionContainer.innerHTML = '<h1>Descripción de Habilidades</h1>';
-        const categories = { combate: 'Habilidades de "Combate"', apoyo: 'Habilidades de "Apoyo"', artesania: 'Habilidades de "Artesanía"' };
+        descriptionContainer.innerHTML = '';
+        const mainTitle = document.createElement('h1');
+        mainTitle.textContent = 'Descripción de Habilidades';
+        descriptionContainer.appendChild(mainTitle);
+
+        const categories = {
+            combate: 'Habilidades de "Combate"',
+            apoyo: 'Habilidades de "Apoyo"',
+            artesania: 'Habilidades de "Artesanía"'
+        };
+
         for (const categoryId in categories) {
             const categoryTitle = document.createElement('h3');
             categoryTitle.textContent = categories[categoryId];
             descriptionContainer.appendChild(categoryTitle);
+            
             const categoryList = document.createElement('ul');
+            
             for (const skillName in skills) {
                 if (skills[skillName].category === categoryId) {
                     const skill = skills[skillName];
                     const item = document.createElement('li');
                     item.className = 'description-item';
                     item.setAttribute('data-skill', skillName);
-                    item.innerHTML = `
-                        <div class="description-header">
-                            <img src="${skill.img}" alt="Icono de ${skillName}" class="description-img">
-                            <div><strong>${skillName}:</strong> ${skill.description}</div>
-                        </div>
-                        <div class="subskill-container">
-                            <h4>Habilidades Concretas:</h4>
-                            <ul class="subskill-list"></ul>
-                            <div class="subskill-input-group">
-                                <input type="text" placeholder="Añadir nueva habilidad..." maxlength="50">
-                                <button class="add-subskill-btn">+</button>
-                            </div>
-                        </div>`;
+
+                    // Se construye el elemento paso a paso para evitar errores
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'description-header';
+
+                    const img = document.createElement('img');
+                    img.src = skill.img;
+                    img.alt = `Icono de ${skillName}`;
+                    img.className = 'description-img';
+
+                    const textDiv = document.createElement('div');
+                    const strong = document.createElement('strong');
+                    strong.textContent = `${skillName}:`;
+                    textDiv.appendChild(strong);
+                    textDiv.append(` ${skill.description}`);
+
+                    headerDiv.appendChild(img);
+                    headerDiv.appendChild(textDiv);
+
+                    const subskillContainerDiv = document.createElement('div');
+                    subskillContainerDiv.className = 'subskill-container';
+
+                    const subskillTitle = document.createElement('h4');
+                    subskillTitle.textContent = 'Habilidades Concretas:';
+
+                    const subskillList = document.createElement('ul');
+                    subskillList.className = 'subskill-list';
+
+                    const inputGroupDiv = document.createElement('div');
+                    inputGroupDiv.className = 'subskill-input-group';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.placeholder = 'Añadir nueva habilidad...';
+                    input.maxLength = 50;
+
+                    const addButton = document.createElement('button');
+                    addButton.className = 'add-subskill-btn';
+                    addButton.textContent = '+';
+
+                    inputGroupDiv.appendChild(input);
+                    inputGroupDiv.appendChild(addButton);
+
+                    subskillContainerDiv.appendChild(subskillTitle);
+                    subskillContainerDiv.appendChild(subskillList);
+                    subskillContainerDiv.appendChild(inputGroupDiv);
+
+                    item.appendChild(headerDiv);
+                    item.appendChild(subskillContainerDiv);
+
                     categoryList.appendChild(item);
                 }
             }
@@ -252,6 +299,7 @@
         renderAllSubSkillLists();
         addDescriptionPageListeners();
     }
+    
     function renderSubSkillList(skillName) {
         const listElement = document.querySelector(`.description-item[data-skill="${skillName}"] .subskill-list`);
         if (!listElement) return;
@@ -396,10 +444,8 @@
     function populateSelect() {
         skillSelect.innerHTML = ''; const skillNames = Object.keys(skills); skillNames.sort();
         for (const skillName of skillNames) { const option = document.createElement('option'); option.value = skillName; option.textContent = skillName; skillSelect.appendChild(option); }
-        // NUEVO: Llamar a la función para poblar sub-habilidades después de poblar las principales
         populateSubSkillSelect(skillSelect.value);
     }
-    // NUEVA FUNCIÓN para poblar el desplegable de sub-habilidades
     function populateSubSkillSelect(selectedSkill) {
         subSkillSelect.innerHTML = '';
         if (skills[selectedSkill] && skills[selectedSkill].subSkills.length > 0) {
@@ -418,7 +464,6 @@
             subSkillSelect.disabled = true;
         }
     }
-    // NUEVO: Evento para cuando cambia la habilidad principal
     skillSelect.addEventListener('change', (e) => {
         populateSubSkillSelect(e.target.value);
     });
@@ -429,13 +474,12 @@
     }
     registerBtn.addEventListener('click', () => {
         const selectedSkill = skillSelect.value;
-        const selectedSubSkill = subSkillSelect.value; // NUEVO
+        const selectedSubSkill = subSkillSelect.value;
         const timeSpent = parseInt(timeInput.value);
         if (!selectedSkill || isNaN(timeSpent) || timeSpent <= 0) { addLogEntry('Entrada inválida.', 'level-up'); return; }
         const xpGained = Math.floor((timeSpent / 15) * XP_PER_15_MINS); const skillData = skills[selectedSkill];
         const oldLevel = skillData.level; skillData.xp += xpGained; skillData.level = getLevelFromXp(skillData.xp);
         
-        // MODIFICADO: Mensaje de registro más detallado
         let logMessage = `+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill}`;
         if (selectedSubSkill && !subSkillSelect.disabled) {
             logMessage += ` (${selectedSubSkill})`;
