@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v5 (SPA)</title>
+    <title>Panel de Aventurero v6 (SPA)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         body {
@@ -118,8 +118,12 @@
                 <div class="container">
                     <h1>Panel de Aventurero</h1>
                     <div class="input-section">
-                        <label for="skill-select">Habilidad Entrenada:</label>
+                        <label for="skill-select">Habilidad General:</label>
                         <select id="skill-select"></select>
+                        
+                        <label for="subskill-select">Habilidad Concreta:</label>
+                        <select id="subskill-select"></select>
+
                         <label for="time-input">Minutos de práctica:</label>
                         <input type="number" id="time-input" min="1" placeholder="Ej: 30">
                         <button id="register-btn">Registrar XP</button>
@@ -171,7 +175,7 @@
         'Herbología (Nutrición)': { xp: 0, level: 1, icon: '🌿', subSkills: [], img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'apoyo', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
         'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'apoyo', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
         'Pesca (Hobbies)': { xp: 0, level: 1, icon: '🎣', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🎣', category: 'apoyo', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo.' },
-        'Herrería (Estudio)': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.' },
+        'Herrería (Estudio)': { xp: 0, level: 1, icon: '�', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.' },
         'Creación (Proyectos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido.' },
         'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY).'},
         'Disciplina (Hábitos)': { xp: 0, level: 1, icon: '🔥', subSkills: [], img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina.' }
@@ -187,6 +191,7 @@
     const loadBtn = document.getElementById('load-drive-btn');
     const statusDiv = document.getElementById('gdrive-status');
     const skillSelect = document.getElementById('skill-select');
+    const subSkillSelect = document.getElementById('subskill-select'); // NUEVO
     const timeInput = document.getElementById('time-input');
     const registerBtn = document.getElementById('register-btn');
     const skillsList = document.getElementById('skills-list');
@@ -213,27 +218,19 @@
     // ===================== LÓGICA DE LA PÁGINA DE DESCRIPCIÓN ========================
     // ===================================================================================
     function renderDescriptionPage() {
-        descriptionContainer.innerHTML = '<h1>Descripción de Habilidades</h1>'; // Limpiar y añadir título
-        const categories = {
-            combate: 'Habilidades de "Combate"',
-            apoyo: 'Habilidades de "Apoyo"',
-            artesania: 'Habilidades de "Artesanía"'
-        };
-
+        descriptionContainer.innerHTML = '<h1>Descripción de Habilidades</h1>';
+        const categories = { combate: 'Habilidades de "Combate"', apoyo: 'Habilidades de "Apoyo"', artesania: 'Habilidades de "Artesanía"' };
         for (const categoryId in categories) {
             const categoryTitle = document.createElement('h3');
             categoryTitle.textContent = categories[categoryId];
             descriptionContainer.appendChild(categoryTitle);
-            
             const categoryList = document.createElement('ul');
-            
             for (const skillName in skills) {
                 if (skills[skillName].category === categoryId) {
                     const skill = skills[skillName];
                     const item = document.createElement('li');
                     item.className = 'description-item';
                     item.setAttribute('data-skill', skillName);
-
                     item.innerHTML = `
                         <div class="description-header">
                             <img src="${skill.img}" alt="Icono de ${skillName}" class="description-img">
@@ -246,8 +243,7 @@
                                 <input type="text" placeholder="Añadir nueva habilidad..." maxlength="50">
                                 <button class="add-subskill-btn">+</button>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                     categoryList.appendChild(item);
                 }
             }
@@ -256,7 +252,6 @@
         renderAllSubSkillLists();
         addDescriptionPageListeners();
     }
-    
     function renderSubSkillList(skillName) {
         const listElement = document.querySelector(`.description-item[data-skill="${skillName}"] .subskill-list`);
         if (!listElement) return;
@@ -267,21 +262,15 @@
             listElement.appendChild(li);
         });
     }
-
     function renderAllSubSkillLists() {
-        for (const skillName in skills) {
-            renderSubSkillList(skillName);
-        }
+        for (const skillName in skills) { renderSubSkillList(skillName); }
     }
-
     function addDescriptionPageListeners() {
         descriptionContainer.addEventListener('click', (e) => {
             const target = e.target;
             const parentItem = target.closest('.description-item');
             if (!parentItem) return;
             const skillName = parentItem.getAttribute('data-skill');
-
-            // Botón de añadir
             if (target.classList.contains('add-subskill-btn')) {
                 const input = parentItem.querySelector('input[type="text"]');
                 const value = input.value.trim();
@@ -291,8 +280,6 @@
                     input.value = '';
                 }
             }
-
-            // Botón de eliminar
             if (target.classList.contains('delete-subskill-btn')) {
                 const index = parseInt(target.getAttribute('data-index'));
                 skills[skillName].subSkills.splice(index, 1);
@@ -310,16 +297,13 @@
     let tokenClient;
     let gapiInited = false;
     let gisInited = false;
-
     function gapiLoaded() { gapi.load('client', initializeGapiClient); }
     async function initializeGapiClient() {
         await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS, });
         gapiInited = true; maybeEnableButtons();
     }
     function gisLoaded() {
-        tokenClient = google.accounts.oauth2.initTokenClient({
-            client_id: CLIENT_ID, scope: SCOPES, callback: '',
-        });
+        tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: '', });
         gisInited = true; maybeEnableButtons();
     }
     function maybeEnableButtons() { if (gapiInited && gisInited) { authBtn.style.display = 'block'; } }
@@ -343,9 +327,7 @@
     // ===================================================================================
     async function findFileId() {
         try {
-            const response = await gapi.client.drive.files.list({
-                'q': `name='${FILENAME}' and trashed=false`, 'fields': 'files(id, name)', 'spaces': 'drive'
-            });
+            const response = await gapi.client.drive.files.list({ 'q': `name='${FILENAME}' and trashed=false`, 'fields': 'files(id, name)', 'spaces': 'drive' });
             return response.result.files && response.result.files.length > 0 ? response.result.files[0].id : null;
         } catch (err) { addLogEntry(`Error buscando archivo: ${err.message}`, 'level-up'); return null; }
     }
@@ -378,27 +360,18 @@
     loadBtn.onclick = async () => {
         statusDiv.textContent = 'Cargando desde Google Drive...';
         const fileId = await findFileId();
-        if (!fileId) {
-            statusDiv.textContent = 'No se encontró archivo de progreso.'; addLogEntry('⚠️ No se encontró archivo.', 'level-up'); return;
-        }
+        if (!fileId) { statusDiv.textContent = 'No se encontró archivo de progreso.'; addLogEntry('⚠️ No se encontró archivo.', 'level-up'); return; }
         try {
             const response = await gapi.client.drive.files.get({ fileId: fileId, alt: 'media' });
             const loadedSkills = JSON.parse(response.body);
             if (loadedSkills && typeof loadedSkills === 'object') {
                 skills = loadedSkills;
-                // Lógica de compatibilidad para datos guardados antiguos
                 for (const skillName in initialSkills) {
-                    if (!skills[skillName]) { // Si se añade una habilidad nueva en el código
-                        skills[skillName] = initialSkills[skillName];
-                    } else if (!skills[skillName].subSkills) { // Si el guardado no tiene subSkills
-                        skills[skillName].subSkills = [];
-                    }
+                    if (!skills[skillName]) { skills[skillName] = initialSkills[skillName]; } 
+                    else if (!skills[skillName].subSkills) { skills[skillName].subSkills = []; }
                 }
-                updateDisplay(); 
-                populateSelect();
-                renderDescriptionPage(); // Re-render descripción con los datos cargados
-                statusDiv.textContent = '¡Progreso cargado desde Drive!'; 
-                addLogEntry('📂 Progreso cargado.');
+                updateDisplay(); populateSelect(); renderDescriptionPage();
+                statusDiv.textContent = '¡Progreso cargado desde Drive!'; addLogEntry('📂 Progreso cargado.');
             } else { throw new Error("Invalid data format in Drive file."); }
         } catch (err) { statusDiv.textContent = `Error al cargar: ${err.message}`; addLogEntry(`❌ Error al cargar: ${err.message}`, 'level-up'); }
     };
@@ -423,17 +396,53 @@
     function populateSelect() {
         skillSelect.innerHTML = ''; const skillNames = Object.keys(skills); skillNames.sort();
         for (const skillName of skillNames) { const option = document.createElement('option'); option.value = skillName; option.textContent = skillName; skillSelect.appendChild(option); }
+        // NUEVO: Llamar a la función para poblar sub-habilidades después de poblar las principales
+        populateSubSkillSelect(skillSelect.value);
     }
+    // NUEVA FUNCIÓN para poblar el desplegable de sub-habilidades
+    function populateSubSkillSelect(selectedSkill) {
+        subSkillSelect.innerHTML = '';
+        if (skills[selectedSkill] && skills[selectedSkill].subSkills.length > 0) {
+            skills[selectedSkill].subSkills.forEach(subSkill => {
+                const option = document.createElement('option');
+                option.value = subSkill;
+                option.textContent = subSkill;
+                subSkillSelect.appendChild(option);
+            });
+            subSkillSelect.disabled = false;
+        } else {
+            const option = document.createElement('option');
+            option.textContent = 'Sin habilidades concretas';
+            option.disabled = true;
+            subSkillSelect.appendChild(option);
+            subSkillSelect.disabled = true;
+        }
+    }
+    // NUEVO: Evento para cuando cambia la habilidad principal
+    skillSelect.addEventListener('change', (e) => {
+        populateSubSkillSelect(e.target.value);
+    });
+
     function addLogEntry(message, type = '') {
         const logEntry = document.createElement('li'); logEntry.textContent = message; if (type) logEntry.classList.add(type);
         logList.prepend(logEntry); if (logList.children.length > 20) logList.removeChild(logList.lastChild);
     }
     registerBtn.addEventListener('click', () => {
-        const selectedSkill = skillSelect.value; const timeSpent = parseInt(timeInput.value);
+        const selectedSkill = skillSelect.value;
+        const selectedSubSkill = subSkillSelect.value; // NUEVO
+        const timeSpent = parseInt(timeInput.value);
         if (!selectedSkill || isNaN(timeSpent) || timeSpent <= 0) { addLogEntry('Entrada inválida.', 'level-up'); return; }
         const xpGained = Math.floor((timeSpent / 15) * XP_PER_15_MINS); const skillData = skills[selectedSkill];
         const oldLevel = skillData.level; skillData.xp += xpGained; skillData.level = getLevelFromXp(skillData.xp);
-        addLogEntry(`+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill} (${timeSpent} min).`);
+        
+        // MODIFICADO: Mensaje de registro más detallado
+        let logMessage = `+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill}`;
+        if (selectedSubSkill && !subSkillSelect.disabled) {
+            logMessage += ` (${selectedSubSkill})`;
+        }
+        logMessage += ` (${timeSpent} min).`;
+        addLogEntry(logMessage);
+
         if (skillData.level > oldLevel) { addLogEntry(`¡Nivel ${skillData.level} en ${selectedSkill}!`, 'level-up'); }
         timeInput.value = ''; updateDisplay();
     });
@@ -453,3 +462,4 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
+�
