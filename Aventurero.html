@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v6 (SPA)</title>
+    <title>Panel de Aventurero v7 (SPA)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         body {
@@ -161,23 +161,23 @@
     const API_KEY = 'AIzaSyB17ehizwOK9efPy7Bo7Zss2zveYSVhwE8';
     
     // ===================================================================================
-    // ========================== ESTRUCTURA DE DATOS INICIAL ==========================
+    // ========================== ESTRUCTURA DE DATOS INICIAL (ACTUALIZADA) ==========================
     // ===================================================================================
     const initialSkills = {
-        'Ataque (Carrera)': { xp: 0, level: 1, icon: '⚔️', subSkills: [], img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso.' },
-        'Fuerza (Fitness)': { xp: 0, level: 1, icon: '💪', subSkills: [], img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia.' },
-        'Defensa (Finanzas)': { xp: 0, level: 1, icon: '🛡️', subSkills: [], img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
-        'Constitución (Salud)': { xp: 0, level: 1, icon: '❤️', subSkills: [], img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, mejorar la resistencia general, chequeos médicos.' },
-        'Agilidad (Cardio)': { xp: 0, level: 1, icon: '🏃', subSkills: [], img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Correr, nadar, yoga, ciclismo, estiramientos.' },
-        'Magia (Social)': { xp: 0, level: 1, icon: '✨', subSkills: [], img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional.' },
-        'Oración (Mindfulness)': { xp: 0, level: 1, icon: '🧘', subSkills: [], img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'apoyo', description: 'Meditar, escribir un diario, practicar la gratitud, terapia.' },
-        'Herbología (Nutrición)': { xp: 0, level: 1, icon: '🌿', subSkills: [], img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'apoyo', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
-        'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'apoyo', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
-        'Pesca (Hobbies)': { xp: 0, level: 1, icon: '🎣', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🎣', category: 'apoyo', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo.' },
-        'Herrería (Estudio)': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería.' },
-        'Creación (Proyectos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido.' },
-        'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY).'},
-        'Disciplina (Hábitos)': { xp: 0, level: 1, icon: '🔥', subSkills: [], img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina.' }
+        'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: [], img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
+        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '💪', subSkills: [], img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
+        'Defensa (Finanzas Personales)': { xp: 0, level: 1, icon: '🛡️', subSkills: [], img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
+        'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: [], img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
+        'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: [], img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
+        'Magia (Habilidades Sociales)': { xp: 0, level: 1, icon: '✨', subSkills: [], img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia.' },
+        'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: [], img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias.' },
+        'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: [], img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
+        'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
+        'Hobbies y Relajación': { xp: 0, level: 1, icon: '🎣', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🎣', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
+        'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
+        'Creación (Proyectos Creativos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
+        'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
+        'Grabación de Fuego (Disciplina)': { xp: 0, level: 1, icon: '🔥', subSkills: [], img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina. La clave es la simplicidad y la consistencia.' }
     };
 
     let skills = {};
@@ -223,9 +223,9 @@
         descriptionContainer.appendChild(mainTitle);
 
         const categories = {
-            combate: 'Habilidades de "Combate"',
-            apoyo: 'Habilidades de "Apoyo"',
-            artesania: 'Habilidades de "Artesanía"'
+            combate: 'Habilidades de "Combate" (Proactivas y de Afrontamiento)',
+            autocuidado: 'Habilidades de "Autocuidado"',
+            artesania: 'Habilidades de "Artesanía" (Creación y Conocimiento)'
         };
 
         for (const categoryId in categories) {
@@ -234,6 +234,7 @@
             descriptionContainer.appendChild(categoryTitle);
             
             const categoryList = document.createElement('ul');
+            categoryList.style.padding = '0'; // Reset padding for the UL
             
             for (const skillName in skills) {
                 if (skills[skillName].category === categoryId) {
@@ -268,11 +269,13 @@
         const listElement = document.querySelector(`.description-item[data-skill="${skillName}"] .subskill-list`);
         if (!listElement) return;
         listElement.innerHTML = '';
-        skills[skillName].subSkills.forEach((subSkill, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `<span>${subSkill}</span> <button class="delete-subskill-btn" data-index="${index}">X</button>`;
-            listElement.appendChild(li);
-        });
+        if (skills[skillName] && skills[skillName].subSkills) {
+            skills[skillName].subSkills.forEach((subSkill, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${subSkill}</span> <button class="delete-subskill-btn" data-index="${index}">X</button>`;
+                listElement.appendChild(li);
+            });
+        }
     }
     function renderAllSubSkillLists() {
         for (const skillName in skills) { renderSubSkillList(skillName); }
@@ -286,7 +289,7 @@
             if (target.classList.contains('add-subskill-btn')) {
                 const input = parentItem.querySelector('input[type="text"]');
                 const value = input.value.trim();
-                if (value && skills[skillName].subSkills.length < 10) {
+                if (value && skills[skillName].subSkills.length < 25) {
                     skills[skillName].subSkills.push(value);
                     renderSubSkillList(skillName);
                     populateSubSkillSelect(skillSelect.value); // Actualizar desplegable de entrenamiento
@@ -379,11 +382,9 @@
             const response = await gapi.client.drive.files.get({ fileId: fileId, alt: 'media' });
             const loadedSkills = JSON.parse(response.body);
             if (loadedSkills && typeof loadedSkills === 'object') {
-                // CORRECCIÓN: Lógica de hidratación de datos
-                const hydratedSkills = JSON.parse(JSON.stringify(initialSkills)); // Empezar con la plantilla más nueva
+                const hydratedSkills = JSON.parse(JSON.stringify(initialSkills));
                 for (const skillName in hydratedSkills) {
                     if (loadedSkills[skillName]) {
-                        // Si la habilidad existe en el guardado, se preserva el progreso
                         hydratedSkills[skillName].xp = loadedSkills[skillName].xp || 0;
                         hydratedSkills[skillName].level = loadedSkills[skillName].level || 1;
                         hydratedSkills[skillName].subSkills = loadedSkills[skillName].subSkills || [];
