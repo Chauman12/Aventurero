@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v9.0 (Dashboard Detallado)</title>
+    <title>Panel de Aventurero v9.1 (Migración de Datos)</title>
     <!-- Importación de la librería Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -255,7 +255,7 @@
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                    v9.0 (Dashboard Detallado)
+                    v9.1 (Migración de Datos)
                 </div>
             </div>
         </div>
@@ -317,8 +317,6 @@
     
     //================================================================================//
     //  SECCIÓN 2: ESTRUCTURA DE DATOS INICIAL                                        //
-    //  NUEVA ESTRUCTURA: 'subSkills' es ahora un objeto para almacenar XP por        //
-    //  habilidad concreta. Ejemplo: subSkills: { 'Leer libro': { xp: 120 } }         //
     //================================================================================//
     const initialSkills = {
         'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: {}, img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
@@ -342,7 +340,7 @@
     };
 
     let skills = {};
-    let chartInstances = {}; // Guardará las instancias de los 3 gráficos
+    let chartInstances = {};
     
     //================================================================================//
     //  SECCIÓN 4: REFERENCIAS A ELEMENTOS DEL HTML (DOM)                             //
@@ -448,8 +446,10 @@
 
             if (target.classList.contains('delete-subskill-btn')) {
                 const subSkillNameToDelete = target.getAttribute('data-name');
+                const xpLost = skillData.subSkills[subSkillNameToDelete]?.xp || 0; // Get xp from the subskill to be deleted
                 delete skillData.subSkills[subSkillNameToDelete];
-                skillData.xp = Object.values(skillData.subSkills).reduce((sum, s) => sum + s.xp, 0);
+                skillData.xp -= xpLost; // CORRECTED: Subtract the lost XP from the total.
+                if (skillData.xp < 0) skillData.xp = 0; // Failsafe
                 skillData.level = getLevelFromXp(skillData.xp);
                 renderSubSkillList(skillName);
                 populateSubSkillSelect(skillSelect.value);
@@ -465,6 +465,7 @@
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
     const SCOPES = 'https://www.googleapis.com/auth/drive.file';
     const FILENAME = 'progreso_agenda_v2.json'; // Nombre de archivo nuevo por cambio de estructura
+    const OLD_FILENAME = 'progreso_agenda.json'; // Nombre de archivo antiguo
     let tokenClient;
     let gapiInited = false, gisInited = false;
     
@@ -488,16 +489,20 @@
     //  SECCIÓN 8: FUNCIONES PRINCIPALES DE GOOGLE DRIVE                              //
     //================================================================================//
     
-    async function findFileId() {
+    async function findFileIdByName(name) {
         try {
-            const response = await gapi.client.drive.files.list({ q: `name='${FILENAME}' and trashed=false`, fields: 'files(id, name)', spaces: 'drive' });
+            const response = await gapi.client.drive.files.list({ q: `name='${name}' and trashed=false`, fields: 'files(id, name)', spaces: 'drive' });
             return response.result.files.length > 0 ? response.result.files[0].id : null;
-        } catch (err) { addLogEntry(`Error buscando archivo: ${err.message}`, 'level-up'); return null; }
+        } catch (err) {
+            addLogEntry(`Error buscando archivo: ${err.message}`, 'level-up');
+            return null;
+        }
     }
 
     saveBtn.onclick = async () => {
         statusDiv.textContent = 'Guardando en Google Drive...';
-        const fileId = await findFileId();
+        // Siempre guarda con el nuevo nombre de archivo
+        const fileId = await findFileIdByName(FILENAME);
         const fileContent = JSON.stringify(skills, null, 2);
         const boundary = '-------314159265358979323846';
         const delimiter = `\r\n--${boundary}\r\n`;
@@ -517,26 +522,62 @@
     };
     
     loadBtn.onclick = async () => {
-        statusDiv.textContent = 'Cargando desde Google Drive...';
-        const fileId = await findFileId();
-        if (!fileId) { statusDiv.textContent = 'No se encontró archivo.'; addLogEntry('⚠️ No se encontró archivo.', 'level-up'); return; }
+        statusDiv.textContent = 'Buscando archivo en Google Drive...';
+        
+        let fileId = await findFileIdByName(FILENAME); // Buscar archivo nuevo
+
+        if (!fileId) {
+            statusDiv.textContent = 'Archivo v2 no encontrado, buscando v1...';
+            fileId = await findFileIdByName(OLD_FILENAME); // Si no se encuentra, buscar antiguo
+        }
+
+        if (!fileId) {
+            statusDiv.textContent = 'No se encontró archivo de progreso.';
+            addLogEntry('⚠️ No se encontró archivo.', 'level-up');
+            return;
+        }
+
+        statusDiv.textContent = 'Cargando datos desde Google Drive...';
         try {
             const response = await gapi.client.drive.files.get({ fileId: fileId, alt: 'media' });
             const loadedSkills = JSON.parse(response.body);
             if (loadedSkills && typeof loadedSkills === 'object') {
                 const hydratedSkills = JSON.parse(JSON.stringify(initialSkills));
+                let migrationOccurred = false;
+
                 for (const savedSkillName in loadedSkills) {
                     let targetSkillName = MIGRATION_MAP[savedSkillName] || savedSkillName;
                     if (hydratedSkills[targetSkillName]) {
                         const savedData = loadedSkills[savedSkillName];
-                        hydratedSkills[targetSkillName].subSkills = savedData.subSkills || {};
-                        hydratedSkills[targetSkillName].xp = Object.values(hydratedSkills[targetSkillName].subSkills).reduce((sum, s) => sum + (s.xp || 0), 0);
+                        
+                        hydratedSkills[targetSkillName].xp = savedData.xp || 0;
+
+                        if (Array.isArray(savedData.subSkills)) {
+                            migrationOccurred = true;
+                            const newSubSkills = {};
+                            savedData.subSkills.forEach(name => {
+                                newSubSkills[name] = { xp: 0 };
+                            });
+                            hydratedSkills[targetSkillName].subSkills = newSubSkills;
+                        } else {
+                            hydratedSkills[targetSkillName].subSkills = savedData.subSkills || {};
+                        }
+
                         hydratedSkills[targetSkillName].level = getLevelFromXp(hydratedSkills[targetSkillName].xp);
                     }
                 }
+                
                 skills = hydratedSkills;
-                updateDisplay(); populateSelect(); renderDescriptionPage(); renderDashboardCharts();
-                statusDiv.textContent = '¡Progreso cargado desde Drive!'; addLogEntry('📂 Progreso cargado.');
+                updateDisplay(); 
+                populateSelect(); 
+                renderDescriptionPage(); 
+                renderDashboardCharts();
+                statusDiv.textContent = '¡Progreso cargado desde Drive!'; 
+                addLogEntry('📂 Progreso cargado.');
+
+                if (migrationOccurred) {
+                    addLogEntry('✨ Datos antiguos migrados. Guarda para actualizar al nuevo formato.', 'level-up');
+                }
             } else { throw new Error("Formato de datos inválido."); }
         } catch (err) { statusDiv.textContent = `Error: ${err.message}`; addLogEntry(`❌ Error: ${err.message}`, 'level-up'); }
     };
@@ -577,6 +618,7 @@
             }
 
             if (subSkillsData.length > 0) {
+                subSkillsData.sort((a, b) => a.xp - b.xp); // Ordenar para mejor visualización
                 const categoryTitle = document.createElement('h3');
                 categoryTitle.textContent = categories[categoryId];
                 const chartWrapper = document.createElement('div');
@@ -675,7 +717,7 @@
         const oldLevel = skillData.level;
 
         skillData.subSkills[selectedSubSkill].xp += xpGained;
-        skillData.xp = Object.values(skillData.subSkills).reduce((sum, s) => sum + s.xp, 0);
+        skillData.xp += xpGained; // CORRECTED: Add XP to the total, don't recalculate.
         skillData.level = getLevelFromXp(skillData.xp);
         
         addLogEntry(`+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill} (${selectedSubSkill}) por ${timeSpent} min.`);
