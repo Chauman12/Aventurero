@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v7.6 (SPA)</title>
+    <title>Panel de Aventurero v7.7 (SPA)</title>
     <style>
         /* ==========================================================================
            1. IMPORTACIÓN DE FUENTES E INICIALIZACIÓN
@@ -28,7 +28,7 @@
         body {
             background-color: #1e1e2f;  /* Fondo oscuro para la temática de fantasía/neón. */
             color: #dcdcdc;             /* Color de texto principal (un gris claro) para buena legibilidad. */
-            font-family: 'Press+Start+2P', cursive; /* Establece la fuente retro para toda la app. */
+            font-family: 'Press Start 2P', cursive; /* Establece la fuente retro para toda la app. */
             display: flex;              /* Usa Flexbox para centrar el contenido principal. */
             justify-content: center;    /* Centra el contenido horizontalmente. */
             align-items: flex-start;    /* Alinea el contenido en la parte superior. */
@@ -289,7 +289,7 @@
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                    v7.6 (Añadida documentación exhaustiva del código)
+                    v7.7 (Corregido el inicio de sesión de Google)
                 </div>
             </div>
         </div>
@@ -343,19 +343,19 @@
 
     <script>
     //================================================================================//
-    //   SECCIÓN 1: CONFIGURACIÓN DE ACCESO A GOOGLE DRIVE API                      //
-    //   Estas son las "llaves" que permiten a nuestra app conectarse con Google.   //
-    //   CLIENT_ID identifica nuestra aplicación.                                   //
-    //   API_KEY autoriza el uso de la API de Google Drive.                         //
+    //  SECCIÓN 1: CONFIGURACIÓN DE ACCESO A GOOGLE DRIVE API                         //
+    //  Estas son las "llaves" que permiten a nuestra app conectarse con Google.    //
+    //  CLIENT_ID identifica nuestra aplicación.                                      //
+    //  API_KEY autoriza el uso de la API de Google Drive.                            //
     //================================================================================//
     const CLIENT_ID = '432634777489-acq7bb59h2ggc223oafccitlvskvqh6p.apps.googleusercontent.com';
     const API_KEY = 'AIzaSyB17ehizwOK9efPy7Bo7Zss2zveYSVhwE8';
     
     //================================================================================//
-    //   SECCIÓN 2: ESTRUCTURA DE DATOS INICIAL                                     //
-    //   Este es el "molde" o plantilla para todas las habilidades del juego.       //
-    //   Cuando la app se inicia por primera vez o se resetea, usa esta estructura. //
-    //   Define el nombre, icono, descripción, etc., de cada habilidad.             //
+    //  SECCIÓN 2: ESTRUCTURA DE DATOS INICIAL                                        //
+    //  Este es el "molde" o plantilla para todas las habilidades del juego.          //
+    //  Cuando la app se inicia por primera vez o se resetea, usa esta estructura.    //
+    //  Define el nombre, icono, descripción, etc., de cada habilidad.                //
     //================================================================================//
     const initialSkills = {
         'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: [], img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
@@ -375,10 +375,10 @@
     };
     
     //================================================================================//
-    //   SECCIÓN 3: MAPA DE MIGRACIÓN DE DATOS                                        //
-    //   Esto sirve para actualizar datos de versiones antiguas. Si un usuario       //
-    //   carga un archivo guardado con un nombre de habilidad viejo (ej: "Ataque"), //
-    //   este mapa lo convierte al nombre nuevo (ej: "Avance") sin perder el XP.    //
+    //  SECCIÓN 3: MAPA DE MIGRACIÓN DE DATOS                                         //
+    //  Esto sirve para actualizar datos de versiones antiguas. Si un usuario        //
+    //  carga un archivo guardado con un nombre de habilidad viejo (ej: "Ataque"),    //
+    //  este mapa lo convierte al nombre nuevo (ej: "Avance") sin perder el XP.      //
     //================================================================================//
     const MIGRATION_MAP = {
         "Ataque (Carrera)": "Avance (Formación)",
@@ -396,9 +396,9 @@
     let skills = {};
     
     //================================================================================//
-    //   SECCIÓN 4: REFERENCIAS A ELEMENTOS DEL HTML (DOM)                            //
-    //   Aquí "guardamos" en variables de JavaScript los elementos importantes de la  //
-    //   página (botones, listas, inputs) para poder manipularlos fácilmente.        //
+    //  SECCIÓN 4: REFERENCIAS A ELEMENTOS DEL HTML (DOM)                             //
+    //  Aquí "guardamos" en variables de JavaScript los elementos importantes de la   //
+    //  página (botones, listas, inputs) para poder manipularlos fácilmente.          //
     //================================================================================//
     const authBtn = document.getElementById('auth-btn');
     const saveBtn = document.getElementById('save-drive-btn');
@@ -413,9 +413,9 @@
     const descriptionContainer = document.querySelector('#page-descripcion .description-content');
     
     //================================================================================//
-    //   SECCIÓN 5: LÓGICA DE NAVEGACIÓN (SPA - Single Page Application)              //
-    //   Este código hace que los botones "Entrenamiento", "Misiones" y             //
-    //   "Descripción" muestren su contenido sin que la página web se recargue.     //
+    //  SECCIÓN 5: LÓGICA DE NAVEGACIÓN (SPA - Single Page Application)               //
+    //  Este código hace que los botones "Entrenamiento", "Misiones" y                //
+    //  "Descripción" muestren su contenido sin que la página web se recargue.        //
     //================================================================================//
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page-content');
@@ -444,9 +444,9 @@
     });
 
     //================================================================================//
-    //   SECCIÓN 6: LÓGICA DE LA PÁGINA "DESCRIPCIÓN"                                 //
-    //   Controla todo lo que pasa en la pestaña de descripción: muestra las         //
-    //   habilidades, sus detalles y permite añadir o borrar "Habilidades Concretas".//
+    //  SECCIÓN 6: LÓGICA DE LA PÁGINA "DESCRIPCIÓN"                                  //
+    //  Controla todo lo que pasa en la pestaña de descripción: muestra las           //
+    //  habilidades, sus detalles y permite añadir o borrar "Habilidades Concretas".  //
     //================================================================================//
     
     // Construye y muestra todo el contenido de la página de descripción.
@@ -552,9 +552,9 @@
     }
 
     //================================================================================//
-    //   SECCIÓN 7: INICIALIZACIÓN DE LA API DE GOOGLE                                //
-    //   Este bloque se encarga de cargar y preparar las herramientas de Google      //
-    //   para que podamos usarlas (iniciar sesión, guardar/cargar archivos).        //
+    //  SECCIÓN 7: INICIALIZACIÓN DE LA API DE GOOGLE                                 //
+    //  Este bloque se encarga de cargar y preparar las herramientas de Google        //
+    //  para que podamos usarlas (iniciar sesión, guardar/cargar archivos).           //
     //================================================================================//
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
     const SCOPES = 'https://www.googleapis.com/auth/drive.file'; // Define qué permisos pedimos (acceso a archivos creados por la app).
@@ -590,10 +590,13 @@
         }
     }
     
+    // **CORRECCIÓN**: Añadido el event listener para el botón de autenticación.
+    authBtn.addEventListener('click', handleAuthClick);
+    
     //================================================================================//
-    //   SECCIÓN 8: FUNCIONES PRINCIPALES DE GOOGLE DRIVE                             //
-    //   Aquí está la magia para conectar con la nube. Estas funciones buscan el     //
-    //   archivo de guardado, lo crean si no existe, guardan el progreso y lo cargan.//
+    //  SECCIÓN 8: FUNCIONES PRINCIPALES DE GOOGLE DRIVE                              //
+    //  Aquí está la magia para conectar con la nube. Estas funciones buscan el       //
+    //  archivo de guardado, lo crean si no existe, guardan el progreso y lo cargan.  //
     //================================================================================//
     
     // Busca en Drive si ya existe un archivo con nuestro nombre.
@@ -682,9 +685,9 @@
     };
 
     //================================================================================//
-    //   SECCIÓN 9: LÓGICA CENTRAL DE LA APLICACIÓN (EL "MOTOR" DEL JUEGO)            //
-    //   Este es el corazón del panel. Calcula los niveles, actualiza la lista de   //
-    //   habilidades, rellena los menús desplegables y gestiona el registro de XP.  //
+    //  SECCIÓN 9: LÓGICA CENTRAL DE LA APLICACIÓN (EL "MOTOR" DEL JUEGO)             //
+    //  Este es el corazón del panel. Calcula los niveles, actualiza la lista de      //
+    //  habilidades, rellena los menús desplegables y gestiona el registro de XP.     //
     //================================================================================//
     const XP_PER_15_MINS = 100; // Constante: cuánta XP se gana por cada 15 minutos.
     
@@ -764,9 +767,9 @@
     }
 
     //================================================================================//
-    //   SECCIÓN 10: EVENTO PRINCIPAL - REGISTRAR EXPERIENCIA (XP)                    //
-    //   Esta es la acción que se dispara al pulsar el botón "Registrar XP".         //
-    //   Toma los datos de los inputs, calcula el XP ganado y actualiza todo.        //
+    //  SECCIÓN 10: EVENTO PRINCIPAL - REGISTRAR EXPERIENCIA (XP)                     //
+    //  Esta es la acción que se dispara al pulsar el botón "Registrar XP".           //
+    //  Toma los datos de los inputs, calcula el XP ganado y actualiza todo.          //
     //================================================================================//
     registerBtn.addEventListener('click', () => {
         const selectedSkill = skillSelect.value;
@@ -795,9 +798,9 @@
     });
     
     //================================================================================//
-    //   SECCIÓN 11: INICIALIZACIÓN PRINCIPAL DE LA APLICACIÓN                        //
-    //   Esto es lo primero que se ejecuta cuando la página ha cargado por completo.  //
-    //   Prepara la aplicación para que el usuario pueda empezar a usarla.           //
+    //  SECCIÓN 11: INICIALIZACIÓN PRINCIPAL DE LA APLICACIÓN                         //
+    //  Esto es lo primero que se ejecuta cuando la página ha cargado por completo.   //
+    //  Prepara la aplicación para que el usuario pueda empezar a usarla.             //
     //================================================================================//
     window.onload = () => { 
         skills = JSON.parse(JSON.stringify(initialSkills)); // Carga la estructura de datos inicial.
