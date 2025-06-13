@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v7.7 (SPA)</title>
+    <title>Panel de Aventurero v9.0 (Dashboard Detallado)</title>
+    <!-- Importación de la librería Chart.js para los gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* ==========================================================================
            1. IMPORTACIÓN DE FUENTES E INICIALIZACIÓN
            ========================================================================== */
         
-        /* Importamos la fuente estilo "pixel art" desde Google Fonts para darle la temática de videojuego retro. */
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
-        /* Reglas para el elemento raíz de la página (la etiqueta <html>). */
         html {
-            /* Establece el tamaño de fuente base al 100% del navegador (usualmente 16px).
-               Esto nos permite usar unidades relativas 'rem' de forma predecible. */
             font-size: 100%; 
-            /* Habilita un efecto de desplazamiento suave al navegar por anclas o con JavaScript. */
             scroll-behavior: smooth;
         }
 
@@ -26,159 +23,151 @@
            ========================================================================== */
         
         body {
-            background-color: #1e1e2f;  /* Fondo oscuro para la temática de fantasía/neón. */
-            color: #dcdcdc;             /* Color de texto principal (un gris claro) para buena legibilidad. */
-            font-family: 'Press Start 2P', cursive; /* Establece la fuente retro para toda la app. */
-            display: flex;              /* Usa Flexbox para centrar el contenido principal. */
-            justify-content: center;    /* Centra el contenido horizontalmente. */
-            align-items: flex-start;    /* Alinea el contenido en la parte superior. */
-            padding: 20px;              /* Añade un espacio de aire alrededor de toda la página. */
+            background-color: #1e1e2f;
+            color: #dcdcdc;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
         }
 
         /* ==========================================================================
            3. ESTRUCTURA Y LAYOUT PRINCIPAL
            ========================================================================== */
 
-        /* Contenedor principal que envuelve la barra lateral y el contenido. */
         .main-container {
-            width: 100%;                /* Ocupa todo el ancho disponible. */
-            max-width: 1200px;          /* Pero con un límite para no estirarse demasiado en pantallas grandes. */
-            display: flex;              /* Pone la barra lateral y el contenido principal uno al lado del otro. */
-            gap: 20px;                  /* Crea un espacio de 20px entre la barra lateral y el contenido. */
-            align-items: flex-start;    /* Alinea ambos elementos en la parte superior. */
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
         }
 
-        /* Barra lateral (Sidebar) que contiene la navegación y los paneles de estado. */
         .sidebar {
-            width: 280px;               /* Ancho fijo para la barra lateral. */
-            flex-shrink: 0;             /* Evita que la barra se encoja si no hay espacio. */
-            position: sticky;           /* La barra lateral se quedará "pegada" al hacer scroll. */
-            top: 20px;                  /* Se pega a 20px del borde superior de la pantalla. */
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 20px;
         }
 
-        /* Contenedor para el contenido principal a la derecha. */
         .main-content {
-            flex-grow: 1;               /* Permite que esta sección crezca para ocupar el espacio restante. */
+            flex-grow: 1;
         }
 
         /* ==========================================================================
            4. ESTILOS DE LOS CONTENEDORES (PANELES)
            ========================================================================== */
 
-        /* Estilo base para todos los paneles o "contenedores" con borde. */
         .container {
-            border: 3px solid #4f4f6f;      /* Borde grueso y oscuro. */
-            background-color: #2a2a40;      /* Fondo ligeramente más claro que el body. */
-            padding: 20px;                  /* Espacio interno para que el contenido no toque los bordes. */
-            width: 100%;                    /* Ocupa todo el ancho de su padre (sidebar o main-content). */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5); /* Sombra para dar profundidad. */
-            border-radius: 8px;             /* Esquinas redondeadas. */
-            margin-bottom: 20px;            /* Espacio por debajo de cada panel. */
-            box-sizing: border-box;         /* Asegura que el padding y borde no aumenten el ancho total. */
+            border: 3px solid #4f4f6f;
+            background-color: #2a2a40;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
         }
 
         /* ==========================================================================
            5. TIPOGRAFÍA (TÍTULOS Y TEXTOS)
            ========================================================================== */
 
-        /* Títulos principales (H1) y secundarios (H2). */
         h1, h2 {
-            color: #ffdd57;             /* Color amarillo dorado para los títulos. */
-            text-align: center;         /* Texto centrado. */
-            border-bottom: 2px solid #4f4f6f; /* Línea decorativa inferior. */
-            padding-bottom: 10px;       /* Espacio entre el texto y la línea. */
-            margin-top: 0;              /* Elimina el margen superior por defecto. */
-            font-size: 1.5rem;          /* Tamaño de fuente relativo al 'html'. 1.5 veces el tamaño base. */
-            text-shadow: 2px 2px #c23616; /* Sombra de texto para un efecto 3D/retro. */
+            color: #ffdd57;
+            text-align: center;
+            border-bottom: 2px solid #4f4f6f;
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px #c23616;
         }
 
-        h2 { font-size: 1.2rem; } /* H2 un poco más pequeño que H1. */
-        h3 { font-size: 1rem; color: #4a90e2; margin-top: 20px; } /* H3 para títulos de categoría. */
-        h4 { font-size: 0.8rem; color: #a0a0c0; margin-bottom: 10px; border-top: 1px solid #4f4f6f; padding-top: 15px; margin-top: 15px;} /* H4 para subsecciones. */
+        h2 { font-size: 1.2rem; }
+        h3 { font-size: 1rem; color: #4a90e2; margin-top: 20px; text-align: center; }
+        h4 { font-size: 0.8rem; color: #a0a0c0; margin-bottom: 10px; border-top: 1px solid #4f4f6f; padding-top: 15px; margin-top: 15px;}
 
-        /* Etiquetas de los campos de formulario. */
         label {
-            display: block;             /* Hace que la etiqueta ocupe su propia línea. */
-            margin-bottom: 8px;         /* Espacio debajo de la etiqueta. */
-            color: #a0a0c0;             /* Color grisáceo. */
-            font-size: 0.8rem;          /* Tamaño de fuente más pequeño. */
+            display: block;
+            margin-bottom: 8px;
+            color: #a0a0c0;
+            font-size: 0.8rem;
         }
 
         /* ==========================================================================
            6. ELEMENTOS DE FORMULARIO (INPUTS, SELECTS, BOTONES)
            ========================================================================== */
 
-        /* Estilo para los menús desplegables (select) y campos de entrada (input). */
         select, input[type="number"], input[type="text"] {
-            width: 100%;                /* Ocupan todo el ancho de su contenedor. */
-            padding: 12px;              /* Espacio interno para mayor comodidad. */
-            margin-bottom: 15px;        /* Espacio por debajo. */
-            background-color: #1e1e2f;  /* Fondo oscuro. */
-            color: #dcdcdc;             /* Texto claro. */
-            border: 2px solid #4f4f6f;  /* Borde oscuro. */
-            border-radius: 4px;         /* Esquinas ligeramente redondeadas. */
-            font-family: inherit;       /* Usa la misma fuente 'Press Start 2P' del body. */
-            font-size: 0.9rem;          /* Tamaño de fuente. */
-            box-sizing: border-box;     /* Evita que el padding/borde afecte el ancho total. */
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background-color: #1e1e2f;
+            color: #dcdcdc;
+            border: 2px solid #4f4f6f;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            box-sizing: border-box;
         }
 
-        /* Estilo base para todos los botones. */
         button, .nav-btn {
-            width: 100%;                /* Ocupan todo el ancho. */
-            padding: 12px;              /* Espacio interno. */
-            margin-bottom: 10px;        /* Espacio por debajo. */
-            color: #000000;                /* Texto negro. */
-            font-weight: bold;          /* Texto en negrita. */
-            cursor: pointer;            /* Muestra una mano al pasar el cursor. */
-            border: none;               /* Sin borde por defecto. */
-            border-radius: 4px;         /* Esquinas redondeadas. */
-            font-family: inherit;       /* Hereda la fuente retro. */
-            text-align: center;         /* Texto centrado. */
-            transition: all 0.1s ease-in-out; /* Animación suave para cualquier cambio. */
-            display: block;             /* Ocupa su propia línea. */
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-family: inherit;
+            text-align: center;
+            transition: all 0.1s ease-in-out;
+            display: block;
+            font-size: 0.8rem;
         }
         
-        /* Botón principal para registrar XP. */
         #register-btn { background: linear-gradient(145deg, #4a90e2, #3a7ac8); border-bottom: 4px solid #2a5a9a; }
-        
-        /* Botones de Google Drive. */
+        #auth-btn { background-color: #dd4b39; border-bottom: 4px solid #c23321;}
         .gdrive-btn { background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
-        
-        /* Botones de navegación de la barra lateral. */
         .nav-btn { background-color: #6a4f9a; border-bottom: 4px solid #4a2f7a; }
-        
-        /* Estilo para el botón de navegación que está activo. */
         .nav-btn.active { background-color: #8a6fba; transform: translateY(2px); border-bottom-width: 2px;}
-        
-        /* Estilo para botones desactivados. */
         button:disabled { background-color: #555; border-bottom-color: #444; color: #888; cursor: not-allowed; }
 
         /* ==========================================================================
            7. PANELES ESPECÍFICOS Y LISTAS
            ========================================================================== */
+        
+        .chart-container {
+            position: relative;
+            min-height: 150px; /* Altura mínima para que el contenedor sea visible */
+            padding: 15px;
+            background: #1e1e2f;
+            border-radius: 5px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
 
-        /* Lista de habilidades y lista de registro (log). */
         .skills-panel ul, .log-panel ul {
-            list-style: none;           /* Quita los puntos de la lista. */
-            padding: 0;                 /* Quita el espacio de relleno por defecto. */
-            max-height: 450px;          /* Altura máxima antes de que aparezca el scroll. */
-            overflow-y: auto;           /* Muestra una barra de scroll vertical si el contenido excede la altura. */
+            list-style: none;
+            padding: 0;
+            max-height: 450px;
+            overflow-y: auto;
         }
         
-        /* Cada elemento (<li>) de la lista de habilidades. */
         .skills-panel li {
             background-color: #33334f;
             padding: 10px 15px;
             margin-bottom: 6px;
-            border-left: 5px solid #ffdd57; /* Borde izquierdo dorado decorativo. */
+            border-left: 5px solid #ffdd57;
             display: flex;
-            justify-content: space-between; /* Coloca el texto y la barra de progreso en extremos opuestos. */
+            justify-content: space-between;
             align-items: center;
             font-size: 0.8rem;
             border-radius: 4px;
         }
         
-        /* Estilos para la página de "Descripción". */
         .description-item {
             display: flex; flex-direction: column; align-items: flex-start; gap: 15px;
             background-color: #33334f; padding: 15px; margin-bottom: 10px;
@@ -186,9 +175,8 @@
             font-size: 0.75rem; line-height: 1.5;
         }
         .description-header { display: flex; align-items: center; gap: 15px; width: 100%;}
-        .description-img { width: 80px; height: 80px; border-radius: 4px; flex-shrink: 0; }
+        .description-img { width: 80px; height: 80px; border-radius: 4px; flex-shrink: 0; object-fit: cover; }
         
-        /* Contenedor de sub-habilidades en la página de descripción. */
         .subskill-container { width: 100%; }
         .subskill-list { list-style: none; padding: 0; }
         .subskill-list li { 
@@ -201,38 +189,31 @@
             font-size: 0.9rem;
             gap: 10px;
         }
-        .subskill-input-group { display: flex; gap: 10px; } /* Grupo para añadir sub-habilidad. */
+        .subskill-input-group { display: flex; gap: 10px; }
         
-        /* Botón para borrar una sub-habilidad. */
         .delete-subskill-btn { 
             background: #c23616; border: none; color: white; padding: 5px 8px;
             border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 0.8rem;
-            width: auto;            /* Ancho se ajusta al contenido. */
-            margin-left: auto;      /* Se alinea a la derecha. */
-            flex-shrink: 0;         /* No se encoge. */
+            width: auto;
+            margin-left: auto;
+            flex-shrink: 0;
         }
         
-        /* Botón "+" para añadir una sub-habilidad. */
         .add-subskill-btn { flex-shrink: 0; width: auto; padding: 0 15px; font-size: 1.2rem; background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
         
-        .skill-icon { margin-right: 10px; } /* Espacio para el ícono de la habilidad. */
-        .log-panel ul { max-height: 200px; } /* Altura máxima para el panel de registro. */
+        .skill-icon { margin-right: 10px; }
+        .log-panel ul { max-height: 200px; }
         
-        /* Estilo para los mensajes de subida de nivel. */
         .level-up { color: #32ff7e; font-weight: bold; text-align: center; font-size: 0.8rem !important; border-left-color: #32ff7e !important; }
         
-        /* Mensaje de estado de Google Drive. */
         #gdrive-status { text-align: center; font-size: 0.7rem; padding: 10px; color: #a0a0c0; min-height: 20px; }
         
-        /* Barra de progreso de XP. */
         .progress-bar-bg { background-color: #1e1e2f; border-radius: 5px; height: 10px; width: 100px; border: 1px solid #4f4f6f; }
         .progress-bar-fg { background-color: #32ff7e; height: 100%; border-radius: 5px; }
         
-        /* Control de visibilidad de las páginas SPA. */
-        .page-content { display: none; } /* Por defecto, todas las páginas están ocultas. */
-        .page-content.active { display: block; } /* La página con la clase 'active' se muestra. */
+        .page-content { display: none; }
+        .page-content.active { display: block; }
         
-        /* Texto de información de la versión. */
         #version-info {
             font-size: 0.65rem; color: #8a8a9e; text-align: right;
             margin-top: 15px; padding-top: 10px;
@@ -243,40 +224,26 @@
            8. DISEÑO RESPONSIVO (PARA MÓVILES)
            ========================================================================== */
 
-        /* Estas reglas se aplican solo si el ancho de la pantalla es 800px o menos. */
         @media (max-width: 800px) {
-            /* Coloca la barra lateral encima del contenido principal. */
             .main-container { flex-direction: column; }
-            /* La barra lateral ahora ocupa todo el ancho y no es "pegajosa". */
             .sidebar { width: 100%; position: static; }
-            /* En la página de descripción, la imagen se pone encima del texto. */
             .description-header { flex-direction: column; text-align: center; }
-
-            /* Aumenta el tamaño de la fuente base en un 10% para mejorar la legibilidad en móviles. */
-            html {
-                font-size: 100%;
-            }
+            html { font-size: 100%; }
         }
     </style>
 </head>
 <body>
-    <!-- ESTRUCTURA HTML PRINCIPAL -->
-
-    <!-- Contenedor general que envuelve toda la aplicación. -->
     <div class="main-container">
         
-        <!-- INICIO DE LA BARRA LATERAL (SIDEBAR) -->
         <div class="sidebar">
-            
-            <!-- Panel de Navegación -->
             <div class="container">
                 <h2>Navegación</h2>
-                <button class="nav-btn active" data-page="entrenamiento">Entrenamiento</button>
+                <button class="nav-btn active" data-page="dashboard">Panel de Control</button> 
+                <button class="nav-btn" data-page="entrenamiento">Entrenamiento</button>
                 <button class="nav-btn" data-page="misiones">Misiones</button>
                 <button class="nav-btn" data-page="descripcion">Descripción</button>
             </div>
             
-            <!-- Panel de Sincronización con Google Drive -->
             <div class="container gdrive-section">
                 <div id="gdrive-status">Inicia sesión para sincronizar.</div>
                 <button id="auth-btn">Iniciar Sesión con Google</button>
@@ -284,23 +251,27 @@
                 <button id="load-drive-btn" class="gdrive-btn" disabled>Cargar el poder</button>
             </div>
 
-            <!-- Panel de Registro de Actividad (Log) -->
              <div class="container log-panel">
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                    v7.7 (Corregido el inicio de sesión de Google)
+                    v9.0 (Dashboard Detallado)
                 </div>
             </div>
         </div>
-        <!-- FIN DE LA BARRA LATERAL -->
 
-        <!-- INICIO DEL CONTENIDO PRINCIPAL -->
         <div class="main-content">
             
-            <!-- Página/Sección de Entrenamiento (visible por defecto) -->
-            <div id="page-entrenamiento" class="page-content active">
-                <!-- Panel para registrar XP -->
+            <div id="page-dashboard" class="page-content active">
+                <div class="container">
+                    <h1>Panel de Control</h1>
+                    <div id="dashboard-charts-container">
+                        <!-- Los gráficos por categoría se generarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-entrenamiento" class="page-content">
                 <div class="container">
                     <h1>Panel de Aventurero</h1>
                     <div class="input-section">
@@ -315,14 +286,12 @@
                         <button id="register-btn">Registrar XP</button>
                     </div>
                 </div>
-                <!-- Panel para mostrar la lista de habilidades y su progreso -->
                 <div class="container skills-panel">
                     <h2>Habilidades</h2>
                     <ul id="skills-list"></ul>
                 </div>
             </div>
 
-            <!-- Página/Sección de Misiones (oculta por defecto) -->
             <div id="page-misiones" class="page-content">
                 <div class="container">
                     <h1>Misiones</h1>
@@ -331,74 +300,52 @@
                 </div>
             </div>
 
-            <!-- Página/Sección de Descripción (oculta por defecto) -->
             <div id="page-descripcion" class="page-content">
                 <div class="container description-content">
                     <!-- El contenido de esta sección se genera dinámicamente con JavaScript. -->
                 </div>
             </div>
         </div>
-        <!-- FIN DEL CONTENIDO PRINCIPAL -->
     </div>
 
     <script>
     //================================================================================//
     //  SECCIÓN 1: CONFIGURACIÓN DE ACCESO A GOOGLE DRIVE API                         //
-    //  Estas son las "llaves" que permiten a nuestra app conectarse con Google.    //
-    //  CLIENT_ID identifica nuestra aplicación.                                      //
-    //  API_KEY autoriza el uso de la API de Google Drive.                            //
     //================================================================================//
     const CLIENT_ID = '432634777489-acq7bb59h2ggc223oafccitlvskvqh6p.apps.googleusercontent.com';
     const API_KEY = 'AIzaSyB17ehizwOK9efPy7Bo7Zss2zveYSVhwE8';
     
     //================================================================================//
     //  SECCIÓN 2: ESTRUCTURA DE DATOS INICIAL                                        //
-    //  Este es el "molde" o plantilla para todas las habilidades del juego.          //
-    //  Cuando la app se inicia por primera vez o se resetea, usa esta estructura.    //
-    //  Define el nombre, icono, descripción, etc., de cada habilidad.                //
+    //  NUEVA ESTRUCTURA: 'subSkills' es ahora un objeto para almacenar XP por        //
+    //  habilidad concreta. Ejemplo: subSkills: { 'Leer libro': { xp: 120 } }         //
     //================================================================================//
     const initialSkills = {
-        'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: [], img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
-        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '💪', subSkills: [], img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
-        'Defensa (Finanzas Personales)': { xp: 0, level: 1, icon: '🛡️', subSkills: [], img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
-        'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: [], img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
-        'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: [], img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
-        'Magia (Habilidades Sociales)': { xp: 0, level: 1, icon: '✨', subSkills: [], img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia, compañerismo' },
-        'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: [], img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
-        'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: [], img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
-        'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: [], img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
-        'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: [], img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
-        'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: [], img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
-        'Creación (Proyectos Creativos)': { xp: 0, level: 1, icon: '🎨', subSkills: [], img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
-        'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: [], img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
-        'Grabación de Fuego (Disciplina)': { xp: 0, level: 1, icon: '🔥', subSkills: [], img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina. La clave es la simplicidad y la consistencia.' }
+        'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: {}, img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
+        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '💪', subSkills: {}, img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
+        'Defensa (Finanzas Personales)': { xp: 0, level: 1, icon: '🛡️', subSkills: {}, img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
+        'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: {}, img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
+        'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: {}, img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
+        'Magia (Habilidades Sociales)': { xp: 0, level: 1, icon: '✨', subSkills: {}, img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia, compañerismo' },
+        'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: {}, img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
+        'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
+        'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: {}, img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
+        'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: {}, img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
+        'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: {}, img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
+        'Creación (Proyectos Creativos)': { xp: 0, level: 1, icon: '🎨', subSkills: {}, img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
+        'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: {}, img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
+        'Grabación de Fuego (Disciplina)': { xp: 0, level: 1, icon: '🔥', subSkills: {}, img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina. La clave es la simplicidad y la consistencia.' }
     };
     
-    //================================================================================//
-    //  SECCIÓN 3: MAPA DE MIGRACIÓN DE DATOS                                         //
-    //  Esto sirve para actualizar datos de versiones antiguas. Si un usuario        //
-    //  carga un archivo guardado con un nombre de habilidad viejo (ej: "Ataque"),    //
-    //  este mapa lo convierte al nombre nuevo (ej: "Avance") sin perder el XP.      //
-    //================================================================================//
     const MIGRATION_MAP = {
-        "Ataque (Carrera)": "Avance (Formación)",
-        "Fuerza (Fitness)": "Fuerza (Salud centrada en el cuerpo)",
-        "Agilidad (Cardio)": "Agilidad (Salud centrada en cuerpo)",
-        "Oración (Mindfulness)": "Espiritual (Salud Mental)",
-        "Herbología (Nutrición)": "Nutrición (Salud corporal)",
-        "Pesca (Hobbies)": "Hobbies y Relajación",
-        "Herrería (Estudio)": "Estudio Profundo",
-        "Creación de Fuego (Disciplina y Hábitos)": "Grabación de Fuego (Disciplina)",
-        "Hobbies y Relajación": "Hobbies y Relajación (en la Nada y en el Todo a la vez)"
+        "Ataque (Carrera)": "Avance (Formación)", "Fuerza (Fitness)": "Fuerza (Salud centrada en el cuerpo)", "Agilidad (Cardio)": "Agilidad (Salud centrada en cuerpo)", "Oración (Mindfulness)": "Espiritual (Salud Mental)", "Herbología (Nutrición)": "Nutrición (Salud corporal)", "Pesca (Hobbies)": "Hobbies y Relajación", "Herrería (Estudio)": "Estudio Profundo", "Creación de Fuego (Disciplina y Hábitos)": "Grabación de Fuego (Disciplina)", "Hobbies y Relajación": "Hobbies y Relajación (en la Nada y en el Todo a la vez)"
     };
 
-    // Variable global que contendrá el estado actual de las habilidades del usuario.
     let skills = {};
+    let chartInstances = {}; // Guardará las instancias de los 3 gráficos
     
     //================================================================================//
     //  SECCIÓN 4: REFERENCIAS A ELEMENTOS DEL HTML (DOM)                             //
-    //  Aquí "guardamos" en variables de JavaScript los elementos importantes de la   //
-    //  página (botones, listas, inputs) para poder manipularlos fácilmente.          //
     //================================================================================//
     const authBtn = document.getElementById('auth-btn');
     const saveBtn = document.getElementById('save-drive-btn');
@@ -413,405 +360,347 @@
     const descriptionContainer = document.querySelector('#page-descripcion .description-content');
     
     //================================================================================//
-    //  SECCIÓN 5: LÓGICA DE NAVEGACIÓN (SPA - Single Page Application)               //
-    //  Este código hace que los botones "Entrenamiento", "Misiones" y                //
-    //  "Descripción" muestren su contenido sin que la página web se recargue.        //
+    //  SECCIÓN 5: LÓGICA DE NAVEGACIÓN (SPA)                                         //
     //================================================================================//
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = document.querySelectorAll('.page-content');
     navButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // 1. Obtiene el nombre de la página a mostrar desde el atributo 'data-page' del botón.
             const targetPage = button.getAttribute('data-page');
-            
-            // 2. Quita la clase 'active' de todos los botones y se la añade solo al que fue pulsado.
             navButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            
-            // 3. Oculta todas las páginas y muestra solo la que corresponde al botón pulsado.
-            pages.forEach(page => {
-                page.classList.toggle('active', page.id === 'page-' + targetPage);
-            });
-
-            // 4. Si la pantalla es pequeña (móvil), se desplaza automáticamente hacia la sección de contenido.
+            pages.forEach(page => page.classList.toggle('active', page.id === 'page-' + targetPage));
+            if (targetPage === 'dashboard') {
+                renderDashboardCharts();
+            }
             if (window.matchMedia('(max-width: 800px)').matches) {
-                const targetElement = document.getElementById('page-' + targetPage);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                document.getElementById('page-' + targetPage)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
 
     //================================================================================//
     //  SECCIÓN 6: LÓGICA DE LA PÁGINA "DESCRIPCIÓN"                                  //
-    //  Controla todo lo que pasa en la pestaña de descripción: muestra las           //
-    //  habilidades, sus detalles y permite añadir o borrar "Habilidades Concretas".  //
     //================================================================================//
     
-    // Construye y muestra todo el contenido de la página de descripción.
     function renderDescriptionPage() {
-        descriptionContainer.innerHTML = ''; // Limpia el contenido anterior.
-        const mainTitle = document.createElement('h1');
-        mainTitle.textContent = 'Descripción de Habilidades';
-        descriptionContainer.appendChild(mainTitle);
-
-        const categories = {
-            combate: 'Habilidades de "Combate" (Proactivas y de Afrontamiento)',
-            autocuidado: 'Habilidades de "Autocuidado"',
-            artesania: 'Habilidades de "Artesanía" (Creación y Conocimiento)'
-        };
-
-        // Recorre cada categoría y crea su sección.
+        descriptionContainer.innerHTML = '<h1>Descripción de Habilidades</h1>';
+        const categories = { combate: 'Habilidades de "Combate"', autocuidado: 'Habilidades de "Autocuidado"', artesania: 'Habilidades de "Artesanía"' };
         for (const categoryId in categories) {
             const categoryTitle = document.createElement('h3');
             categoryTitle.textContent = categories[categoryId];
             descriptionContainer.appendChild(categoryTitle);
-            
             const categoryList = document.createElement('ul');
             categoryList.style.padding = '0';
-
-            // Recorre todas las habilidades y las añade a la categoría correspondiente.
             for (const skillName in skills) {
                 if (skills[skillName].category === categoryId) {
                     const skill = skills[skillName];
                     const item = document.createElement('li');
                     item.className = 'description-item';
                     item.setAttribute('data-skill', skillName);
-                    // Inserta el HTML para cada habilidad, incluyendo su imagen, descripción y el área para sub-habilidades.
-                    item.innerHTML = `
-                        <div class="description-header">
-                            <img src="${skill.img}" alt="Icono de ${skillName}" class="description-img">
-                            <div><strong>${skillName}:</strong> ${skill.description}</div>
-                        </div>
-                        <div class="subskill-container">
-                            <h4>Habilidades Concretas:</h4>
-                            <ul class="subskill-list"></ul>
-                            <div class="subskill-input-group">
-                                <input type="text" placeholder="Añadir nueva habilidad..." maxlength="50">
-                                <button class="add-subskill-btn">+</button>
-                            </div>
-                        </div>`;
+                    item.innerHTML = `<div class="description-header"><img src="${skill.img}" alt="Icono" class="description-img"><div><strong>${skillName}:</strong> ${skill.description}</div></div><div class="subskill-container"><h4>Habilidades Concretas:</h4><ul class="subskill-list"></ul><div class="subskill-input-group"><input type="text" placeholder="Añadir nueva habilidad..." maxlength="50"><button class="add-subskill-btn">+</button></div></div>`;
                     categoryList.appendChild(item);
                 }
             }
             descriptionContainer.appendChild(categoryList);
         }
-        renderAllSubSkillLists(); // Dibuja las listas de sub-habilidades.
-        addDescriptionPageListeners(); // Activa los botones de añadir/borrar.
+        renderAllSubSkillLists();
+        addDescriptionPageListeners();
     }
     
-    // Dibuja la lista de sub-habilidades para UNA habilidad específica.
     function renderSubSkillList(skillName) {
         const listElement = document.querySelector(`.description-item[data-skill="${skillName}"] .subskill-list`);
-        if (!listElement) return; // Si no encuentra el elemento, no hace nada.
-        listElement.innerHTML = ''; // Limpia la lista actual.
-        if (skills[skillName] && skills[skillName].subSkills) {
-            skills[skillName].subSkills.forEach((subSkill, index) => {
+        if (!listElement) return;
+        listElement.innerHTML = '';
+        const skill = skills[skillName];
+        if (skill && skill.subSkills) {
+            Object.entries(skill.subSkills).forEach(([subSkillName, subSkillData]) => {
                 const li = document.createElement('li');
-                li.innerHTML = `<span>${subSkill}</span> <button class="delete-subskill-btn" data-index="${index}">X</button>`;
+                li.innerHTML = `<span>${subSkillName} (${subSkillData.xp.toLocaleString()} XP)</span> <button class="delete-subskill-btn" data-name="${subSkillName}">X</button>`;
                 listElement.appendChild(li);
             });
         }
     }
 
-    // Llama a la función anterior para TODAS las habilidades.
     function renderAllSubSkillLists() {
         for (const skillName in skills) { renderSubSkillList(skillName); }
     }
 
-    // Activa los listeners para los botones de añadir y borrar sub-habilidades.
     function addDescriptionPageListeners() {
         descriptionContainer.addEventListener('click', (e) => {
-            const target = e.target; // El elemento exacto donde se hizo clic.
-            const parentItem = target.closest('.description-item'); // Busca el contenedor de habilidad más cercano.
+            const target = e.target;
+            const parentItem = target.closest('.description-item');
             if (!parentItem) return;
-
             const skillName = parentItem.getAttribute('data-skill');
-            
-            // Si se pulsa el botón de AÑADIR.
+            const skillData = skills[skillName];
+
             if (target.classList.contains('add-subskill-btn')) {
                 const input = parentItem.querySelector('input[type="text"]');
-                const value = input.value.trim(); // Obtiene el texto y quita espacios en blanco.
-                if (value && skills[skillName].subSkills.length < 25) { // Si hay texto y no se excede el límite...
-                    skills[skillName].subSkills.push(value); // ...lo añade a los datos.
-                    renderSubSkillList(skillName); // Actualiza la lista visual.
-                    populateSubSkillSelect(skillSelect.value); // Actualiza el menú desplegable de la página principal.
-                    input.value = ''; // Limpia el campo de texto.
+                const value = input.value.trim();
+                if (value && Object.keys(skillData.subSkills).length < 25) {
+                    skillData.subSkills[value] = { xp: 0 };
+                    renderSubSkillList(skillName);
+                    populateSubSkillSelect(skillSelect.value);
+                    renderDashboardCharts();
+                    input.value = '';
                 }
             }
 
-            // Si se pulsa el botón de BORRAR.
             if (target.classList.contains('delete-subskill-btn')) {
-                const index = parseInt(target.getAttribute('data-index'));
-                skills[skillName].subSkills.splice(index, 1); // Elimina la sub-habilidad del array de datos.
-                renderSubSkillList(skillName); // Actualiza la lista visual.
-                populateSubSkillSelect(skillSelect.value); // Actualiza el menú desplegable.
+                const subSkillNameToDelete = target.getAttribute('data-name');
+                delete skillData.subSkills[subSkillNameToDelete];
+                skillData.xp = Object.values(skillData.subSkills).reduce((sum, s) => sum + s.xp, 0);
+                skillData.level = getLevelFromXp(skillData.xp);
+                renderSubSkillList(skillName);
+                populateSubSkillSelect(skillSelect.value);
+                updateDisplay();
+                renderDashboardCharts();
             }
         });
     }
 
     //================================================================================//
     //  SECCIÓN 7: INICIALIZACIÓN DE LA API DE GOOGLE                                 //
-    //  Este bloque se encarga de cargar y preparar las herramientas de Google        //
-    //  para que podamos usarlas (iniciar sesión, guardar/cargar archivos).           //
     //================================================================================//
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-    const SCOPES = 'https://www.googleapis.com/auth/drive.file'; // Define qué permisos pedimos (acceso a archivos creados por la app).
-    const FILENAME = 'progreso_agenda.json'; // Nombre del archivo que se guardará en Drive.
+    const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+    const FILENAME = 'progreso_agenda_v2.json'; // Nombre de archivo nuevo por cambio de estructura
     let tokenClient;
-    let gapiInited = false;
-    let gisInited = false;
+    let gapiInited = false, gisInited = false;
     
-    function gapiLoaded() { gapi.load('client', initializeGapiClient); } // Cuando la librería principal de Google carga.
-    async function initializeGapiClient() {
-        await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS, });
-        gapiInited = true; maybeEnableButtons();
-    }
-    function gisLoaded() { // Cuando la librería de inicio de sesión carga.
-        tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: '', });
-        gisInited = true; maybeEnableButtons();
-    }
-    function maybeEnableButtons() { if (gapiInited && gisInited) { authBtn.style.display = 'block'; } } // Activa el botón de login solo cuando ambas librerías están listas.
-    
-    // Gestiona el flujo de autenticación.
+    function gapiLoaded() { gapi.load('client', initializeGapiClient); }
+    async function initializeGapiClient() { await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); gapiInited = true; maybeEnableButtons(); }
+    function gisLoaded() { tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: '' }); gisInited = true; maybeEnableButtons(); }
+    function maybeEnableButtons() { if (gapiInited && gisInited) { authBtn.style.display = 'block'; } }
     function handleAuthClick() {
-        tokenClient.callback = async (resp) => { // Función que se ejecuta tras el login.
+        tokenClient.callback = async (resp) => {
             if (resp.error !== undefined) { throw (resp); }
             authBtn.textContent = 'Refrescar Sesión';
             saveBtn.disabled = false; loadBtn.disabled = false;
             statusDiv.textContent = '¡Sesión iniciada! Listo para sincronizar.';
         };
-        // Si el usuario no está logueado, pide consentimiento. Si ya lo está, refresca el token silenciosamente.
-        if (gapi.client.getToken() === null) {
-            tokenClient.requestAccessToken({prompt: 'consent'});
-        } else {
-            tokenClient.requestAccessToken({prompt: ''});
-        }
+        if (gapi.client.getToken() === null) tokenClient.requestAccessToken({prompt: 'consent'});
+        else tokenClient.requestAccessToken({prompt: ''});
     }
-    
-    // **CORRECCIÓN**: Añadido el event listener para el botón de autenticación.
     authBtn.addEventListener('click', handleAuthClick);
     
     //================================================================================//
     //  SECCIÓN 8: FUNCIONES PRINCIPALES DE GOOGLE DRIVE                              //
-    //  Aquí está la magia para conectar con la nube. Estas funciones buscan el       //
-    //  archivo de guardado, lo crean si no existe, guardan el progreso y lo cargan.  //
     //================================================================================//
     
-    // Busca en Drive si ya existe un archivo con nuestro nombre.
     async function findFileId() {
         try {
-            const response = await gapi.client.drive.files.list({ 'q': `name='${FILENAME}' and trashed=false`, 'fields': 'files(id, name)', 'spaces': 'drive' });
-            return response.result.files && response.result.files.length > 0 ? response.result.files[0].id : null;
+            const response = await gapi.client.drive.files.list({ q: `name='${FILENAME}' and trashed=false`, fields: 'files(id, name)', spaces: 'drive' });
+            return response.result.files.length > 0 ? response.result.files[0].id : null;
         } catch (err) { addLogEntry(`Error buscando archivo: ${err.message}`, 'level-up'); return null; }
     }
 
-    // Se ejecuta al pulsar el botón "Guardar en Drive".
     saveBtn.onclick = async () => {
         statusDiv.textContent = 'Guardando en Google Drive...';
         const fileId = await findFileId();
-        const fileContent = JSON.stringify(skills, null, 2); // Convierte nuestros datos a texto JSON.
-        
-        // El resto es la estructura compleja que necesita la API de Drive para subir/actualizar un archivo.
+        const fileContent = JSON.stringify(skills, null, 2);
         const boundary = '-------314159265358979323846';
-        const delimiter = "\r\n--" + boundary + "\r\n";
-        const close_delim = "\r\n--" + boundary + "--";
-        let metadata, requestBody;
-
-        if (fileId) { // Si el archivo ya existe, lo actualiza (PATCH).
-            metadata = { 'mimeType': 'application/json' };
-            requestBody = delimiter + 'Content-Type: application/json\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: application/json\r\n\r\n' + fileContent + close_delim;
-            const request = gapi.client.request({
-                'path': `/upload/drive/v3/files/${fileId}`, 'method': 'PATCH', 'params': { 'uploadType': 'multipart' },
-                'headers': { 'Content-Type': 'multipart/related; boundary="' + boundary + '"' }, 'body': requestBody
-            });
+        const delimiter = `\r\n--${boundary}\r\n`;
+        const close_delim = `\r\n--${boundary}--`;
+        let metadata = { mimeType: 'application/json' };
+        let requestBody;
+        if (fileId) {
+            requestBody = `${delimiter}Content-Type: application/json\r\n\r\n${JSON.stringify(metadata)}${delimiter}Content-Type: application/json\r\n\r\n${fileContent}${close_delim}`;
+            const request = gapi.client.request({ path: `/upload/drive/v3/files/${fileId}`, method: 'PATCH', params: { uploadType: 'multipart' }, headers: { 'Content-Type': `multipart/related; boundary="${boundary}"` }, body: requestBody });
             request.execute(() => { statusDiv.textContent = '¡Progreso guardado!'; addLogEntry('💾 Progreso guardado en la nube.'); });
-        } else { // Si no existe, lo crea (POST).
-            metadata = { 'name': FILENAME, 'mimeType': 'application/json' };
-            requestBody = delimiter + 'Content-Type: application/json\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: application/json\r\n\r\n' + fileContent + close_delim;
-            const createRequest = gapi.client.request({
-                'path': '/upload/drive/v3/files', 'method': 'POST', 'params': { 'uploadType': 'multipart' },
-                'headers': { 'Content-Type': 'multipart/related; boundary="' + boundary + '"' }, 'body': requestBody
-            });
+        } else {
+            metadata.name = FILENAME;
+            requestBody = `${delimiter}Content-Type: application/json\r\n\r\n${JSON.stringify(metadata)}${delimiter}Content-Type: application/json\r\n\r\n${fileContent}${close_delim}`;
+            const createRequest = gapi.client.request({ path: '/upload/drive/v3/files', method: 'POST', params: { uploadType: 'multipart' }, headers: { 'Content-Type': `multipart/related; boundary="${boundary}"` }, body: requestBody });
             createRequest.execute(() => { statusDiv.textContent = '¡Archivo creado y guardado!'; addLogEntry('💾 Archivo de progreso creado.'); });
         }
     };
     
-    // Se ejecuta al pulsar "Cargar desde Drive".
     loadBtn.onclick = async () => {
         statusDiv.textContent = 'Cargando desde Google Drive...';
         const fileId = await findFileId();
-        if (!fileId) { statusDiv.textContent = 'No se encontró archivo de progreso.'; addLogEntry('⚠️ No se encontró archivo.', 'level-up'); return; }
+        if (!fileId) { statusDiv.textContent = 'No se encontró archivo.'; addLogEntry('⚠️ No se encontró archivo.', 'level-up'); return; }
         try {
             const response = await gapi.client.drive.files.get({ fileId: fileId, alt: 'media' });
-            const loadedSkills = JSON.parse(response.body); // Convierte el texto del archivo a objeto JavaScript.
-            
+            const loadedSkills = JSON.parse(response.body);
             if (loadedSkills && typeof loadedSkills === 'object') {
-                // Proceso de hidratación y migración de datos.
                 const hydratedSkills = JSON.parse(JSON.stringify(initialSkills));
-                let migrationApplied = false;
-                
                 for (const savedSkillName in loadedSkills) {
-                    let targetSkillName = savedSkillName;
-                    // Busca si el nombre de la habilidad cargada necesita ser migrado a uno nuevo.
-                    while (MIGRATION_MAP[targetSkillName]) {
-                        targetSkillName = MIGRATION_MAP[targetSkillName];
-                        migrationApplied = true;
-                    }
-                    // Si la habilidad existe en la plantilla actual, copia los datos (XP, sub-habilidades).
+                    let targetSkillName = MIGRATION_MAP[savedSkillName] || savedSkillName;
                     if (hydratedSkills[targetSkillName]) {
                         const savedData = loadedSkills[savedSkillName];
-                        hydratedSkills[targetSkillName].xp += savedData.xp || 0;
+                        hydratedSkills[targetSkillName].subSkills = savedData.subSkills || {};
+                        hydratedSkills[targetSkillName].xp = Object.values(hydratedSkills[targetSkillName].subSkills).reduce((sum, s) => sum + (s.xp || 0), 0);
                         hydratedSkills[targetSkillName].level = getLevelFromXp(hydratedSkills[targetSkillName].xp);
-                        const combinedSubSkills = new Set([...hydratedSkills[targetSkillName].subSkills, ...(savedData.subSkills || [])]);
-                        hydratedSkills[targetSkillName].subSkills = Array.from(combinedSubSkills);
                     }
                 }
-                
-                skills = hydratedSkills; // Reemplaza los datos actuales con los cargados y migrados.
-                
-                // Actualiza toda la interfaz con los nuevos datos.
-                updateDisplay(); 
-                populateSelect(); 
-                renderDescriptionPage();
-                statusDiv.textContent = '¡Progreso cargado desde Drive!'; 
-                addLogEntry('📂 Progreso cargado.');
-                if (migrationApplied) {
-                    addLogEntry('✨ ¡Datos migrados a la nueva versión! Guarda para actualizar el archivo.', 'level-up');
-                }
-            } else { throw new Error("Formato de datos inválido en el archivo de Drive."); }
-        } catch (err) { statusDiv.textContent = `Error al cargar: ${err.message}`; addLogEntry(`❌ Error al cargar: ${err.message}`, 'level-up'); }
+                skills = hydratedSkills;
+                updateDisplay(); populateSelect(); renderDescriptionPage(); renderDashboardCharts();
+                statusDiv.textContent = '¡Progreso cargado desde Drive!'; addLogEntry('📂 Progreso cargado.');
+            } else { throw new Error("Formato de datos inválido."); }
+        } catch (err) { statusDiv.textContent = `Error: ${err.message}`; addLogEntry(`❌ Error: ${err.message}`, 'level-up'); }
     };
 
     //================================================================================//
-    //  SECCIÓN 9: LÓGICA CENTRAL DE LA APLICACIÓN (EL "MOTOR" DEL JUEGO)             //
-    //  Este es el corazón del panel. Calcula los niveles, actualiza la lista de      //
-    //  habilidades, rellena los menús desplegables y gestiona el registro de XP.     //
+    //  SECCIÓN 9: LÓGICA CENTRAL DE LA APLICACIÓN                                    //
     //================================================================================//
-    const XP_PER_15_MINS = 100; // Constante: cuánta XP se gana por cada 15 minutos.
+    const XP_PER_15_MINS = 100;
     
-    // Fórmula matemática para calcular el nivel basado en la XP total.
     function getLevelFromXp(xp) {
         let level = 1; 
-        while (true) { 
-            let xpForNextLevel = Math.pow(level, 2) * 1000; 
-            if (xp < xpForNextLevel) return level; 
-            level++; 
-            if (level > 200) return 200; // Límite para evitar bucles infinitos.
+        while (Math.pow(level, 2) * 1000 <= xp) { 
+            level++; if (level > 200) return 200;
+        }
+        return level;
+    }
+
+    function renderDashboardCharts() {
+        const container = document.getElementById('dashboard-charts-container');
+        if (!container) return;
+        container.innerHTML = '';
+        Object.values(chartInstances).forEach(chart => chart.destroy());
+        chartInstances = {};
+
+        const categories = { combate: 'Habilidades de "Combate"', autocuidado: 'Habilidades de "Autocuidado"', artesania: 'Habilidades de "Artesanía"'};
+        const categoryColors = { combate: '#e84118', autocuidado: '#4cd137', artesania: '#9b59b6'};
+
+        for (const categoryId in categories) {
+            let subSkillsData = [];
+            for (const skillName in skills) {
+                if (skills[skillName].category === categoryId) {
+                    Object.entries(skills[skillName].subSkills).forEach(([subSkillName, subSkillDetails]) => {
+                        if (subSkillDetails.xp > 0) {
+                            subSkillsData.push({ name: subSkillName, xp: subSkillDetails.xp, parent: skillName });
+                        }
+                    });
+                }
+            }
+
+            if (subSkillsData.length > 0) {
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.textContent = categories[categoryId];
+                const chartWrapper = document.createElement('div');
+                chartWrapper.className = 'chart-container';
+                const canvas = document.createElement('canvas');
+                chartWrapper.appendChild(canvas);
+                container.appendChild(categoryTitle);
+                container.appendChild(chartWrapper);
+
+                const labels = subSkillsData.map(s => `${s.name} (${s.parent.split(' ')[0]})`);
+                const data = subSkillsData.map(s => s.xp);
+
+                Chart.defaults.font.family = "'Press Start 2P', cursive";
+                Chart.defaults.color = '#dcdcdc';
+
+                chartInstances[categoryId] = new Chart(canvas.getContext('2d'), {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'XP Acumulada', data, backgroundColor: categoryColors[categoryId] }] },
+                    options: {
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { x: { grid: { color: '#4f4f6f' }, ticks: { font: { size: 8 } } }, y: { grid: { color: '#4f4f6f' }, ticks: { font: { size: 8 } } } }
+                    }
+                });
+            }
         }
     }
 
-    // Dibuja y actualiza la lista de habilidades principal, incluyendo las barras de progreso.
     function updateDisplay() {
         skillsList.innerHTML = ''; 
-        const sortedSkills = Object.entries(skills).sort(([,a],[,b]) => b.xp - a.xp); // Ordena las habilidades por XP.
+        const sortedSkills = Object.entries(skills).sort(([,a],[,b]) => b.xp - a.xp);
         for (const [skillName, skill] of sortedSkills) {
             const li = document.createElement('li'); 
             const xpForCurrentLevel = skill.level > 1 ? Math.pow(skill.level - 1, 2) * 1000 : 0;
             const xpForNextLevel = Math.pow(skill.level, 2) * 1000; 
             const xpInCurrentLevel = skill.xp - xpForCurrentLevel;
             const xpNeededForLevel = xpForNextLevel - xpForCurrentLevel; 
-            const progressPercentage = (xpInCurrentLevel / xpNeededForLevel) * 100;
-            li.innerHTML = `<div style="flex-grow: 1;"><span><span class="skill-icon">${skill.icon || '❔'}</span>${skillName}</span><div style="font-size: 0.8rem; color: #a0a0c0;">Lvl: ${skill.level} (${skill.xp.toLocaleString()} XP)</div></div><div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${progressPercentage}%;"></div></div>`;
+            const progressPercentage = xpNeededForLevel > 0 ? (xpInCurrentLevel / xpNeededForLevel) * 100 : 0;
+            li.innerHTML = `<div style="flex-grow: 1;"><span><span class="skill-icon">${skill.icon}</span>${skillName}</span><div style="font-size: 0.8rem; color: #a0a0c0;">Lvl: ${skill.level} (${skill.xp.toLocaleString()} XP)</div></div><div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${progressPercentage}%;"></div></div>`;
             skillsList.appendChild(li);
         }
     }
 
-    // Rellena el menú desplegable de "Habilidad General".
     function populateSelect() {
         skillSelect.innerHTML = ''; 
-        const skillNames = Object.keys(skills); 
-        skillNames.sort(); // Ordena alfabéticamente.
+        const skillNames = Object.keys(skills).sort();
         for (const skillName of skillNames) { 
             const option = document.createElement('option'); 
             option.value = skillName; 
             option.textContent = skillName; 
             skillSelect.appendChild(option); 
         }
-        populateSubSkillSelect(skillSelect.value); // Rellena las sub-habilidades de la primera opción.
+        populateSubSkillSelect(skillSelect.value);
     }
     
-    // Rellena el menú de "Habilidad Concreta" basado en la general seleccionada.
     function populateSubSkillSelect(selectedSkill) {
         subSkillSelect.innerHTML = '';
-        if (skills[selectedSkill] && skills[selectedSkill].subSkills && skills[selectedSkill].subSkills.length > 0) {
-            skills[selectedSkill].subSkills.forEach(subSkill => {
+        const subSkills = skills[selectedSkill]?.subSkills;
+        if (subSkills && Object.keys(subSkills).length > 0) {
+            Object.keys(subSkills).sort().forEach(subSkill => {
                 const option = document.createElement('option');
-                option.value = subSkill;
-                option.textContent = subSkill;
+                option.value = subSkill; option.textContent = subSkill;
                 subSkillSelect.appendChild(option);
             });
             subSkillSelect.disabled = false;
-        } else { // Si no hay sub-habilidades, muestra un mensaje y lo deshabilita.
+        } else {
             const option = document.createElement('option');
-            option.textContent = 'Sin habilidades concretas';
+            option.textContent = 'Añade Habilidades Concretas';
             option.disabled = true;
             subSkillSelect.appendChild(option);
             subSkillSelect.disabled = true;
         }
     }
     
-    // Listener que se activa cuando el usuario cambia la Habilidad General.
-    skillSelect.addEventListener('change', (e) => {
-        populateSubSkillSelect(e.target.value);
-    });
+    skillSelect.addEventListener('change', (e) => populateSubSkillSelect(e.target.value));
 
-    // Añade una nueva línea de texto al panel de "Registro" en la barra lateral.
     function addLogEntry(message, type = '') {
         const logEntry = document.createElement('li'); 
         logEntry.textContent = message; 
-        if (type) logEntry.classList.add(type); // Añade una clase especial (ej. 'level-up') si es necesario.
-        logList.prepend(logEntry); // Lo añade al principio de la lista.
-        if (logList.children.length > 20) logList.removeChild(logList.lastChild); // Limita el log a 20 entradas.
+        if (type) logEntry.classList.add(type);
+        logList.prepend(logEntry);
+        if (logList.children.length > 20) logList.removeChild(logList.lastChild);
     }
 
     //================================================================================//
     //  SECCIÓN 10: EVENTO PRINCIPAL - REGISTRAR EXPERIENCIA (XP)                     //
-    //  Esta es la acción que se dispara al pulsar el botón "Registrar XP".           //
-    //  Toma los datos de los inputs, calcula el XP ganado y actualiza todo.          //
     //================================================================================//
     registerBtn.addEventListener('click', () => {
         const selectedSkill = skillSelect.value;
         const selectedSubSkill = subSkillSelect.value;
         const timeSpent = parseInt(timeInput.value);
-        if (!selectedSkill || isNaN(timeSpent) || timeSpent <= 0) { addLogEntry('Entrada inválida.', 'level-up'); return; }
+        if (!selectedSkill || subSkillSelect.disabled || !selectedSubSkill || isNaN(timeSpent) || timeSpent <= 0) { addLogEntry('Entrada inválida.', 'level-up'); return; }
         
         const xpGained = Math.floor((timeSpent / 15) * XP_PER_15_MINS);
         const skillData = skills[selectedSkill];
         const oldLevel = skillData.level;
-        skillData.xp += xpGained;
+
+        skillData.subSkills[selectedSubSkill].xp += xpGained;
+        skillData.xp = Object.values(skillData.subSkills).reduce((sum, s) => sum + s.xp, 0);
         skillData.level = getLevelFromXp(skillData.xp);
         
-        let logMessage = `+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill}`;
-        if (selectedSubSkill && !subSkillSelect.disabled) {
-            logMessage += ` (${selectedSubSkill})`;
-        }
-        logMessage += ` (${timeSpent} min).`;
-        addLogEntry(logMessage);
-
+        addLogEntry(`+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill} (${selectedSubSkill}) por ${timeSpent} min.`);
         if (skillData.level > oldLevel) {
             addLogEntry(`¡Nivel ${skillData.level} en ${selectedSkill}!`, 'level-up');
         }
         timeInput.value = '';
         updateDisplay();
+        renderDashboardCharts();
+        renderSubSkillList(selectedSkill);
     });
     
     //================================================================================//
     //  SECCIÓN 11: INICIALIZACIÓN PRINCIPAL DE LA APLICACIÓN                         //
-    //  Esto es lo primero que se ejecuta cuando la página ha cargado por completo.   //
-    //  Prepara la aplicación para que el usuario pueda empezar a usarla.             //
     //================================================================================//
     window.onload = () => { 
-        skills = JSON.parse(JSON.stringify(initialSkills)); // Carga la estructura de datos inicial.
-        populateSelect(); // Rellena los menús desplegables.
-        updateDisplay();  // Muestra la lista de habilidades.
-        renderDescriptionPage(); // Construye la página de descripción (aunque esté oculta).
+        skills = JSON.parse(JSON.stringify(initialSkills));
+        populateSelect();
+        updateDisplay(); 
+        renderDescriptionPage();
+        renderDashboardCharts();
         addLogEntry('¡Bienvenido, aventurero!'); 
     };
     </script>
     
-    <!-- Scripts de Google. Se cargan de forma asíncrona para no bloquear la página. -->
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
