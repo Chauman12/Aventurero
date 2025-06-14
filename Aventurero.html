@@ -3,25 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v9.10 (Gráfico Radial)</title>
-    <!-- Importación de la librería Chart.js para los gráficos -->
+    <title>Panel de Aventurero v18 (Asistente IA)</title>
+    <!-- Importación de Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* ==========================================================================
            1. IMPORTACIÓN DE FUENTES E INICIALIZACIÓN
            ========================================================================== */
-        
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        
-        html {
-            font-size: 100%; 
-            scroll-behavior: smooth;
-        }
+        html { font-size: 100%; scroll-behavior: smooth; }
 
         /* ==========================================================================
            2. ESTILOS GENERALES DEL CUERPO (BODY)
            ========================================================================== */
-        
         body {
             background-color: #1e1e2f;
             color: #dcdcdc;
@@ -35,229 +29,70 @@
         /* ==========================================================================
            3. ESTRUCTURA Y LAYOUT PRINCIPAL
            ========================================================================== */
-
-        .main-container {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .sidebar {
-            width: 280px;
-            flex-shrink: 0;
-            position: sticky;
-            top: 20px;
-        }
-
-        .main-content {
-            flex-grow: 1;
-        }
+        .main-container { width: 100%; max-width: 1200px; display: flex; gap: 20px; align-items: flex-start; }
+        .sidebar { width: 280px; flex-shrink: 0; position: sticky; top: 20px; }
+        .main-content { flex-grow: 1; }
 
         /* ==========================================================================
            4. ESTILOS DE LOS CONTENEDORES (PANELES)
            ========================================================================== */
-
-        .container {
-            border: 3px solid #4f4f6f;
-            background-color: #2a2a40;
-            padding: 20px;
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
+        .container { border: 3px solid #4f4f6f; background-color: #2a2a40; padding: 20px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; }
+        
         /* ==========================================================================
            5. TIPOGRAFÍA (TÍTULOS Y TEXTOS)
            ========================================================================== */
-
-        h1, h2 {
-            color: #ffdd57;
-            text-align: center;
-            border-bottom: 2px solid #4f4f6f;
-            padding-bottom: 10px;
-            margin-top: 0;
-            font-size: 1.5rem;
-            text-shadow: 2px 2px #c23616;
-        }
-
+        h1, h2 { color: #ffdd57; text-align: center; border-bottom: 2px solid #4f4f6f; padding-bottom: 10px; margin-top: 0; font-size: 1.5rem; text-shadow: 2px 2px #c23616; }
         h2 { font-size: 1.2rem; }
         h3 { font-size: 1rem; color: #4a90e2; margin-top: 20px; text-align: center; }
         h4 { font-size: 0.8rem; color: #a0a0c0; margin-bottom: 10px; border-top: 1px solid #4f4f6f; padding-top: 15px; margin-top: 15px;}
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #a0a0c0;
-            font-size: 0.8rem;
-        }
+        label { display: block; margin-bottom: 8px; color: #a0a0c0; font-size: 0.8rem; }
 
         /* ==========================================================================
            6. ELEMENTOS DE FORMULARIO Y BOTONES
            ========================================================================== */
-
-        select, input[type="number"], input[type="text"], input[type="date"], input[type="time"], textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            background-color: #1e1e2f;
-            color: #dcdcdc;
-            border: 2px solid #4f4f6f;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            box-sizing: border-box;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        button, .nav-btn, .type-btn {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            color: #FFFFFF;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            font-family: inherit;
-            text-align: center;
-            transition: all 0.1s ease-in-out;
-            display: block;
-            font-size: 0.8rem;
-        }
-        
-        #register-btn, #create-mission-btn { background: linear-gradient(145deg, #4a90e2, #3a7ac8); border-bottom: 4px solid #2a5a9a; }
-        #auth-btn { background-color: #dd4b39; border-bottom: 4px solid #c23321;}
-        .gdrive-btn { background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
+        select, input[type="number"], input[type="text"], input[type="date"], input[type="time"], textarea { width: 100%; padding: 12px; margin-bottom: 15px; background-color: #1e1e2f; color: #dcdcdc; border: 2px solid #4f4f6f; border-radius: 4px; font-family: inherit; font-size: 0.9rem; box-sizing: border-box; }
+        textarea { resize: vertical; min-height: 80px; }
+        button, .nav-btn, .type-btn { width: 100%; padding: 12px; margin-bottom: 10px; color: #FFFFFF; font-weight: bold; cursor: pointer; border: none; border-radius: 4px; font-family: inherit; text-align: center; transition: all 0.1s ease-in-out; display: block; font-size: 0.8rem; }
+        #register-btn, #create-mission-btn, #ai-prompt-btn { background: linear-gradient(145deg, #4a90e2, #3a7ac8); border-bottom: 4px solid #2a5a9a; }
+        #auth-btn { background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
+        #logout-btn { background-color: #555; border-bottom: 4px solid #444; display: none; }
         #reset-progress-btn { background-color: #c23616; border-bottom: 4px solid #8e240e;}
         .nav-btn { background-color: #6a4f9a; border-bottom: 4px solid #4a2f7a; }
         .nav-btn.active { background-color: #8a6fba; transform: translateY(2px); border-bottom-width: 2px;}
         button:disabled { background-color: #555; border-bottom-color: #444; color: #888; cursor: not-allowed; }
-
         .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
         .type-btn { background-color: #555; border-bottom: 4px solid #444; width: 50%; }
         .type-btn.active { background-color: #4a90e2; border-bottom-color: #2a5a9a; transform: translateY(2px); border-bottom-width: 2px; }
-
         #unit-input-container { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
         #unit-check { width: auto; height: 20px; }
-
 
         /* ==========================================================================
            7. PANELES ESPECÍFICOS Y LISTAS
            ========================================================================== */
-        
-        .chart-container {
-            position: relative;
-            min-height: 300px; /* Aumentado para mejor visualización */
-            padding: 15px;
-            background: #1e1e2f;
-            border-radius: 5px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-
-        .skills-panel ul, .log-panel ul, .mission-list ul {
-            list-style: none;
-            padding: 0;
-            max-height: 450px;
-            overflow-y: auto;
-        }
-        
-        .skills-panel li {
-            background-color: #33334f;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            border-left: 5px solid #ffdd57;
-            display: block;
-            border-radius: 4px;
-        }
-        .skill-info-container {
-             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
+        .chart-container { position: relative; min-height: 350px; padding: 15px; background: #1e1e2f; border-radius: 5px; margin-top: 10px; margin-bottom: 20px; }
+        .skills-panel ul, .log-panel ul { list-style: none; padding: 0; max-height: 450px; overflow-y: auto; }
+        .skills-panel li { background-color: #33334f; padding: 10px 15px; margin-bottom: 8px; border-left: 5px solid #ffdd57; display: block; border-radius: 4px; }
+        .skill-info-container { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; margin-bottom: 10px; }
         .skill-name { font-weight: bold; }
         .skill-meta { font-size: 0.7rem; color: #a0a0c0; text-align: right; }
-        
-        .description-item {
-            display: flex; flex-direction: column; align-items: flex-start; gap: 15px;
-            background-color: #33334f; padding: 15px; margin-bottom: 10px;
-            border-left: 5px solid #ffdd57; border-radius: 4px;
-            font-size: 0.75rem; line-height: 1.5;
-        }
+        .description-item { display: flex; flex-direction: column; align-items: flex-start; gap: 15px; background-color: #33334f; padding: 15px; margin-bottom: 10px; border-left: 5px solid #ffdd57; border-radius: 4px; font-size: 0.75rem; line-height: 1.5; }
         .description-header { display: flex; align-items: center; gap: 15px; width: 100%;}
         .description-img { width: 80px; height: 80px; border-radius: 4px; flex-shrink: 0; object-fit: cover; }
-        
         .subskill-container { width: 100%; }
         .subskill-list { list-style: none; padding: 0; }
-        .subskill-list li { 
-            display: flex; 
-            flex-direction: column;
-            align-items: flex-start; 
-            background-color: #2a2a40; 
-            padding: 12px; 
-            border-radius: 3px; 
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            gap: 10px;
-            border-left: 3px solid #6a4f9a;
-        }
-        .subskill-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-        .subskill-actions {
-            display: flex;
-            gap: 5px;
-        }
-        .session-history {
-            width: 100%;
-            margin-top: 10px;
-            border-top: 1px solid #4f4f6f;
-            padding-top: 10px;
-            font-size: 0.7rem;
-            color: #a0a0c0;
-        }
-        .session-entry {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            padding: 4px;
-            border-radius: 2px;
-        }
-        .session-entry:nth-child(odd) {
-            background-color: #33334f;
-        }
-        .xp-earned {
-            color: #32ff7e;
-            font-weight: bold;
-        }
+        .subskill-list li { display: flex; flex-direction: column; align-items: flex-start; background-color: #2a2a40; padding: 12px; border-radius: 3px; margin-bottom: 8px; font-size: 0.9rem; gap: 10px; border-left: 3px solid #6a4f9a; }
+        .subskill-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .subskill-actions { display: flex; gap: 5px; }
+        .session-history { width: 100%; margin-top: 10px; border-top: 1px solid #4f4f6f; padding-top: 10px; font-size: 0.7rem; color: #a0a0c0; }
+        .session-entry { display: flex; justify-content: space-between; flex-wrap: wrap; padding: 4px; border-radius: 2px; }
+        .session-entry:nth-child(odd) { background-color: #33334f; }
+        .xp-earned { color: #32ff7e; font-weight: bold; }
         .subskill-input-group { display: flex; gap: 10px; align-items: center; }
-        
-        .edit-subskill-btn, .delete-subskill-btn { 
-            border: none; color: white; padding: 5px 8px;
-            border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 0.8rem;
-            width: auto;
-            flex-shrink: 0;
-        }
+        .edit-subskill-btn, .delete-subskill-btn { border: none; color: white; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 0.8rem; width: auto; flex-shrink: 0; }
         .edit-subskill-btn { background: #4a90e2; }
         .delete-subskill-btn { background: #c23616; }
-        
         .add-subskill-btn { flex-shrink: 0; width: auto; padding: 0 15px; font-size: 1.2rem; background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
-        
         .skill-icon { margin-right: 10px; }
-        
-        /* Log Panel, Progress Bar & Modal Styles */
         .log-panel ul { max-height: 400px; }
         .log-panel li { font-size: 0.75rem; padding: 8px; border-radius: 4px; line-height: 1.5; }
         .log-panel .level-up { border-left: 3px solid #32ff7e; background-color: rgba(50, 255, 126, 0.1); }
@@ -269,24 +104,15 @@
         .evaluation { grid-column: 1 / 3; display: flex; gap: 15px; margin-top: 5px; font-size: 0.65rem; }
         .intensity.bajo { color: #1e90ff; } .intensity.medio { color: #dcdcdc; } .intensity.alto { color: #ffdd57; }
         .performance.malo { color: #ff4757; } .performance.normal { color: #dcdcdc; } .performance.bueno { color: #32ff7e; }
-        .level-up .level-up { text-align: center; font-size: 0.8rem; color: #ffdd57; }
+        .level-up .level-up-msg { text-align: center; font-size: 0.8rem; color: #ffdd57; }
         .level-progress { font-size: 0.7rem; color: #a0a0c0; margin-top: 5px; }
-
-        #gdrive-status { text-align: center; font-size: 0.7rem; padding: 10px; color: #a0a0c0; min-height: 20px; }
-        
+        #auth-status { text-align: center; font-size: 0.7rem; padding: 10px; color: #a0a0c0; min-height: 20px; line-height: 1.4; }
         .progress-bar-bg { position: relative; background-color: #1e1e2f; border-radius: 5px; height: 18px; width: 100%; border: 1px solid #4f4f6f; overflow: hidden; }
         .progress-bar-fg { background-color: #32ff7e; height: 100%; border-radius: 5px; }
         .progress-text { position: absolute; width: 100%; text-align: center; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.65rem; color: #1e1e2f; font-weight: bold; text-shadow: 0 0 2px #dcdcdc; }
-
         .page-content { display: none; }
         .page-content.active { display: block; }
-        
-        #version-info {
-            font-size: 0.65rem; color: #8a8a9e; text-align: right;
-            margin-top: 15px; padding-top: 10px;
-            border-top: 1px solid #4f4f6f; line-height: 1.4;
-        }
-
+        #version-info { font-size: 0.65rem; color: #8a8a9e; text-align: right; margin-top: 15px; padding-top: 10px; border-top: 1px solid #4f4f6f; line-height: 1.4; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: #2a2a40; padding: 30px; border-radius: 8px; border: 2px solid #ffdd57; text-align: center; max-width: 400px; }
         .modal-content h3 { margin-top: 0; font-size: 1.2rem; }
@@ -295,11 +121,20 @@
         .modal-btn { width: 120px; }
         .modal-btn.confirm { background-color: #c23616; border-bottom: 4px solid #8e240e; }
         .modal-btn.cancel { background-color: #555; border-bottom: 4px solid #444; }
-        
+
+        /* Estilos de la tabla de Ranking y Asistente IA */
+        #ranking-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        #ranking-table th, #ranking-table td { padding: 12px; border-bottom: 2px solid #4f4f6f; text-align: left; font-size: 0.8rem; }
+        #ranking-table th { color: #ffdd57; font-size: 0.9rem; }
+        #ranking-table .rank-pos { font-size: 1.2rem; text-align: center; }
+        #ranking-table .rank-name { display: flex; align-items: center; gap: 10px; }
+        #ranking-table .rank-avatar { width: 30px; height: 30px; border-radius: 50%; }
+        .current-user-rank { background-color: rgba(74, 144, 226, 0.2); }
+        #ai-response-container { margin-top: 20px; padding: 15px; background-color: #1e1e2f; border-radius: 5px; min-height: 100px; white-space: pre-wrap; line-height: 1.6; }
+
         /* ==========================================================================
            8. DISEÑO RESPONSIVO (PARA MÓVILES)
            ========================================================================== */
-
         @media (max-width: 800px) {
             .main-container { flex-direction: column; }
             .sidebar { width: 100%; position: static; }
@@ -316,24 +151,23 @@
                 <h2>Navegación</h2>
                 <button class="nav-btn active" data-page="dashboard">Panel de Control</button> 
                 <button class="nav-btn" data-page="entrenamiento">Entrenamiento</button>
+                <button class="nav-btn" data-page="ranking" style="display: none;">Aventureros</button>
+                <button class="nav-btn" data-page="asistente">Asistente IA</button>
                 <button class="nav-btn" data-page="misiones">Misiones</button>
                 <button class="nav-btn" data-page="descripcion">Descripción</button>
                 <button class="nav-btn" data-page="configuracion">Configuración</button>
             </div>
             
-            <div class="container gdrive-section">
-                <div id="gdrive-status">Inicia sesión para sincronizar.</div>
+            <div class="container auth-section">
+                <div id="auth-status">Inicia sesión para comenzar.</div>
                 <button id="auth-btn">Iniciar Sesión con Google</button>
-                <button id="save-drive-btn" class="gdrive-btn" disabled>Guardar datos</button>
-                <button id="load-drive-btn" class="gdrive-btn" disabled>Cargar el poder</button>
+                <button id="logout-btn">Cerrar Sesión</button>
             </div>
 
-             <div class="container log-panel">
+            <div class="container log-panel">
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
-                <div id="version-info">
-                     v9.9 (Misiones y Notificaciones)
-                </div>
+                <div id="version-info">v18 (Asistente IA)</div>
             </div>
         </div>
 
@@ -351,9 +185,9 @@
                     <h1>Panel de Aventurero</h1>
                     <div class="input-section">
                         <label for="skill-select">Habilidad General:</label>
-                        <select id="skill-select"></select>
+                        <select id="skill-select" disabled></select>
                         <label for="subskill-select">Habilidad Concreta:</label>
-                        <select id="subskill-select"></select>
+                        <select id="subskill-select" disabled></select>
                         <div id="activity-type-container">
                             <label>Tipo de Actividad:</label>
                             <div class="type-selector">
@@ -363,25 +197,25 @@
                         </div>
                         <div id="time-input-container">
                             <label for="time-input">Minutos de práctica:</label>
-                            <input type="number" id="time-input" min="1" placeholder="Ej: 30">
+                            <input type="number" id="time-input" min="1" placeholder="Ej: 30" disabled>
                         </div>
                         <div id="unit-input-container" style="display: none;">
                             <label for="unit-check">Actividad cumplida:</label>
-                            <input type="checkbox" id="unit-check">
+                            <input type="checkbox" id="unit-check" disabled>
                         </div>
                         <label for="intensity-select">Intensidad:</label>
-                        <select id="intensity-select">
+                        <select id="intensity-select" disabled>
                             <option value="bajo">Bajo (x0.8)</option>
                             <option value="medio" selected>Medio (x1.0)</option>
                             <option value="alto">Alto (x1.2)</option>
                         </select>
                         <label for="performance-select">Desempeño:</label>
-                        <select id="performance-select">
+                        <select id="performance-select" disabled>
                             <option value="malo">Malo (x0.7)</option>
                             <option value="normal" selected>Normal (x1.0)</option>
                             <option value="bueno">Bueno (x1.3)</option>
                         </select>
-                        <button id="register-btn">Registrar XP</button>
+                        <button id="register-btn" disabled>Registrar XP</button>
                     </div>
                 </div>
                 <div class="container skills-panel">
@@ -390,19 +224,50 @@
                 </div>
             </div>
 
+            <div id="page-ranking" class="page-content">
+                <div class="container">
+                    <h1>Aventureros Destacados</h1>
+                    <p style="font-size: 0.8rem; color: #a0a0c0; text-align:center; line-height: 1.5;">Observa a los aventureros con el desarrollo más integral, basado en su diversificación de habilidades (niveles) y su experiencia (XP).</p>
+                    <div id="ranking-container">
+                        <table id="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>Pos.</th>
+                                    <th>Aventurero</th>
+                                    <th>Puntaje</th>
+                                    <th>Nivel Total</th>
+                                    <th>XP Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="page-asistente" class="page-content">
+                <div class="container">
+                    <h1>Asistente IA</h1>
+                    <p style="font-size: 0.8rem; color: #a0a0c0; text-align:center; line-height: 1.5;">Pide consejo o inspiración a la IA. Ej: "Dame 5 ideas para la habilidad de Cocina" o "Crea una rutina de 3 días para mejorar mi Agilidad".</p>
+                    <textarea id="ai-prompt-input" rows="4" placeholder="Escribe tu consulta aquí..." disabled></textarea>
+                    <button id="ai-prompt-btn" disabled>Enviar Consulta</button>
+                    <div id="ai-response-container">La respuesta de la IA aparecerá aquí...</div>
+                </div>
+            </div>
+
             <div id="page-misiones" class="page-content">
                 <div class="container">
                     <h1>Misiones</h1>
                     <div class="mission-form">
                         <label for="mission-title">Título de la Misión:</label>
-                        <input type="text" id="mission-title" placeholder="Ej: Practicar 30 minutos de guitarra">
+                        <input type="text" id="mission-title" placeholder="Ej: Practicar 30 minutos de guitarra" disabled>
                         <label for="mission-date">Fecha:</label>
-                        <input type="date" id="mission-date">
+                        <input type="date" id="mission-date" disabled>
                         <label for="mission-time">Hora:</label>
-                        <input type="time" id="mission-time">
+                        <input type="time" id="mission-time" disabled>
                         <label for="mission-description">Descripción (opcional):</label>
-                        <textarea id="mission-description" placeholder="Notas adicionales para el recordatorio..."></textarea>
-                        <button id="create-mission-btn">Crear Recordatorio en Google Calendar</button>
+                        <textarea id="mission-description" placeholder="Notas adicionales para el recordatorio..." disabled></textarea>
+                        <button id="create-mission-btn" disabled>Crear Recordatorio en Google Calendar</button>
                     </div>
                 </div>
             </div>
@@ -416,7 +281,7 @@
                     <h1>Configuración</h1>
                     <p style="text-align:center; line-height: 1.5;">Aquí puedes gestionar los datos de tu aplicación.</p>
                     <h4>Zona de Peligro</h4>
-                    <p style="font-size: 0.8rem; color: #a0a0c0; text-align:center; line-height: 1.5;">Esta acción borrará permanentemente tu archivo de progreso de Google Drive. No se puede deshacer.</p>
+                    <p style="font-size: 0.8rem; color: #a0a0c0; text-align:center; line-height: 1.5;">Esta acción borrará permanentemente tu progreso guardado en la nube. No se puede deshacer.</p>
                     <button id="reset-progress-btn" disabled>Borrar Progreso en la Nube</button>
                 </div>
             </div>
@@ -427,452 +292,350 @@
     <!-- Modal de Confirmación -->
     <div id="confirm-modal" class="modal-overlay">
         <div class="modal-content">
-            <h3>¿Estás seguro?</h3>
-            <p>Todo tu progreso se borrará de Google Drive y la aplicación se reiniciará. Esta acción no se puede deshacer.</p>
+            <h3 id="modal-title">¿Estás seguro?</h3>
+            <p id="modal-text">El progreso se borrará de forma permanente.</p>
             <div class="modal-actions">
                 <button id="confirm-delete-btn" class="modal-btn confirm">Sí, borrar</button>
                 <button id="cancel-delete-btn" class="modal-btn cancel">Cancelar</button>
             </div>
         </div>
     </div>
-
-    <script>
-    //================================================================================//
-    //  SECCIÓN 1: CONFIGURACIÓN DE ACCESO A GOOGLE DRIVE API                         //
-    //================================================================================//
-    const CLIENT_ID = '432634777489-acq7bb59h2ggc223oafccitlvskvqh6p.apps.googleusercontent.com';
-    const API_KEY = 'AIzaSyB17ehizwOK9efPy7Bo7Zss2zveYSVhwE8';
     
-    //================================================================================//
-    //  SECCIÓN 2: ESTRUCTURA DE DATOS INICIAL                                        //
-    //================================================================================//
-    const initialSkills = {
-        'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: {}, img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
-        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '💪', subSkills: {}, img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
-        'Defensa (Finanzas Personales)': { xp: 0, level: 1, icon: '🛡️', subSkills: {}, img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
-        'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: {}, img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
-        'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: {}, img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
-        'Magia (Habilidades Sociales)': { xp: 0, level: 1, icon: '✨', subSkills: {}, img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia, compañerismo' },
-        'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: {}, img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
-        'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
-        'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: {}, img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
-        'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: {}, img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
-        'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: {}, img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
-        'Creación (Proyectos Creativos)': { xp: 0, level: 1, icon: '🎨', subSkills: {}, img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
-        'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: {}, img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
-        'Grabación de Fuego (Disciplina)': { xp: 0, level: 1, icon: '🔥', subSkills: {}, img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina. La clave es la simplicidad y la consistencia.' }
-    };
-    
-    const MIGRATION_MAP = {
-        "Ataque (Carrera)": "Avance (Formación)", "Fuerza (Fitness)": "Fuerza (Salud centrada en el cuerpo)", "Agilidad (Cardio)": "Agilidad (Salud centrada en cuerpo)", "Oración (Mindfulness)": "Espiritual (Salud Mental)", "Herbología (Nutrición)": "Nutrición (Salud corporal)", "Pesca (Hobbies)": "Hobbies y Relajación", "Herrería (Estudio)": "Estudio Profundo", "Creación de Fuego (Disciplina y Hábitos)": "Grabación de Fuego (Disciplina)", "Hobbies y Relajación": "Hobbies y Relajación (en la Nada y en el Todo a la vez)"
-    };
+    <script type="module">
+        // ==========================================================================
+        //  1. IMPORTACIONES DE FIREBASE
+        // ==========================================================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-    let skills = {};
-    let chartInstances = {};
-    
-    //================================================================================//
-    //  SECCIÓN 3: CONSTANTES DE LÓGICA DE JUEGO                                      //
-    //================================================================================//
-    const XP_PER_15_MINS = 100;
-    const XP_PER_UNIT = 150; 
-    const INTENSITY_MULTIPLIERS = { bajo: 0.8, medio: 1.0, alto: 1.2 };
-    const PERFORMANCE_MULTIPLIERS = { malo: 0.7, normal: 1.0, bueno: 1.3 };
+        // ==========================================================================
+        //  2. CONFIGURACIÓN DE FIREBASE Y SERVICIOS EXTERNOS
+        // ==========================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAntlbZJfFyQ7NxyY5l5dXcGo4sv4Nj310",
+            authDomain: "aventurero-ba1da.firebaseapp.com",
+            projectId: "aventurero-ba1da",
+            storageBucket: "aventurero-ba1da.appspot.com",
+            messagingSenderId: "860168195863",
+            appId: "1:860168195863:web:d3384480486cf51647f152",
+            measurementId: "G-LP6HY5K8HH"
+        };
+        
+        // ==========================================================================
+        //  3. INICIALIZACIÓN DE SERVICIOS Y ESTADO DE LA APP
+        // ==========================================================================
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
-    //================================================================================//
-    //  SECCIÓN 4: REFERENCIAS A ELEMENTOS DEL HTML (DOM)                             //
-    //================================================================================//
-    const authBtn = document.getElementById('auth-btn');
-    const saveBtn = document.getElementById('save-drive-btn');
-    const loadBtn = document.getElementById('load-drive-btn');
-    const statusDiv = document.getElementById('gdrive-status');
-    const skillSelect = document.getElementById('skill-select');
-    const subSkillSelect = document.getElementById('subskill-select');
-    const timeInput = document.getElementById('time-input');
-    const registerBtn = document.getElementById('register-btn');
-    const skillsList = document.getElementById('skills-list');
-    const logList = document.getElementById('log-list');
-    const descriptionContainer = document.querySelector('#page-descripcion .description-content');
-    const intensitySelect = document.getElementById('intensity-select');
-    const performanceSelect = document.getElementById('performance-select');
-    const temporalBtn = document.getElementById('temporal-type-btn');
-    const discreteBtn = document.getElementById('discrete-type-btn');
-    const timeInputContainer = document.getElementById('time-input-container');
-    const unitInputContainer = document.getElementById('unit-input-container');
-    const unitCheck = document.getElementById('unit-check');
-    const resetProgressBtn = document.getElementById('reset-progress-btn');
-    const confirmModal = document.getElementById('confirm-modal');
-    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-    // Nuevos elementos de Misiones
-    const createMissionBtn = document.getElementById('create-mission-btn');
-    const missionTitleInput = document.getElementById('mission-title');
-    const missionDateInput = document.getElementById('mission-date');
-    const missionTimeInput = document.getElementById('mission-time');
-    const missionDescriptionInput = document.getElementById('mission-description');
+        let skills = {};
+        let chartInstances = {};
+        let currentUser = null;
+        let currentModalAction = null;
 
+        const initialSkillsData = {
+            'Avance (Formación)': { xp: 0, level: 0, icon: '⚔️', subSkills: {}, img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
+            'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 0, icon: '💪', subSkills: {}, img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
+            'Defensa (Finanzas Personales)': { xp: 0, level: 0, icon: '🛡️', subSkills: {}, img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
+            'Constitución (Salud y Resistencia)': { xp: 0, level: 0, icon: '❤️', subSkills: {}, img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
+            'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 0, icon: '�', subSkills: {}, img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
+            'Magia (Habilidades Sociales)': { xp: 0, level: 0, icon: '✨', subSkills: {}, img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia, compañerismo' },
+            'Espiritual (Salud Mental)': { xp: 0, level: 0, icon: '🧘', subSkills: {}, img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
+            'Nutrición (Salud corporal)': { xp: 0, level: 0, icon: '🌿', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
+            'Cocina (Práctica)': { xp: 0, level: 0, icon: '🍳', subSkills: {}, img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
+            'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 0, icon: '🌌', subSkills: {}, img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
+            'Estudio Profundo': { xp: 0, level: 0, icon: '📚', subSkills: {}, img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
+            'Creación (Proyectos Creativos)': { xp: 0, level: 0, icon: '🎨', subSkills: {}, img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
+            'Construcción (Organización)': { xp: 0, level: 0, icon: '🏡', subSkills: {}, img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
+            'Grabación de Fuego (Disciplina)': { xp: 0, level: 0, icon: '🔥', subSkills: {}, img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina. La clave es la simplicidad y la consistencia.' }
+        };
 
-    //================================================================================//
-    //  SECCIÓN 5: LÓGICA DE NAVEGACIÓN Y UI                                          //
-    //================================================================================//
-    const navButtons = document.querySelectorAll('.nav-btn');
-    const pages = document.querySelectorAll('.page-content');
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const targetPage = button.getAttribute('data-page');
-            navButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            pages.forEach(page => page.classList.toggle('active', page.id === 'page-' + targetPage));
-            if (targetPage === 'dashboard') renderDashboardCharts();
-            if (window.matchMedia('(max-width: 800px)').matches) {
-                document.getElementById('page-' + targetPage)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const XP_PER_15_MINS = 100;
+        const XP_PER_UNIT = 150;
+        const INTENSITY_MULTIPLIERS = { bajo: 0.8, medio: 1.0, alto: 1.2 };
+        const PERFORMANCE_MULTIPLIERS = { malo: 0.7, normal: 1.0, bueno: 1.3 };
+
+        // ==========================================================================
+        //  4. REFERENCIAS AL DOM
+        // ==========================================================================
+        const authBtn = document.getElementById('auth-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const authStatus = document.getElementById('auth-status');
+        const logList = document.getElementById('log-list');
+        const registerBtn = document.getElementById('register-btn');
+        const temporalBtn = document.getElementById('temporal-type-btn');
+        const discreteBtn = document.getElementById('discrete-type-btn');
+        const timeInputContainer = document.getElementById('time-input-container');
+        const unitInputContainer = document.getElementById('unit-input-container');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+        const skillSelect = document.getElementById('skill-select');
+        const subSkillSelect = document.getElementById('subskill-select');
+        const descriptionContainer = document.querySelector('#page-descripcion .description-content');
+        const resetProgressBtn = document.getElementById('reset-progress-btn');
+        const confirmModal = document.getElementById('confirm-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const createMissionBtn = document.getElementById('create-mission-btn');
+        const missionTitleInput = document.getElementById('mission-title');
+        const missionDateInput = document.getElementById('mission-date');
+        const missionTimeInput = document.getElementById('mission-time');
+        const missionDescriptionInput = document.getElementById('mission-description');
+        const navRankingBtn = document.querySelector('.nav-btn[data-page="ranking"]');
+        const rankingBody = document.getElementById('ranking-body');
+        const aiPromptInput = document.getElementById('ai-prompt-input');
+        const aiPromptBtn = document.getElementById('ai-prompt-btn');
+        const aiResponseContainer = document.getElementById('ai-response-container');
+        const allInputs = document.querySelectorAll('button, select, input, textarea');
+
+        // ==========================================================================
+        //  5. LÓGICA DE AUTENTICACIÓN Y DATOS (FIREBASE)
+        // ==========================================================================
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                authStatus.innerHTML = `Conectado como:<br><strong style="font-size:0.7rem;">${user.displayName}</strong>`;
+                authBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                if (navRankingBtn) navRankingBtn.style.display = 'block';
+                await loadUserData(user);
+                enableAllInputs(true);
+            } else {
+                currentUser = null;
+                authStatus.textContent = 'Inicia sesión para comenzar.';
+                authBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                if (navRankingBtn) navRankingBtn.style.display = 'none';
+                resetLocalData();
+                enableAllInputs(false);
             }
         });
-    });
 
-    function setupActivityTypeSwitcher() {
-        temporalBtn.addEventListener('click', () => {
-            temporalBtn.classList.add('active');
-            discreteBtn.classList.remove('active');
-            timeInputContainer.style.display = 'block';
-            unitInputContainer.style.display = 'none';
+        authBtn.addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(error => {
+                console.error("Error de autenticación:", error);
+                addLogEntry(`<span class="error">Error de autenticación: ${error.code}</span>`);
+            });
         });
-        discreteBtn.addEventListener('click', () => {
-            discreteBtn.classList.add('active');
-            temporalBtn.classList.remove('active');
-            timeInputContainer.style.display = 'none';
-            unitInputContainer.style.display = 'block';
-        });
-    }
 
-    //================================================================================//
-    //  SECCIÓN 6: LÓGICA DE LA PÁGINA "DESCRIPCIÓN"                                  //
-    //================================================================================//
-    
-    function renderDescriptionPage() {
-        descriptionContainer.innerHTML = '<h1>Descripción de Habilidades</h1>';
-        const categories = { combate: 'Habilidades de "Combate"', autocuidado: 'Habilidades de "Autocuidado"', artesania: 'Habilidades de "Artesanía"' };
-        for (const categoryId in categories) {
-            const categoryTitle = document.createElement('h3');
-            categoryTitle.textContent = categories[categoryId];
-            descriptionContainer.appendChild(categoryTitle);
-            const categoryList = document.createElement('ul');
-            categoryList.style.padding = '0';
-            for (const skillName in skills) {
-                if (skills[skillName].category === categoryId) {
-                    const skill = skills[skillName];
-                    const item = document.createElement('li');
-                    item.className = 'description-item';
-                    item.setAttribute('data-skill', skillName);
-                    item.innerHTML = `<div class="description-header"><img src="${skill.img}" alt="Icono" class="description-img"><div><strong>${skillName}:</strong> ${skill.description}</div></div><div class="subskill-container"><h4>Habilidades Concretas:</h4><ul class="subskill-list"></ul><div class="subskill-input-group"><input type="text" placeholder="Añadir habilidad..." maxlength="50"><button class="add-subskill-btn">+</button></div></div>`;
-                    categoryList.appendChild(item);
-                }
-            }
-            descriptionContainer.appendChild(categoryList);
-        }
-        renderAllSubSkillLists();
-        addDescriptionPageListeners();
-    }
-    
-    function renderSubSkillList(skillName) {
-        const listElement = document.querySelector(`.description-item[data-skill="${skillName}"] .subskill-list`);
-        if (!listElement) return;
-        listElement.innerHTML = '';
-        const skill = skills[skillName];
-        if (skill && skill.subSkills) {
-            Object.entries(skill.subSkills).forEach(([subSkillName, subSkillData]) => {
-                const li = document.createElement('li');
-                let sessionsHTML = '<div class="session-history"><h5>Historial Reciente:</h5>';
-                if (subSkillData.sessions && subSkillData.sessions.length > 0) {
-                     subSkillData.sessions.slice().reverse().slice(0, 5).forEach(session => {
-                        const dateStr = new Date(session.date).toLocaleDateString();
-                        const activityTypeIcon = session.type === 'temporal' ? '⏱️' : '✅';
-                        const activityDetail = session.type === 'temporal' ? `${session.time} min` : 'Unidad';
-                        sessionsHTML += `<div class="session-entry"><span>${activityTypeIcon} ${dateStr}: ${activityDetail}</span><span class="xp-earned">+${session.xpEarned} XP</span></div>`;
-                     });
+        logoutBtn.addEventListener('click', () => signOut(auth));
+
+        async function loadUserData(user) {
+            addLogEntry('Cargando progreso desde la nube...');
+            const userDocRef = doc(db, 'users', user.uid);
+            try {
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists() && docSnap.data().skills) {
+                    const loadedSkills = docSnap.data().skills;
+                    skills = JSON.parse(JSON.stringify(initialSkillsData));
+                    for (const skillName in loadedSkills) {
+                        if (skills.hasOwnProperty(skillName)) {
+                            Object.assign(skills[skillName], JSON.parse(JSON.stringify(loadedSkills[skillName])));
+                        }
+                    }
+                    addLogEntry('📂 Progreso cargado.');
                 } else {
-                    sessionsHTML += '<span>No hay sesiones registradas.</span>';
+                    addLogEntry('Bienvenido, nuevo aventurero! Creando tu perfil...');
+                    skills = JSON.parse(JSON.stringify(initialSkillsData));
+                    await saveUserData(user, true);
                 }
-                sessionsHTML += '</div>';
-                li.innerHTML = `<div class="subskill-header"><span>${subSkillName}</span> <div class="subskill-actions"><button class="edit-subskill-btn" data-name="${subSkillName}" title="Editar nombre">✏️</button><button class="delete-subskill-btn" data-name="${subSkillName}" title="Eliminar">🗑️</button></div></div>${sessionsHTML}`;
-                listElement.appendChild(li);
+            } catch (error) {
+                console.error("Error al cargar datos:", error);
+                addLogEntry(`<span class="error">Error al cargar datos. Usando plantilla inicial.</span>`);
+                skills = JSON.parse(JSON.stringify(initialSkillsData));
+            } finally {
+                updateAllUI();
+            }
+        }
+
+        async function saveUserData(user, isNewUser = false) {
+            if (!user) return;
+            const userDocRef = doc(db, 'users', user.uid);
+            
+            const totalXP = Object.values(skills).reduce((acc, skill) => acc + (skill.xp || 0), 0);
+            const totalLevel = Object.values(skills).reduce((acc, skill) => acc + (skill.level || 0), 0);
+            const score = totalLevel * totalXP;
+
+            const dataToSave = { 
+                skills,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+                lastUpdate: new Date().toISOString(),
+                totalXP,
+                totalLevel,
+                score
+            };
+            try {
+                await setDoc(userDocRef, dataToSave, { merge: !isNewUser });
+            } catch (error) {
+                console.error("Error al guardar datos:", error);
+                addLogEntry(`<span class="error">Error al guardar el progreso.</span>`);
+            }
+        }
+        
+        async function deleteUserData() {
+            if(!currentUser) return;
+            const userDocRef = doc(db, 'users', currentUser.uid);
+            try {
+                await deleteDoc(userDocRef);
+                addLogEntry('🗑️ Progreso en la nube borrado exitosamente.');
+            } catch (error) {
+                console.error("Error al borrar datos:", error);
+                addLogEntry(`<span class="error">No se pudo borrar el progreso en la nube.</span>`);
+            } finally {
+                resetLocalData();
+                updateAllUI();
+            }
+        }
+
+        // ==========================================================================
+        //  6. LÓGICA DE JUEGO, IA Y RENDERIZADO
+        // ==========================================================================
+        function getXpForLevel(level) { return Math.pow(level, 2) * 1000; }
+        
+        function getLevelFromXp(xp) { 
+            if (!xp || xp < 1) return 0;
+            const level = Math.floor(Math.sqrt(xp / 1000));
+            return Math.min(level, 200); 
+        }
+
+        function calculateSkillProgress(skill) { 
+            const xpAtStartOfCurrentLevel = getXpForLevel(skill.level);
+            const xpAtStartOfNextLevel = getXpForLevel(skill.level + 1);
+            const xpNeededForThisLevel = xpAtStartOfNextLevel - xpAtStartOfCurrentLevel;
+            if (xpNeededForThisLevel <= 0) return { progressPercentage: 100 };
+            const xpEarnedInThisLevel = skill.xp - xpAtStartOfCurrentLevel;
+            const progressPercentage = (xpEarnedInThisLevel / xpNeededForThisLevel) * 100;
+            return { progressPercentage: Math.max(0, Math.min(progressPercentage, 100)) };
+        }
+
+        async function getAIResponse(prompt) {
+            aiResponseContainer.textContent = 'Generando respuesta...';
+            aiPromptBtn.disabled = true;
+
+            const apiKey = ""; // Dejar vacío, el entorno lo gestionará
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: prompt }]
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error de la API: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    aiResponseContainer.textContent = text;
+                } else {
+                    throw new Error("Respuesta de la API inválida.");
+                }
+
+            } catch (error) {
+                console.error("Error al llamar a la API de Gemini:", error);
+                aiResponseContainer.textContent = `Error: No se pudo obtener la respuesta. ${error.message}`;
+            } finally {
+                aiPromptBtn.disabled = false;
+            }
+        }
+
+        async function renderRanking() {
+            if (!rankingBody) return;
+            rankingBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Cargando aventureros...</td></tr>';
+            try {
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, orderBy("score", "desc"), limit(20));
+                const querySnapshot = await getDocs(q);
+                
+                rankingBody.innerHTML = ''; 
+                let rank = 1;
+                querySnapshot.forEach((docSnap) => {
+                    const userData = docSnap.data();
+                    const row = document.createElement('tr');
+                    if(currentUser && docSnap.id === currentUser.uid) row.classList.add('current-user-rank');
+                    row.innerHTML = `
+                        <td class="rank-pos">${rank}</td>
+                        <td class="rank-name">
+                            <img src="${userData.photoURL || 'https://placehold.co/30x30/FFFFFF/000000?text=?'}" alt="avatar" class="rank-avatar">
+                            ${userData.displayName}
+                        </td>
+                        <td>${(userData.score || 0).toLocaleString()}</td>
+                        <td>${userData.totalLevel || 0}</td>
+                        <td>${(userData.totalXP || 0).toLocaleString()}</td>`;
+                    rankingBody.appendChild(row);
+                    rank++;
+                });
+                if (querySnapshot.empty) {
+                    rankingBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Aún no hay aventureros destacados.</td></tr>';
+                }
+            } catch (error) {
+                console.error("Error al renderizar el ranking:", error);
+                rankingBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: #ff4757;">No se pudo cargar el ranking.</td></tr>';
+            }
+        }
+        
+        function enableAllInputs(isEnabled) {
+            allInputs.forEach(el => {
+                if (el.id === 'auth-btn') el.disabled = isEnabled;
+                else el.disabled = !isEnabled;
             });
         }
-    }
-
-    function renderAllSubSkillLists() {
-        for (const skillName in skills) { renderSubSkillList(skillName); }
-    }
-
-    function addDescriptionPageListeners() {
-        descriptionContainer.addEventListener('click', (e) => {
-            const target = e.target.closest('button');
-            if (!target) return;
-            const parentItem = target.closest('.description-item');
-            if (!parentItem) return;
-            const skillName = parentItem.getAttribute('data-skill');
-            const skillData = skills[skillName];
-
-            if (target.classList.contains('add-subskill-btn')) {
-                const input = parentItem.querySelector('input[type="text"]');
-                const value = input.value.trim();
-                if (value && !skillData.subSkills.hasOwnProperty(value) && Object.keys(skillData.subSkills).length < 25) {
-                    skillData.subSkills[value] = { xp: 0, sessions: [] };
-                    renderSubSkillList(skillName);
-                    populateSubSkillSelect(skillSelect.value);
-                    input.value = '';
-                } else if(skillData.subSkills.hasOwnProperty(value)) {
-                    addLogEntry('⚠️ Ya existe una habilidad con ese nombre.', 'error');
-                }
-            }
-            
-            if (target.classList.contains('edit-subskill-btn')) {
-                const oldName = target.getAttribute('data-name');
-                const newName = prompt('Ingresa el nuevo nombre para la habilidad:', oldName);
-                if (newName && newName.trim() !== '' && newName !== oldName && !skillData.subSkills.hasOwnProperty(newName)) {
-                    Object.defineProperty(skillData.subSkills, newName, Object.getOwnPropertyDescriptor(skillData.subSkills, oldName));
-                    delete skillData.subSkills[oldName];
-                    renderSubSkillList(skillName);
-                    populateSubSkillSelect(skillSelect.value);
-                    addLogEntry(`✔️ "${oldName}" renombrada a "${newName}".`);
-                } else if (newName && skillData.subSkills.hasOwnProperty(newName)) {
-                    addLogEntry('⚠️ Ya existe una habilidad con ese nombre.', 'error');
-                }
-            }
-
-            if (target.classList.contains('delete-subskill-btn')) {
-                const subSkillNameToDelete = target.getAttribute('data-name');
-                delete skillData.subSkills[subSkillNameToDelete];
-                renderSubSkillList(skillName);
-                populateSubSkillSelect(skillSelect.value);
-                addLogEntry(`🗑️ Habilidad concreta "${subSkillNameToDelete}" eliminada.`);
-            }
-        });
-    }
-
-    //================================================================================//
-    //  SECCIÓN 7: INICIALIZACIÓN DE LA API DE GOOGLE                                 //
-    //================================================================================//
-    const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-    const SCOPES = 'https://www.googleapis.com/auth/drive.file';
-    const FILENAME = 'progreso_agenda_v4.json'; 
-    const OLD_FILENAMES = ['progreso_agenda_v3.json', 'progreso_agenda_v2.json', 'progreso_agenda.json'];
-    let tokenClient;
-    let gapiInited = false, gisInited = false;
-    
-    function gapiLoaded() { gapi.load('client', initializeGapiClient); }
-    async function initializeGapiClient() { await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); gapiInited = true; maybeEnableButtons(); }
-    function gisLoaded() { tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: '' }); gisInited = true; maybeEnableButtons(); }
-    
-    function maybeEnableButtons() { 
-        if (gapiInited && gisInited) { 
-            authBtn.style.display = 'block';
-            resetProgressBtn.disabled = false;
-        } 
-    }
-
-    function handleAuthClick() {
-        tokenClient.callback = async (resp) => {
-            if (resp.error !== undefined) { throw (resp); }
-            authBtn.textContent = 'Refrescar Sesión';
-            saveBtn.disabled = false; loadBtn.disabled = false;
-            statusDiv.textContent = '¡Sesión iniciada! Listo para sincronizar.';
-        };
-        if (gapi.client.getToken() === null) tokenClient.requestAccessToken({prompt: 'consent'});
-        else tokenClient.requestAccessToken({prompt: ''});
-    }
-    authBtn.addEventListener('click', handleAuthClick);
-    
-    //================================================================================//
-    //  SECCIÓN 8: FUNCIONES DE DATOS (GOOGLE DRIVE Y LOCAL)                          //
-    //================================================================================//
-    
-    async function findFileIdByName(name) {
-        try {
-            const response = await gapi.client.drive.files.list({ q: `name='${name}' and trashed=false`, fields: 'files(id, name)', spaces: 'drive' });
-            return response.result.files.length > 0 ? response.result.files[0].id : null;
-        } catch (err) {
-            addLogEntry(`<span class="error">Error buscando archivo: ${err.message}</span>`);
-            return null;
+        function updateAllUI() {
+            if (!currentUser) return;
+            updateDisplay(); 
+            populateSkillSelect(); 
+            renderDescriptionPage(); 
+            renderDashboardCharts();
         }
-    }
-
-    saveBtn.onclick = async () => {
-        statusDiv.textContent = 'Guardando en Google Drive...';
-        const fileId = await findFileIdByName(FILENAME);
-        const fileContent = JSON.stringify(skills, null, 2);
-        const boundary = '-------314159265358979323846';
-        const delimiter = `\r\n--${boundary}\r\n`;
-        const close_delim = `\r\n--${boundary}--`;
-        let metadata = { mimeType: 'application/json' };
-        let requestBody;
-        if (fileId) {
-            requestBody = `${delimiter}Content-Type: application/json\r\n\r\n${JSON.stringify(metadata)}${delimiter}Content-Type: application/json\r\n\r\n${fileContent}${close_delim}`;
-            const request = gapi.client.request({ path: `/upload/drive/v3/files/${fileId}`, method: 'PATCH', params: { uploadType: 'multipart' }, headers: { 'Content-Type': `multipart/related; boundary="${boundary}"` }, body: requestBody });
-            request.execute(() => { statusDiv.textContent = '¡Progreso guardado!'; addLogEntry('💾 Progreso guardado en la nube.'); });
-        } else {
-            metadata.name = FILENAME;
-            requestBody = `${delimiter}Content-Type: application/json\r\n\r\n${JSON.stringify(metadata)}${delimiter}Content-Type: application/json\r\n\r\n${fileContent}${close_delim}`;
-            const createRequest = gapi.client.request({ path: '/upload/drive/v3/files', method: 'POST', params: { uploadType: 'multipart' }, headers: { 'Content-Type': `multipart/related; boundary="${boundary}"` }, body: requestBody });
-            createRequest.execute(() => { statusDiv.textContent = '¡Archivo creado y guardado!'; addLogEntry('💾 Archivo de progreso creado.'); });
-        }
-    };
-    
-    loadBtn.onclick = async () => {
-        statusDiv.textContent = 'Buscando archivos en Google Drive...';
-        let fileId = null;
-        for (const name of [FILENAME, ...OLD_FILENAMES]) {
-            fileId = await findFileIdByName(name);
-            if (fileId) break;
-        }
-
-        if (!fileId) {
-            statusDiv.textContent = 'No se encontró archivo de progreso.';
-            addLogEntry('⚠️ No se encontró archivo. Empezando de cero.');
-            resetLocalData();
-            return;
-        }
-
-        statusDiv.textContent = 'Cargando datos desde Google Drive...';
-        try {
-            const response = await gapi.client.drive.files.get({ fileId: fileId, alt: 'media' });
-            const loadedSkills = JSON.parse(response.body);
-            if (loadedSkills && typeof loadedSkills === 'object') {
-                const hydratedSkills = JSON.parse(JSON.stringify(initialSkills));
-                let migrationOccurred = false;
-                for (const savedSkillName in loadedSkills) {
-                    let targetSkillName = MIGRATION_MAP[savedSkillName] || savedSkillName;
-                    if (hydratedSkills[targetSkillName]) {
-                        const savedData = loadedSkills[savedSkillName];
-                        hydratedSkills[targetSkillName].xp = savedData.xp || 0;
-                        const newSubSkills = {};
-                        if (savedData.subSkills && typeof savedData.subSkills === 'object') {
-                            if (Array.isArray(savedData.subSkills)) { 
-                                migrationOccurred = true;
-                                savedData.subSkills.forEach(name => {
-                                    newSubSkills[name] = { xp: 0, sessions: [] };
-                                });
-                            } else { 
-                                for (const subName in savedData.subSkills) {
-                                    const subData = savedData.subSkills[subName];
-                                    newSubSkills[subName] = { xp: subData.xp || 0, sessions: subData.sessions || [] };
-                                    if(subData.type) migrationOccurred = true;
-                                }
-                            }
-                        }
-                        hydratedSkills[targetSkillName].subSkills = newSubSkills;
-                        hydratedSkills[targetSkillName].level = getLevelFromXp(hydratedSkills[targetSkillName].xp);
-                    }
-                }
-                
-                skills = hydratedSkills;
-                statusDiv.textContent = '¡Progreso cargado desde Drive!'; 
-                addLogEntry('📂 Progreso cargado.');
-                if (migrationOccurred) {
-                    addLogEntry('✨ Datos antiguos migrados. Guarda para actualizar al nuevo formato.', 'level-up');
-                }
-            } else { throw new Error("Formato de datos inválido."); }
-        } catch (err) { statusDiv.textContent = `Error: ${err.message}`; addLogEntry(`<span class="error">❌ Error: ${err.message}</span>`); }
-        finally {
+        function resetLocalData() {
+            skills = JSON.parse(JSON.stringify(initialSkillsData));
+            if(logList) logList.innerHTML = '';
+            addLogEntry('🚀 ¡Bienvenido! Inicia sesión para cargar tu progreso.');
             updateAllUI();
         }
-    };
-
-    resetProgressBtn.addEventListener('click', () => {
-        confirmModal.style.display = 'flex';
-    });
-
-    cancelDeleteBtn.addEventListener('click', () => {
-        confirmModal.style.display = 'none';
-    });
-
-    confirmDeleteBtn.addEventListener('click', async () => {
-        confirmModal.style.display = 'none';
-        statusDiv.textContent = 'Borrando datos en la nube...';
-        addLogEntry('🗑️ Intentando borrar el progreso en la nube...');
-        try {
-            const fileId = await findFileIdByName(FILENAME);
-            if(fileId) {
-                await gapi.client.drive.files.delete({ fileId: fileId });
-                 addLogEntry('✔️ Archivo de progreso borrado de Google Drive.');
-            } else {
-                 addLogEntry('ℹ️ No se encontró archivo en la nube para borrar.');
-            }
-        } catch (err) {
-            addLogEntry(`<span class="error">❌ No se pudo borrar el archivo: ${err.message}</span>`);
-        } finally {
-            resetLocalData();
+        function addLogEntry(message, type = '') {
+            const logEntry = document.createElement('li');
+            logEntry.innerHTML = message;
+            if (type) logEntry.classList.add(type);
+            logList.prepend(logEntry);
+            while (logList.children.length > 50) logList.removeChild(logList.lastChild);
         }
-    });
-
-    function resetLocalData() {
-        skills = JSON.parse(JSON.stringify(initialSkills));
-        logList.innerHTML = '';
-        addLogEntry('🚀 ¡Progreso reiniciado! Listo para un nuevo comienzo.');
-        updateAllUI();
-    }
-    
-    function updateAllUI() {
-        updateDisplay(); 
-        populateSkillSelect(); 
-        renderDescriptionPage(); 
-        renderDashboardCharts();
-    }
-
-
-    //================================================================================//
-    //  SECCIÓN 9: LÓGICA CENTRAL REFACTORIZADA                                       //
-    //================================================================================//
-
-    function getXpForLevel(level) {
-        return Math.pow(level, 2) * 1000;
-    }
-
-    function getLevelFromXp(xp) {
-        if (xp < getXpForLevel(1)) return 1;
-        const level = Math.floor(Math.sqrt(xp / 1000));
-        return Math.min(level + 1, 200);
-    }
-
-    function calculateSkillProgress(skill) {
-        const xpForCurrentLevel = skill.level > 1 ? getXpForLevel(skill.level - 1) : 0;
-        const xpForNextLevel = getXpForLevel(skill.level);
-        const xpInCurrentLevel = skill.xp - xpForCurrentLevel;
-        const xpNeededForLevel = xpForNextLevel - xpForCurrentLevel;
-        
-        return {
-            progressPercentage: xpNeededForLevel > 0 
-                ? (xpInCurrentLevel / xpNeededForLevel) * 100 
-                : 0,
-        };
-    }
-
-    function renderDashboardCharts() {
-        const container = document.getElementById('dashboard-charts-container');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        Object.values(chartInstances).forEach(chart => chart.destroy());
-        chartInstances = {};
-
-        const CATEGORIES = {
-            combate: { name: 'Habilidades de "Combate"', color: '#e84118', bgColor: 'rgba(232, 65, 24, 0.2)' },
-            autocuidado: { name: 'Habilidades de "Autocuidado"', color: '#4cd137', bgColor: 'rgba(76, 209, 55, 0.2)' },
-            artesania: { name: 'Habilidades de "Artesanía"', color: '#9b59b6', bgColor: 'rgba(155, 89, 182, 0.2)' }
-        };
-
-        // --- Gráfico Radial ---
-        const radarTitle = document.createElement('h3');
-        radarTitle.textContent = 'Resumen General de Habilidades';
-        const radarChartWrapper = document.createElement('div');
-        radarChartWrapper.className = 'chart-container';
-        const radarCanvas = document.createElement('canvas');
-        radarChartWrapper.appendChild(radarCanvas);
-        container.appendChild(radarTitle);
-        container.appendChild(radarChartWrapper);
-        
-        const allSkillNames = Object.keys(skills);
-        const radarDatasets = Object.entries(CATEGORIES).map(([catId, catData]) => {
-            return {
+        function renderDashboardCharts() {
+            const container = document.getElementById('dashboard-charts-container');
+            if (!container || !currentUser) { if(container) container.innerHTML = '<h3>Inicia sesión para ver tus estadísticas.</h3>'; return; }
+            container.innerHTML = '';
+            Object.values(chartInstances).forEach(chart => chart.destroy());
+            chartInstances = {};
+            const CATEGORIES = {
+                combate: { name: 'Habilidades de "Combate"', color: '#e84118', bgColor: 'rgba(232, 65, 24, 0.2)' },
+                autocuidado: { name: 'Habilidades de "Autocuidado"', color: '#4cd137', bgColor: 'rgba(76, 209, 55, 0.2)' },
+                artesania: { name: 'Habilidades de "Artesanía"', color: '#9b59b6', bgColor: 'rgba(155, 89, 182, 0.2)' }
+            };
+            const radarTitle = document.createElement('h3');
+            radarTitle.textContent = 'Resumen General de Habilidades';
+            const radarChartWrapper = document.createElement('div');
+            radarChartWrapper.className = 'chart-container';
+            const radarCanvas = document.createElement('canvas');
+            radarChartWrapper.appendChild(radarCanvas);
+            container.appendChild(radarTitle);
+            container.appendChild(radarChartWrapper);
+            const allSkillNames = Object.keys(skills);
+            const radarDatasets = Object.entries(CATEGORIES).map(([catId, catData]) => ({
                 label: catData.name,
                 data: allSkillNames.map(name => skills[name].category === catId ? skills[name].level : 0),
                 fill: true,
@@ -882,276 +645,292 @@
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: catData.color
-            }
-        });
-
-        chartInstances.radar = new Chart(radarCanvas, {
-            type: 'radar',
-            data: {
-                labels: allSkillNames.map(name => name.split(' ')[0]), // Nombres más cortos
-                datasets: radarDatasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                elements: { line: { tension: 0.1, borderWidth: 2 } },
-                scales: {
-                    r: {
-                        angleLines: { color: '#4f4f6f' },
-                        grid: { color: '#4f4f6f' },
-                        pointLabels: { font: { size: 9 }, color: '#dcdcdc' },
-                        ticks: {
-                            color: '#1e1e2f',
-                            backdropColor: '#a0a0c0',
-                            stepSize: 1
+            }));
+            chartInstances.radar = new Chart(radarCanvas, {
+                type: 'radar',
+                data: { labels: allSkillNames.map(name => name.split(' ')[0]), datasets: radarDatasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    elements: { line: { tension: 0.1, borderWidth: 2 } },
+                    scales: { r: { angleLines: { color: '#4f4f6f' }, grid: { color: '#4f4f6f' }, pointLabels: { font: { size: 9 }, color: '#dcdcdc' }, ticks: { color: '#1e1e2f', backdropColor: '#a0a0c0', stepSize: 1 } } },
+                    plugins: { legend: { position: 'top', labels: { font: { size: 10, family: "'Press Start 2P', cursive" }, color: '#dcdcdc' } } }
+                }
+            });
+            const allSubSkillsData = Object.entries(skills).flatMap(([skillName, skill]) => Object.entries(skill.subSkills).filter(([, subSkill]) => subSkill.xp > 0).map(([subSkillName, subSkill]) => ({ name: subSkillName, xp: subSkill.xp, parent: skillName, category: skill.category })));
+            for (const [categoryId, category] of Object.entries(CATEGORIES)) {
+                const subSkillsData = allSubSkillsData.filter(item => item.category === categoryId).sort((a, b) => b.xp - a.xp).slice(0, 15);
+                if (subSkillsData.length === 0) continue;
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.textContent = `Detalle: ${category.name}`;
+                container.appendChild(categoryTitle);
+                const chartWrapper = document.createElement('div');
+                chartWrapper.className = 'chart-container';
+                const canvas = document.createElement('canvas');
+                chartWrapper.appendChild(canvas);
+                container.appendChild(chartWrapper);
+                const labels = subSkillsData.map(s => `${s.name} (${s.parent.split(' ')[0]})`);
+                const data = subSkillsData.map(s => s.xp);
+                chartInstances[`bar_${categoryId}`] = new Chart(canvas, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'XP Acumulada', data, backgroundColor: category.color }] },
+                    options: {
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: '#4f4f6f' }, ticks: { color: '#dcdcdc', font: { size: 8, family: "'Press Start 2P', cursive" } } },
+                            y: { grid: { color: '#4f4f6f' }, ticks: { color: '#dcdcdc', font: { size: 8, family: "'Press Start 2P', cursive" } } }
                         }
                     }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { font: { size: 10 } }
-                    }
-                }
+                });
             }
-        });
-
-        // --- Gráficos de Barras (existentes) ---
-        const allSubSkillsData = Object.entries(skills)
-            .flatMap(([skillName, skill]) => 
-                Object.entries(skill.subSkills)
-                    .filter(([, subSkill]) => subSkill.xp > 0)
-                    .map(([subSkillName, subSkill]) => ({ name: subSkillName, xp: subSkill.xp, parent: skillName, category: skill.category }))
-            );
-
-        for (const [categoryId, category] of Object.entries(CATEGORIES)) {
-            const subSkillsData = allSubSkillsData
-                .filter(item => item.category === categoryId)
-                .sort((a, b) => b.xp - a.xp)
-                .slice(0, 15);
-            
-            if (subSkillsData.length === 0) continue;
-
-            const categoryTitle = document.createElement('h3');
-            categoryTitle.textContent = `Detalle: ${category.name}`;
-            container.appendChild(categoryTitle);
-
-            const chartWrapper = document.createElement('div');
-            chartWrapper.className = 'chart-container';
-            const canvas = document.createElement('canvas');
-            chartWrapper.appendChild(canvas);
-            container.appendChild(chartWrapper);
-
-            const labels = subSkillsData.map(s => `${s.name} (${s.parent.split(' ')[0]})`);
-            const data = subSkillsData.map(s => s.xp);
-
-            chartInstances[`bar_${categoryId}`] = new Chart(canvas, {
-                type: 'bar',
-                data: { labels, datasets: [{ label: 'XP Acumulada', data, backgroundColor: category.color }] },
-                options: {
-                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: '#4f4f6f' }, ticks: { font: { size: 8 } } },
-                        y: { grid: { color: '#4f4f6f' }, ticks: { font: { size: 8 } } }
-                    }
-                }
-            });
         }
-    }
-
-    function updateDisplay() {
-        skillsList.innerHTML = '';
-        Object.entries(skills)
-            .sort(([, a], [, b]) => b.xp - a.xp)
-            .forEach(([skillName, skill]) => {
+        function updateDisplay() {
+            const skillsList = document.getElementById('skills-list');
+            if(!skillsList) return;
+            skillsList.innerHTML = '';
+            if(!skills || Object.keys(skills).length === 0) return;
+            Object.entries(skills).sort(([, a], [, b]) => (b.xp || 0) - (a.xp || 0)).forEach(([skillName, skill]) => {
                 const li = document.createElement('li');
                 const progress = calculateSkillProgress(skill);
-                
-                li.innerHTML = `
-                    <div class="skill-info-container">
-                        <span class="skill-name"><span class="skill-icon">${skill.icon}</span>${skillName}</span>
-                        <div class="skill-meta">Lvl: ${skill.level}<br>${skill.xp.toLocaleString()} XP</div>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fg" style="width: ${progress.progressPercentage}%;"></div>
-                        <div class="progress-text">${Math.round(progress.progressPercentage)}%</div>
-                    </div>
-                `;
+                li.innerHTML = `<div class="skill-info-container"><span class="skill-name"><span class="skill-icon">${skill.icon}</span>${skillName}</span><div class="skill-meta">Lvl: ${skill.level}<br>${(skill.xp || 0).toLocaleString()} XP</div></div><div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${progress.progressPercentage}%;"></div><div class="progress-text">${Math.round(progress.progressPercentage)}%</div></div>`;
                 skillsList.appendChild(li);
             });
-    }
-
-    function populateSkillSelect() {
-        skillSelect.innerHTML = '';
-        Object.keys(skills).sort().forEach(skillName => skillSelect.add(new Option(skillName, skillName)));
-        populateSubSkillSelect(skillSelect.value);
-    }
-
-    function populateSubSkillSelect(skillName) {
-        subSkillSelect.innerHTML = '';
-        const subSkills = skills[skillName]?.subSkills;
-        if (!subSkills || Object.keys(subSkills).length === 0) {
-            subSkillSelect.disabled = true;
-            subSkillSelect.add(new Option('Añade Habilidades Concretas', '', true, true));
-        } else {
-            Object.keys(subSkills).sort().forEach(subSkillName => subSkillSelect.add(new Option(subSkillName, subSkillName)));
-            subSkillSelect.disabled = false;
         }
-    }
-    
-    skillSelect.addEventListener('change', (e) => populateSubSkillSelect(e.target.value));
-
-    function addLogEntry(message, type = '') {
-        const logEntry = document.createElement('li');
-        logEntry.innerHTML = message;
-        if (type) logEntry.classList.add(type);
-        logList.prepend(logEntry);
-        while (logList.children.length > 30) logList.removeChild(logList.lastChild);
-    }
-
-    //================================================================================//
-    //  SECCIÓN 10: EVENTO PRINCIPAL Y MISIONES                                       //
-    //================================================================================//
-    
-    function validateTemporalActivity() {
-        const timeSpent = parseInt(timeInput.value);
-        if (isNaN(timeSpent) || timeSpent <= 0) {
-            throw new Error('Ingresa un tiempo válido (mínimo 1 minuto).');
+        function populateSkillSelect() {
+            const selectedValue = skillSelect.value;
+            skillSelect.innerHTML = '';
+            if (!skills || Object.keys(skills).length === 0) return;
+            Object.keys(skills).sort().forEach(skillName => skillSelect.add(new Option(skillName, skillName)));
+            if (selectedValue) skillSelect.value = selectedValue;
+            populateSubSkillSelect(skillSelect.value);
         }
-        return timeSpent;
-    }
-
-    function validateDiscreteActivity() {
-        if (!unitCheck.checked) {
-            throw new Error('Marca la actividad como completada.');
-        }
-        return true;
-    }
-
-    function calculateXpGained(activityType, timeSpent) {
-        const intensity = intensitySelect.value;
-        const performance = performanceSelect.value;
-        let baseXp = activityType === 'temporal' 
-            ? Math.floor((timeSpent / 15) * XP_PER_15_MINS)
-            : XP_PER_UNIT;
-        return Math.floor(baseXp * INTENSITY_MULTIPLIERS[intensity] * PERFORMANCE_MULTIPLIERS[performance]);
-    }
-
-    function createSessionEntry(activityType, timeSpent, xpGained) {
-        return {
-            date: new Date().toISOString(),
-            type: activityType,
-            time: activityType === 'temporal' ? timeSpent : null,
-            intensity: intensitySelect.value,
-            performance: performanceSelect.value,
-            xpEarned: xpGained
-        };
-    }
-
-    registerBtn.addEventListener('click', () => {
-        try {
-            const selectedSkill = skillSelect.value;
-            const selectedSubSkill = subSkillSelect.value;
-            const activityType = temporalBtn.classList.contains('active') ? 'temporal' : 'discrete';
-            
-            if (!selectedSkill || subSkillSelect.disabled || !selectedSubSkill) {
-                throw new Error('Selecciona una habilidad válida.');
-            }
-            
-            const skillData = skills[selectedSkill];
-            const subSkillData = skillData.subSkills[selectedSubSkill];
-            const oldLevel = skillData.level;
-            let timeSpent;
-
-            if (activityType === 'temporal') {
-                timeSpent = validateTemporalActivity();
+        function populateSubSkillSelect(skillName) {
+            const selectedValue = subSkillSelect.value;
+            subSkillSelect.innerHTML = '';
+            if (!skills[skillName]) return;
+            const subSkills = skills[skillName].subSkills;
+            if (!subSkills || Object.keys(subSkills).length === 0) {
+                subSkillSelect.disabled = true;
+                subSkillSelect.add(new Option('Añade Habilidades en "Descripción"', '', true, true));
             } else {
-                validateDiscreteActivity();
+                subSkillSelect.disabled = false;
+                Object.keys(subSkills).sort().forEach(subSkillName => subSkillSelect.add(new Option(subSkillName, subSkillName)));
+                if(selectedValue) subSkillSelect.value = selectedValue;
             }
-            
-            const xpGained = calculateXpGained(activityType, timeSpent);
-            
-            subSkillData.xp += xpGained;
-            skillData.xp += xpGained;
-            
-            subSkillData.sessions.push(createSessionEntry(activityType, timeSpent, xpGained));
-            
-            skillData.level = getLevelFromXp(skillData.xp);
-            const leveledUp = skillData.level > oldLevel;
-            
-            const activityIcon = activityType === 'temporal' ? '⏱️' : '✅';
-            const activityDetail = activityType === 'temporal' ? `${timeSpent} min` : 'Unidad completada';
-            
-            addLogEntry(`
-                <div class="log-entry">
-                    <span class="xp-gain">+${xpGained.toLocaleString()}</span>
-                    <span class="skill-info">${skillData.icon} ${selectedSkill} (${selectedSubSkill})</span>
-                    <span class="activity-details">${activityIcon} ${activityDetail}</span>
-                    <div class="evaluation">
-                        <span class="intensity ${intensitySelect.value}">Int: ${intensitySelect.value}</span>
-                        <span class="performance ${performanceSelect.value}">Des: ${performanceSelect.value}</span>
-                    </div>
-                </div>`, 
-                leveledUp ? 'level-up' : ''
-            );
-            
-            if (leveledUp) {
-                const progress = calculateSkillProgress(skillData);
-                addLogEntry(`
-                    <div class="level-up">
-                        <span>🎉 ¡Nivel ${skillData.level} en ${selectedSkill}!</span>
-                        <div class="level-progress">Progreso: ${progress.progressPercentage.toFixed(1)}%</div>
-                    </div>`, 
-                    'level-up'
-                );
+        }
+        function renderDescriptionPage() {
+            if (!descriptionContainer) return;
+            descriptionContainer.innerHTML = '<h1>Descripción de Habilidades</h1>';
+            const categories = { combate: 'Habilidades de "Combate"', autocuidado: 'Habilidades de "Autocuidado"', artesania: 'Habilidades de "Artesanía"' };
+            for (const categoryId in categories) {
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.textContent = categories[categoryId];
+                descriptionContainer.appendChild(categoryTitle);
+                const categoryList = document.createElement('ul'); categoryList.style.padding = '0';
+                for (const skillName in skills) {
+                    if (skills[skillName]?.category === categoryId) {
+                        const skill = skills[skillName];
+                        const item = document.createElement('li');
+                        item.className = 'description-item';
+                        item.setAttribute('data-skill', skillName);
+                        item.innerHTML = `<div class="description-header"><img src="${skill.img}" alt="Icono" class="description-img"><div><strong>${skillName}:</strong> ${skill.description}</div></div><div class="subskill-container"><h4>Habilidades Concretas:</h4><ul class="subskill-list"></ul><div class="subskill-input-group"><input type="text" placeholder="Añadir habilidad..." maxlength="50" ${!currentUser ? 'disabled' : ''}><button class="add-subskill-btn" ${!currentUser ? 'disabled' : ''}>+</button></div></div>`;
+                        categoryList.appendChild(item);
+                    }
+                }
+                descriptionContainer.appendChild(categoryList);
             }
-            
-            timeInput.value = '';
-            unitCheck.checked = false;
-            intensitySelect.value = 'medio';
-            performanceSelect.value = 'normal';
-            
-            updateAllUI();
-            
-        } catch (error) {
-            addLogEntry(`<span class="error">✗ ${error.message}</span>`);
-            console.error('Error en registro:', error);
+            renderAllSubSkillLists();
         }
-    });
-
-    createMissionBtn.addEventListener('click', () => {
-        const title = missionTitleInput.value;
-        const date = missionDateInput.value;
-        const time = missionTimeInput.value;
-        const description = missionDescriptionInput.value;
-
-        if(!title || !date || !time) {
-            addLogEntry('<span class="error">✗ Por favor, completa título, fecha y hora de la misión.</span>');
-            return;
+        function renderAllSubSkillLists() { for (const skillName in skills) { if (skills.hasOwnProperty(skillName)) renderSubSkillList(skillName); } }
+        function renderSubSkillList(skillName) {
+            const listElement = document.querySelector(`.description-item[data-skill="${skillName}"] .subskill-list`);
+            if (!listElement) return;
+            listElement.innerHTML = '';
+            const skill = skills[skillName];
+            if (skill && skill.subSkills) {
+                Object.entries(skill.subSkills).forEach(([subSkillName, subSkillData]) => {
+                    const li = document.createElement('li');
+                    let sessionsHTML = '<div class="session-history"><h5>Historial Reciente:</h5>';
+                    if (subSkillData.sessions && subSkillData.sessions.length > 0) {
+                        subSkillData.sessions.slice(-5).reverse().forEach(session => {
+                            const dateStr = new Date(session.date).toLocaleDateString();
+                            const activityTypeIcon = session.type === 'temporal' ? '⏱️' : '✅';
+                            const activityDetail = session.type === 'temporal' ? `${session.time} min` : 'Unidad';
+                            sessionsHTML += `<div class="session-entry"><span>${activityTypeIcon} ${dateStr}: ${activityDetail}</span><span class="xp-earned">+${(session.xpEarned || 0).toLocaleString()} XP</span></div>`;
+                        });
+                    } else { sessionsHTML += '<span>No hay sesiones registradas.</span>'; }
+                    sessionsHTML += '</div>';
+                    li.innerHTML = `<div class="subskill-header"><span>${subSkillName}</span><div class="subskill-actions"><button class="edit-subskill-btn" data-name="${subSkillName}" title="Editar nombre">✏️</button><button class="delete-subskill-btn" data-name="${subSkillName}" title="Eliminar">🗑️</button></div></div>${sessionsHTML}`;
+                    listElement.appendChild(li);
+                });
+            }
+        }
+        function showModal(config) {
+            modalTitle.textContent = config.title;
+            modalText.textContent = config.text;
+            currentModalAction = config.action;
+            confirmModal.style.display = 'flex';
+        }
+        function getRandomHexColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
 
-        const startDateTime = new Date(`${date}T${time}`);
-        const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); 
+        // ==========================================================================
+        //  7. EVENT LISTENERS
+        // ==========================================================================
+        function setupEventListeners() {
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetPage = button.getAttribute('data-page');
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    pages.forEach(page => page.classList.toggle('active', page.id === 'page-' + targetPage));
+                    if (targetPage === 'ranking') renderRanking();
+                    if (targetPage === 'dashboard') renderDashboardCharts();
+                    if (window.matchMedia('(max-width: 800px)').matches) {
+                        document.getElementById('page-' + targetPage)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+            temporalBtn.addEventListener('click', () => {
+                temporalBtn.classList.add('active');
+                discreteBtn.classList.remove('active');
+                timeInputContainer.style.display = 'block';
+                unitInputContainer.style.display = 'none';
+            });
+            discreteBtn.addEventListener('click', () => {
+                discreteBtn.classList.add('active');
+                temporalBtn.classList.remove('active');
+                timeInputContainer.style.display = 'none';
+                unitInputContainer.style.display = 'block';
+            });
+            skillSelect.addEventListener('change', (e) => populateSubSkillSelect(e.target.value));
+            registerBtn.addEventListener('click', async () => {
+                if(!currentUser) return;
+                try {
+                    const selectedSkill = skillSelect.value;
+                    const selectedSubSkill = subSkillSelect.value;
+                    const activityType = temporalBtn.classList.contains('active') ? 'temporal' : 'discrete';
+                    if (!selectedSkill || subSkillSelect.disabled || !selectedSubSkill) throw new Error('Selecciona una habilidad válida.');
+                    const skillData = skills[selectedSkill];
+                    const subSkillData = skillData.subSkills[selectedSubSkill];
+                    const oldLevel = skillData.level;
+                    let timeSpent;
+                    if (activityType === 'temporal') {
+                        timeSpent = parseInt(document.getElementById('time-input').value, 10);
+                        if (isNaN(timeSpent) || timeSpent <= 0) throw new Error('Ingresa un tiempo válido (mínimo 1 minuto).');
+                    } else {
+                        if (!document.getElementById('unit-check').checked) throw new Error('Marca la actividad como completada.');
+                    }
+                    const xpGained = Math.floor((activityType === 'temporal' ? (timeSpent / 15) * XP_PER_15_MINS : XP_PER_UNIT) * INTENSITY_MULTIPLIERS[document.getElementById('intensity-select').value] * PERFORMANCE_MULTIPLIERS[document.getElementById('performance-select').value]);
+                    if (!subSkillData.sessions) subSkillData.sessions = [];
+                    subSkillData.xp = (subSkillData.xp || 0) + xpGained;
+                    skillData.xp = (skillData.xp || 0) + xpGained;
+                    subSkillData.sessions.push({ date: new Date().toISOString(), type: activityType, time: activityType === 'temporal' ? timeSpent : null, intensity: document.getElementById('intensity-select').value, performance: document.getElementById('performance-select').value, xpEarned: xpGained });
+                    skillData.level = getLevelFromXp(skillData.xp);
+                    const leveledUp = skillData.level > oldLevel;
+                    const activityIcon = activityType === 'temporal' ? '⏱️' : '✅';
+                    const activityDetail = activityType === 'temporal' ? `${timeSpent} min` : 'Unidad completada';
+                    addLogEntry(`<div class="log-entry"><span class="xp-gain">+${xpGained.toLocaleString()}</span><span class="skill-info">${skillData.icon} ${selectedSkill} (${selectedSubSkill})</span><span class="activity-details">${activityIcon} ${activityDetail}</span></div>`, leveledUp ? 'level-up' : '');
+                    if (leveledUp) addLogEntry(`<div class="level-up"><span class="level-up-msg">🎉 ¡Nivel ${skillData.level} en ${selectedSkill}!</span></div>`, 'level-up');
+                    document.getElementById('time-input').value = '';
+                    document.getElementById('unit-check').checked = false;
+                    await saveUserData(currentUser);
+                    updateAllUI();
+                    renderSubSkillList(selectedSkill);
+                } catch (error) {
+                    addLogEntry(`<span class="error">✗ ${error.message}</span>`);
+                    console.error('Error en registro:', error);
+                }
+            });
+            descriptionContainer.addEventListener('click', async (e) => {
+                if (!currentUser) return;
+                const target = e.target.closest('button'); if (!target) return;
+                const parentItem = target.closest('.description-item'); if (!parentItem) return;
+                const skillName = parentItem.getAttribute('data-skill'); const skillData = skills[skillName];
+                if (!skillData.subSkills) skillData.subSkills = {};
+                if (target.classList.contains('add-subskill-btn')) { 
+                    const input = parentItem.querySelector('input[type="text"]'); 
+                    const value = input.value.trim(); 
+                    if (value && !skillData.subSkills.hasOwnProperty(value)) { 
+                        skillData.subSkills[value] = { xp: 0, sessions: [] }; 
+                        await saveUserData(currentUser); 
+                        renderSubSkillList(skillName); 
+                        populateSubSkillSelect(skillSelect.value); 
+                        input.value = ''; 
+                    } 
+                } else if (target.classList.contains('edit-subskill-btn')) { 
+                    const oldName = target.getAttribute('data-name'); 
+                    const newName = prompt('Nuevo nombre para la habilidad:', oldName); 
+                    if (newName && newName.trim() !== '' && newName !== oldName && !skillData.subSkills.hasOwnProperty(newName)) { 
+                        Object.defineProperty(skillData.subSkills, newName, Object.getOwnPropertyDescriptor(skillData.subSkills, oldName)); 
+                        delete skillData.subSkills[oldName]; 
+                        await saveUserData(currentUser); 
+                        renderSubSkillList(skillName); 
+                        populateSubSkillSelect(skillSelect.value); 
+                        addLogEntry(`✔️ "${oldName}" renombrada a "${newName}".`); 
+                    } 
+                } else if (target.classList.contains('delete-subskill-btn')) {
+                    const subSkillNameToDelete = target.getAttribute('data-name');
+                    showModal({
+                        title: 'Confirmar Eliminación',
+                        text: `¿Seguro que quieres borrar la habilidad "${subSkillNameToDelete}"? Esta acción no se puede deshacer.`,
+                        action: () => {
+                            delete skillData.subSkills[subSkillNameToDelete]; 
+                            saveUserData(currentUser).then(() => {
+                                renderSubSkillList(skillName); 
+                                populateSubSkillSelect(skillSelect.value); 
+                                addLogEntry(`🗑️ Habilidad "${subSkillNameToDelete}" eliminada.`);
+                            });
+                        }
+                    });
+                }
+            });
+            resetProgressBtn.addEventListener('click', () => {
+                showModal({
+                    title: 'Borrar Progreso en la Nube',
+                    text: 'Todo tu progreso se borrará de la nube y la aplicación se reiniciará a su estado inicial. Esta acción no se puede deshacer.',
+                    action: deleteUserData
+                });
+            });
+            cancelDeleteBtn.addEventListener('click', () => { confirmModal.style.display = 'none'; });
+            confirmDeleteBtn.addEventListener('click', () => {
+                if(currentModalAction) currentModalAction();
+                confirmModal.style.display = 'none';
+            });
+            aiPromptBtn.addEventListener('click', () => {
+                const prompt = aiPromptInput.value;
+                if(prompt.trim()) getAIResponse(prompt);
+            });
+            createMissionBtn.addEventListener('click', () => {
+                const title = missionTitleInput.value;
+                const date = missionDateInput.value;
+                const time = missionTimeInput.value;
+                const description = missionDescriptionInput.value;
+                if(!title || !date || !time) { addLogEntry('<span class="error">✗ Por favor, completa título, fecha y hora de la misión.</span>'); return; }
+                const startDateTime = new Date(`${date}T${time}`);
+                const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); 
+                const toGoogleFormat = (date) => date.toISOString().replace(/[-:.]/g, '').slice(0, 15);
+                const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${toGoogleFormat(startDateTime)}/${toGoogleFormat(endDateTime)}&details=${encodeURIComponent(description)}&sf=true&output=xml`;
+                window.open(googleCalendarUrl, '_blank');
+                addLogEntry(`🗓️ Recordatorio para "${title}" enviado a Google Calendar.`);
+            });
+        }
 
-        const toGoogleFormat = (date) => date.toISOString().replace(/[-:.]/g, '').slice(0, 15);
-
-        const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${toGoogleFormat(startDateTime)}/${toGoogleFormat(endDateTime)}&details=${encodeURIComponent(description)}&sf=true&output=xml`;
-
-        window.open(googleCalendarUrl, '_blank');
-        addLogEntry(`🗓️ Recordatorio para "${title}" enviado a Google Calendar.`);
-    });
-
-    //================================================================================//
-    //  SECCIÓN 11: INICIALIZACIÓN PRINCIPAL DE LA APLICACIÓN                         //
-    //================================================================================//
-    window.onload = () => { 
-        resetLocalData();
-        setupActivityTypeSwitcher();
-    };
+        // ==========================================================================
+        //  8. INICIALIZACIÓN
+        // ==========================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+             resetLocalData();
+             setupEventListeners();
+             enableAllInputs(false);
+        });
     </script>
-    
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
+�
