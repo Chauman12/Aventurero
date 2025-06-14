@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v9.3 (Edición y Mejoras)</title>
+    <title>Panel de Aventurero v9.4 (Optimización)</title>
     <!-- Importación de la librería Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -237,9 +237,21 @@
         .add-subskill-btn { flex-shrink: 0; width: auto; padding: 0 15px; font-size: 1.2rem; background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
         
         .skill-icon { margin-right: 10px; }
-        .log-panel ul { max-height: 200px; }
         
-        .level-up { color: #32ff7e; font-weight: bold; text-align: center; font-size: 0.8rem !important; border-left-color: #32ff7e !important; }
+        /* Estilos del Log Panel */
+        .log-panel ul { max-height: 400px; }
+        .log-panel li { font-size: 0.75rem; padding: 8px; border-radius: 4px; line-height: 1.5; }
+        .log-panel .level-up { border-left: 3px solid #32ff7e; background-color: rgba(50, 255, 126, 0.1); }
+        .error { color: #ff4757; }
+        .log-entry { display: grid; grid-template-columns: auto 1fr; gap: 5px 10px; align-items: center;}
+        .xp-gain { grid-column: 1 / 2; grid-row: 1 / 3; font-weight: bold; color: #32ff7e; font-size: 1rem; }
+        .skill-info { grid-column: 2 / 3; font-weight: bold; }
+        .time-spent { grid-column: 2 / 3; font-size: 0.7rem; color: #a0a0c0; }
+        .evaluation { grid-column: 1 / 3; display: flex; gap: 15px; margin-top: 5px; font-size: 0.65rem; }
+        .intensity.bajo { color: #1e90ff; } .intensity.medio { color: #dcdcdc; } .intensity.alto { color: #ffdd57; }
+        .performance.malo { color: #ff4757; } .performance.normal { color: #dcdcdc; } .performance.bueno { color: #32ff7e; }
+        .level-up .level-up { text-align: center; font-size: 0.8rem; color: #ffdd57; }
+
         
         #gdrive-status { text-align: center; font-size: 0.7rem; padding: 10px; color: #a0a0c0; min-height: 20px; }
         
@@ -290,7 +302,7 @@
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                    v9.3 (Edición y Mejoras)
+                    v9.4 (Optimización)
                 </div>
             </div>
         </div>
@@ -370,13 +382,13 @@
     //================================================================================//
     const initialSkills = {
         'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: {}, img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
-        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '�', subSkills: {}, img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
+        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '💪', subSkills: {}, img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
         'Defensa (Finanzas Personales)': { xp: 0, level: 1, icon: '🛡️', subSkills: {}, img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
         'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: {}, img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
         'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: {}, img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
         'Magia (Habilidades Sociales)': { xp: 0, level: 1, icon: '✨', subSkills: {}, img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia, compañerismo' },
         'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: {}, img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
-        'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
+        'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '�', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
         'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: {}, img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
         'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: {}, img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
         'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: {}, img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
@@ -510,7 +522,7 @@
 
     function addDescriptionPageListeners() {
         descriptionContainer.addEventListener('click', (e) => {
-            const target = e.target.closest('button'); // Asegurarse de capturar el botón aunque se haga clic en el ícono
+            const target = e.target.closest('button');
             if (!target) return;
 
             const parentItem = target.closest('.description-item');
@@ -536,7 +548,6 @@
                 const newName = prompt('Ingresa el nuevo nombre para la habilidad:', oldName);
 
                 if (newName && newName.trim() !== '' && newName !== oldName && !skillData.subSkills.hasOwnProperty(newName)) {
-                    // Renombrar la clave del objeto sin perder los datos
                     Object.defineProperty(skillData.subSkills, newName,
                         Object.getOwnPropertyDescriptor(skillData.subSkills, oldName));
                     delete skillData.subSkills[oldName];
@@ -545,7 +556,6 @@
                     populateSubSkillSelect(skillSelect.value);
                     addLogEntry(`✔️ "${oldName}" renombrada a "${newName}".`);
                 } else if (newName && newName === oldName) {
-                    // No hacer nada si el nombre es el mismo
                 } else if (newName && skillData.subSkills.hasOwnProperty(newName)) {
                     addLogEntry('⚠️ Ya existe una habilidad con ese nombre.', 'level-up');
                 }
@@ -553,13 +563,10 @@
 
             if (target.classList.contains('delete-subskill-btn')) {
                 const subSkillNameToDelete = target.getAttribute('data-name');
-                // IMPORTANTE: Ya no se resta la XP de la habilidad padre al borrar una sub-habilidad.
-                // El esfuerzo general en la categoría se conserva.
                 delete skillData.subSkills[subSkillNameToDelete];
                 
                 renderSubSkillList(skillName);
                 populateSubSkillSelect(skillSelect.value);
-                // No es necesario actualizar el display general ni los gráficos, ya que el XP total no cambió.
                 addLogEntry(`🗑️ Habilidad concreta "${subSkillNameToDelete}" eliminada.`);
             }
         });
@@ -601,7 +608,7 @@
             const response = await gapi.client.drive.files.list({ q: `name='${name}' and trashed=false`, fields: 'files(id, name)', spaces: 'drive' });
             return response.result.files.length > 0 ? response.result.files[0].id : null;
         } catch (err) {
-            addLogEntry(`Error buscando archivo: ${err.message}`, 'level-up');
+            addLogEntry(`<span class="error">Error buscando archivo: ${err.message}</span>`);
             return null;
         }
     }
@@ -677,7 +684,7 @@
                 
                 skills = hydratedSkills;
                 updateDisplay(); 
-                populateSelect(); 
+                populateSkillSelect(); 
                 renderDescriptionPage(); 
                 renderDashboardCharts();
                 statusDiv.textContent = '¡Progreso cargado desde Drive!'; 
@@ -687,131 +694,180 @@
                     addLogEntry('✨ Datos antiguos migrados. Guarda para actualizar al nuevo formato.', 'level-up');
                 }
             } else { throw new Error("Formato de datos inválido."); }
-        } catch (err) { statusDiv.textContent = `Error: ${err.message}`; addLogEntry(`❌ Error: ${err.message}`, 'level-up'); }
+        } catch (err) { statusDiv.textContent = `Error: ${err.message}`; addLogEntry(`<span class="error">❌ Error: ${err.message}</span>`); }
     };
 
     //================================================================================//
-    //  SECCIÓN 9: LÓGICA CENTRAL DE LA APLICACIÓN                                    //
+    //  SECCIÓN 9: LÓGICA CENTRAL OPTIMIZADA                                          //
     //================================================================================//
-    
+
     function getLevelFromXp(xp) {
-        let level = 1; 
-        while (Math.pow(level, 2) * 1000 <= xp) { 
-            level++; if (level > 200) return 200;
-        }
-        return level;
+        if (xp < 1000) return 1;
+        const level = Math.floor(Math.sqrt(xp / 1000));
+        return Math.min(level + 1, 200);
+    }
+
+    function getXpForLevel(level) {
+        return Math.pow(level, 2) * 1000;
+    }
+
+    function calculateSkillProgress(skill) {
+        const xpForCurrentLevel = skill.level > 1 ? getXpForLevel(skill.level - 1) : 0;
+        const xpForNextLevel = getXpForLevel(skill.level);
+        const xpInCurrentLevel = skill.xp - xpForCurrentLevel;
+        const xpNeededForLevel = xpForNextLevel - xpForCurrentLevel;
+        
+        return {
+            progressPercentage: xpNeededForLevel > 0 
+                ? (xpInCurrentLevel / xpNeededForLevel) * 100 
+                : 0,
+            xpForNextLevel,
+            xpInCurrentLevel
+        };
     }
 
     function renderDashboardCharts() {
         const container = document.getElementById('dashboard-charts-container');
         if (!container) return;
+        
         container.innerHTML = '';
         Object.values(chartInstances).forEach(chart => chart.destroy());
         chartInstances = {};
 
-        const categories = { combate: 'Habilidades de "Combate"', autocuidado: 'Habilidades de "Autocuidado"', artesania: 'Habilidades de "Artesanía"'};
-        const categoryColors = { combate: '#e84118', autocuidado: '#4cd137', artesania: '#9b59b6'};
+        const CATEGORIES = {
+            combate: { name: 'Habilidades de "Combate"', color: '#e84118' },
+            autocuidado: { name: 'Habilidades de "Autocuidado"', color: '#4cd137' },
+            artesania: { name: 'Habilidades de "Artesanía"', color: '#9b59b6' }
+        };
 
-        for (const categoryId in categories) {
-            let subSkillsData = [];
-            for (const skillName in skills) {
-                if (skills[skillName].category === categoryId) {
-                    Object.entries(skills[skillName].subSkills).forEach(([subSkillName, subSkillDetails]) => {
-                        if (subSkillDetails.xp > 0) {
-                            subSkillsData.push({ name: subSkillName, xp: subSkillDetails.xp, parent: skillName });
-                        }
-                    });
-                }
-            }
+        for (const [categoryId, category] of Object.entries(CATEGORIES)) {
+            const subSkillsData = Object.entries(skills)
+                .filter(([, skill]) => skill.category === categoryId)
+                .flatMap(([skillName, skill]) => 
+                    Object.entries(skill.subSkills)
+                        .filter(([, subSkill]) => subSkill.xp > 0)
+                        .map(([subSkillName, subSkill]) => ({
+                            name: subSkillName,
+                            xp: subSkill.xp,
+                            parent: skillName
+                        }))
+                );
 
-            if (subSkillsData.length > 0) {
-                subSkillsData.sort((a, b) => b.xp - a.xp);
-                const categoryTitle = document.createElement('h3');
-                categoryTitle.textContent = categories[categoryId];
-                const chartWrapper = document.createElement('div');
-                chartWrapper.className = 'chart-container';
-                const canvas = document.createElement('canvas');
-                chartWrapper.appendChild(canvas);
-                container.appendChild(categoryTitle);
-                container.appendChild(chartWrapper);
+            if (subSkillsData.length === 0) continue;
 
-                const labels = subSkillsData.map(s => `${s.name} (${s.parent.split(' ')[0]})`);
-                const data = subSkillsData.map(s => s.xp);
+            subSkillsData.sort((a, b) => b.xp - a.xp);
 
-                Chart.defaults.font.family = "'Press Start 2P', cursive";
-                Chart.defaults.color = '#dcdcdc';
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = category.name;
+            container.appendChild(categoryTitle);
 
-                chartInstances[categoryId] = new Chart(canvas.getContext('2d'), {
-                    type: 'bar',
-                    data: { labels, datasets: [{ label: 'XP Acumulada', data, backgroundColor: categoryColors[categoryId] }] },
-                    options: {
-                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { x: { grid: { color: '#4f4f6f' }, ticks: { font: { size: 8 } } }, y: { grid: { color: '#4f4f6f' }, ticks: { font: { size: 8 } } } }
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'chart-container';
+            const canvas = document.createElement('canvas');
+            chartWrapper.appendChild(canvas);
+            container.appendChild(chartWrapper);
+
+            const labels = subSkillsData.map(s => `${s.name} (${s.parent.split(' ')[0]})`);
+            const data = subSkillsData.map(s => s.xp);
+
+            Chart.defaults.font.family = "'Press Start 2P', cursive";
+            Chart.defaults.color = '#dcdcdc';
+
+            chartInstances[categoryId] = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'XP Acumulada',
+                        data,
+                        backgroundColor: category.color
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: '#4f4f6f' }, ticks: { font: { size: 8 } } },
+                        y: { grid: { color: '#4f4f6f' }, ticks: { font: { size: 8 } } }
                     }
-                });
-            }
+                }
+            });
         }
     }
 
     function updateDisplay() {
-        skillsList.innerHTML = ''; 
-        const sortedSkills = Object.entries(skills).sort(([,a],[,b]) => b.xp - a.xp);
-        for (const [skillName, skill] of sortedSkills) {
-            const li = document.createElement('li'); 
-            const xpForCurrentLevel = skill.level > 1 ? Math.pow(skill.level - 1, 2) * 1000 : 0;
-            const xpForNextLevel = Math.pow(skill.level, 2) * 1000; 
-            const xpInCurrentLevel = skill.xp - xpForCurrentLevel;
-            const xpNeededForLevel = xpForNextLevel - xpForCurrentLevel; 
-            const progressPercentage = xpNeededForLevel > 0 ? (xpInCurrentLevel / xpNeededForLevel) * 100 : 0;
-            li.innerHTML = `<div style="flex-grow: 1;"><span><span class="skill-icon">${skill.icon}</span>${skillName}</span><div style="font-size: 0.8rem; color: #a0a0c0;">Lvl: ${skill.level} (${skill.xp.toLocaleString()} XP)</div></div><div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${progressPercentage}%;"></div></div>`;
-            skillsList.appendChild(li);
-        }
+        skillsList.innerHTML = '';
+        
+        Object.entries(skills)
+            .sort(([, a], [, b]) => b.xp - a.xp)
+            .forEach(([skillName, skill]) => {
+                const li = document.createElement('li');
+                const progress = calculateSkillProgress(skill);
+                
+                li.innerHTML = `
+                    <div style="flex-grow: 1;">
+                        <span><span class="skill-icon">${skill.icon}</span>${skillName}</span>
+                        <div style="font-size: 0.8rem; color: #a0a0c0;">
+                            Lvl: ${skill.level} (${skill.xp.toLocaleString()} XP)
+                        </div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fg" style="width: ${progress.progressPercentage}%;"></div>
+                    </div>
+                `;
+                
+                skillsList.appendChild(li);
+            });
     }
 
-    function populateSelect() {
-        skillSelect.innerHTML = ''; 
-        const skillNames = Object.keys(skills).sort();
-        for (const skillName of skillNames) { 
-            const option = document.createElement('option'); 
-            option.value = skillName; 
-            option.textContent = skillName; 
-            skillSelect.appendChild(option); 
-        }
+    function populateSkillSelect() {
+        skillSelect.innerHTML = '';
+        Object.keys(skills)
+            .sort()
+            .forEach(skillName => {
+                const option = new Option(skillName, skillName);
+                skillSelect.add(option);
+            });
         populateSubSkillSelect(skillSelect.value);
     }
-    
-    function populateSubSkillSelect(selectedSkill) {
+
+    function populateSubSkillSelect(skillName) {
         subSkillSelect.innerHTML = '';
-        const subSkills = skills[selectedSkill]?.subSkills;
-        if (subSkills && Object.keys(subSkills).length > 0) {
-            Object.keys(subSkills).sort().forEach(subSkill => {
-                const option = document.createElement('option');
-                option.value = subSkill; option.textContent = subSkill;
-                subSkillSelect.appendChild(option);
-            });
-            subSkillSelect.disabled = false;
-        } else {
-            const option = document.createElement('option');
-            option.textContent = 'Añade Habilidades Concretas';
-            option.disabled = true;
-            subSkillSelect.appendChild(option);
+        const subSkills = skills[skillName]?.subSkills;
+        
+        if (!subSkills || Object.keys(subSkills).length === 0) {
             subSkillSelect.disabled = true;
+            subSkillSelect.add(new Option('Añade Habilidades Concretas', '', true, true));
+            return;
         }
+        
+        Object.keys(subSkills)
+            .sort()
+            .forEach(subSkillName => {
+                subSkillSelect.add(new Option(subSkillName, subSkillName));
+            });
+        
+        subSkillSelect.disabled = false;
     }
     
     skillSelect.addEventListener('change', (e) => populateSubSkillSelect(e.target.value));
 
     function addLogEntry(message, type = '') {
-        const logEntry = document.createElement('li'); 
+        const logEntry = document.createElement('li');
         logEntry.innerHTML = message;
         if (type) logEntry.classList.add(type);
+        
         logList.prepend(logEntry);
-        if (logList.children.length > 20) logList.removeChild(logList.lastChild);
+        
+        while (logList.children.length > 20) {
+            logList.removeChild(logList.lastChild);
+        }
     }
 
     //================================================================================//
-    //  SECCIÓN 10: EVENTO PRINCIPAL - REGISTRAR EXPERIENCIA (XP)                     //
+    //  SECCIÓN 10: EVENTO PRINCIPAL OPTIMIZADO                                       //
     //================================================================================//
     registerBtn.addEventListener('click', () => {
         const selectedSkill = skillSelect.value;
@@ -820,41 +876,52 @@
         const intensity = intensitySelect.value;
         const performance = performanceSelect.value;
         
-        if (!selectedSkill || subSkillSelect.disabled || !selectedSubSkill || isNaN(timeSpent) || timeSpent <= 0) {
-            addLogEntry('Entrada inválida.', 'level-up');
+        if (!selectedSkill || !skills[selectedSkill] || 
+            subSkillSelect.disabled || !selectedSubSkill || 
+            isNaN(timeSpent) || timeSpent <= 0) {
+            addLogEntry('<span class="error">✗ Entrada inválida. Verifica los campos.</span>');
             return;
         }
-        
-        let xpGained = Math.floor((timeSpent / 15) * XP_PER_15_MINS);
-        
-        const intensityMultiplier = INTENSITY_MULTIPLIERS[intensity];
-        const performanceMultiplier = PERFORMANCE_MULTIPLIERS[performance];
-        xpGained = Math.floor(xpGained * intensityMultiplier * performanceMultiplier);
         
         const skillData = skills[selectedSkill];
         const subSkillData = skillData.subSkills[selectedSubSkill];
         const oldLevel = skillData.level;
-
+        
+        const baseXP = Math.floor((timeSpent / 15) * XP_PER_15_MINS);
+        const xpGained = Math.floor(baseXP * INTENSITY_MULTIPLIERS[intensity] * PERFORMANCE_MULTIPLIERS[performance]);
+        
         subSkillData.xp += xpGained;
         skillData.xp += xpGained;
         
         subSkillData.sessions.push({
             date: new Date().toISOString(),
             time: timeSpent,
-            intensity: intensity,
-            performance: performance,
+            intensity,
+            performance,
             xpEarned: xpGained
         });
         
         skillData.level = getLevelFromXp(skillData.xp);
+        const leveledUp = skillData.level > oldLevel;
         
-        addLogEntry(
-            `+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill} (${selectedSubSkill}) ` +
-            `por ${timeSpent} min. <br><small>Int: ${intensity} | Des: ${performance}</small>`
-        );
+        addLogEntry(`
+            <div class="log-entry">
+                <span class="xp-gain">+${xpGained.toLocaleString()} XP</span>
+                <span class="skill-info">${skillData.icon} ${selectedSkill} (${selectedSubSkill})</span>
+                <span class="time-spent">${timeSpent} min</span>
+                <div class="evaluation">
+                    <span class="intensity ${intensity}">Int: ${intensity}</span>
+                    <span class="performance ${performance}">Des: ${performance}</span>
+                </div>
+            </div>
+        `, leveledUp ? 'level-up' : '');
         
-        if (skillData.level > oldLevel) {
-            addLogEntry(`¡Nivel ${skillData.level} en ${selectedSkill}!`, 'level-up');
+        if (leveledUp) {
+            addLogEntry(`
+                <div class="level-up">
+                    <span>🎉 ¡Nivel ${skillData.level} en ${selectedSkill}!</span>
+                </div>
+            `, 'level-up');
         }
         
         timeInput.value = '';
@@ -871,7 +938,7 @@
     //================================================================================//
     window.onload = () => { 
         skills = JSON.parse(JSON.stringify(initialSkills));
-        populateSelect();
+        populateSkillSelect();
         updateDisplay(); 
         renderDescriptionPage();
         renderDashboardCharts();
