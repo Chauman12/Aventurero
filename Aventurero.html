@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v9.9 (Misiones y Notificaciones)</title>
+    <title>Panel de Aventurero v9.10 (Gráfico Radial)</title>
     <!-- Importación de la librería Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -154,7 +154,7 @@
         
         .chart-container {
             position: relative;
-            min-height: 150px;
+            min-height: 300px; /* Aumentado para mejor visualización */
             padding: 15px;
             background: #1e1e2f;
             border-radius: 5px;
@@ -855,11 +855,68 @@
         chartInstances = {};
 
         const CATEGORIES = {
-            combate: { name: 'Habilidades de "Combate"', color: '#e84118' },
-            autocuidado: { name: 'Habilidades de "Autocuidado"', color: '#4cd137' },
-            artesania: { name: 'Habilidades de "Artesanía"', color: '#9b59b6' }
+            combate: { name: 'Habilidades de "Combate"', color: '#e84118', bgColor: 'rgba(232, 65, 24, 0.2)' },
+            autocuidado: { name: 'Habilidades de "Autocuidado"', color: '#4cd137', bgColor: 'rgba(76, 209, 55, 0.2)' },
+            artesania: { name: 'Habilidades de "Artesanía"', color: '#9b59b6', bgColor: 'rgba(155, 89, 182, 0.2)' }
         };
+
+        // --- Gráfico Radial ---
+        const radarTitle = document.createElement('h3');
+        radarTitle.textContent = 'Resumen General de Habilidades';
+        const radarChartWrapper = document.createElement('div');
+        radarChartWrapper.className = 'chart-container';
+        const radarCanvas = document.createElement('canvas');
+        radarChartWrapper.appendChild(radarCanvas);
+        container.appendChild(radarTitle);
+        container.appendChild(radarChartWrapper);
         
+        const allSkillNames = Object.keys(skills);
+        const radarDatasets = Object.entries(CATEGORIES).map(([catId, catData]) => {
+            return {
+                label: catData.name,
+                data: allSkillNames.map(name => skills[name].category === catId ? skills[name].level : 0),
+                fill: true,
+                backgroundColor: catData.bgColor,
+                borderColor: catData.color,
+                pointBackgroundColor: catData.color,
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: catData.color
+            }
+        });
+
+        chartInstances.radar = new Chart(radarCanvas, {
+            type: 'radar',
+            data: {
+                labels: allSkillNames.map(name => name.split(' ')[0]), // Nombres más cortos
+                datasets: radarDatasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                elements: { line: { tension: 0.1, borderWidth: 2 } },
+                scales: {
+                    r: {
+                        angleLines: { color: '#4f4f6f' },
+                        grid: { color: '#4f4f6f' },
+                        pointLabels: { font: { size: 9 }, color: '#dcdcdc' },
+                        ticks: {
+                            color: '#1e1e2f',
+                            backdropColor: '#a0a0c0',
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // --- Gráficos de Barras (existentes) ---
         const allSubSkillsData = Object.entries(skills)
             .flatMap(([skillName, skill]) => 
                 Object.entries(skill.subSkills)
@@ -876,7 +933,7 @@
             if (subSkillsData.length === 0) continue;
 
             const categoryTitle = document.createElement('h3');
-            categoryTitle.textContent = category.name;
+            categoryTitle.textContent = `Detalle: ${category.name}`;
             container.appendChild(categoryTitle);
 
             const chartWrapper = document.createElement('div');
@@ -888,10 +945,7 @@
             const labels = subSkillsData.map(s => `${s.name} (${s.parent.split(' ')[0]})`);
             const data = subSkillsData.map(s => s.xp);
 
-            Chart.defaults.font.family = "'Press Start 2P', cursive";
-            Chart.defaults.color = '#dcdcdc';
-
-            chartInstances[categoryId] = new Chart(canvas, {
+            chartInstances[`bar_${categoryId}`] = new Chart(canvas, {
                 type: 'bar',
                 data: { labels, datasets: [{ label: 'XP Acumulada', data, backgroundColor: category.color }] },
                 options: {
@@ -1077,11 +1131,9 @@
             return;
         }
 
-        // Formato de fecha para Google Calendar: YYYYMMDDTHHMMSS/YYYYMMDDTHHMMSS
         const startDateTime = new Date(`${date}T${time}`);
-        const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // Añadir 1 hora de duración por defecto
+        const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); 
 
-        // Función para formatear la fecha sin guiones ni dos puntos
         const toGoogleFormat = (date) => date.toISOString().replace(/[-:.]/g, '').slice(0, 15);
 
         const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${toGoogleFormat(startDateTime)}/${toGoogleFormat(endDateTime)}&details=${encodeURIComponent(description)}&sf=true&output=xml`;
