@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v9.8 (Configuración y Reinicio)</title>
+    <title>Panel de Aventurero v9.9 (Misiones y Notificaciones)</title>
     <!-- Importación de la librería Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -99,7 +99,7 @@
            6. ELEMENTOS DE FORMULARIO Y BOTONES
            ========================================================================== */
 
-        select, input[type="number"], input[type="text"] {
+        select, input[type="number"], input[type="text"], input[type="date"], input[type="time"], textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
@@ -110,6 +110,10 @@
             font-family: inherit;
             font-size: 0.9rem;
             box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         button, .nav-btn, .type-btn {
@@ -128,7 +132,7 @@
             font-size: 0.8rem;
         }
         
-        #register-btn { background: linear-gradient(145deg, #4a90e2, #3a7ac8); border-bottom: 4px solid #2a5a9a; }
+        #register-btn, #create-mission-btn { background: linear-gradient(145deg, #4a90e2, #3a7ac8); border-bottom: 4px solid #2a5a9a; }
         #auth-btn { background-color: #dd4b39; border-bottom: 4px solid #c23321;}
         .gdrive-btn { background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
         #reset-progress-btn { background-color: #c23616; border-bottom: 4px solid #8e240e;}
@@ -158,7 +162,7 @@
             margin-bottom: 20px;
         }
 
-        .skills-panel ul, .log-panel ul {
+        .skills-panel ul, .log-panel ul, .mission-list ul {
             list-style: none;
             padding: 0;
             max-height: 450px;
@@ -314,7 +318,7 @@
                 <button class="nav-btn" data-page="entrenamiento">Entrenamiento</button>
                 <button class="nav-btn" data-page="misiones">Misiones</button>
                 <button class="nav-btn" data-page="descripcion">Descripción</button>
-                <button class="nav-btn" data-page="configuracion">Configuración</button> <!-- Botón nuevo -->
+                <button class="nav-btn" data-page="configuracion">Configuración</button>
             </div>
             
             <div class="container gdrive-section">
@@ -328,7 +332,7 @@
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                     v9.8 (Configuración y Reinicio)
+                     v9.9 (Misiones y Notificaciones)
                 </div>
             </div>
         </div>
@@ -389,8 +393,17 @@
             <div id="page-misiones" class="page-content">
                 <div class="container">
                     <h1>Misiones</h1>
-                    <p style="text-align:center;">¡Aquí podrás ver y gestionar tus misiones!</p>
-                    <p style="text-align:center; color: #a0a0c0;">(Próximamente...)</p>
+                    <div class="mission-form">
+                        <label for="mission-title">Título de la Misión:</label>
+                        <input type="text" id="mission-title" placeholder="Ej: Practicar 30 minutos de guitarra">
+                        <label for="mission-date">Fecha:</label>
+                        <input type="date" id="mission-date">
+                        <label for="mission-time">Hora:</label>
+                        <input type="time" id="mission-time">
+                        <label for="mission-description">Descripción (opcional):</label>
+                        <textarea id="mission-description" placeholder="Notas adicionales para el recordatorio..."></textarea>
+                        <button id="create-mission-btn">Crear Recordatorio en Google Calendar</button>
+                    </div>
                 </div>
             </div>
 
@@ -398,7 +411,6 @@
                 <div class="container description-content"></div>
             </div>
 
-            <!-- Página de Configuración Nueva -->
             <div id="page-configuracion" class="page-content">
                 <div class="container">
                     <h1>Configuración</h1>
@@ -445,7 +457,7 @@
         'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
         'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: {}, img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
         'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: {}, img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
-        'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: {}, img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=�', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
+        'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: {}, img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
         'Creación (Proyectos Creativos)': { xp: 0, level: 1, icon: '🎨', subSkills: {}, img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
         'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: {}, img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
         'Grabación de Fuego (Disciplina)': { xp: 0, level: 1, icon: '🔥', subSkills: {}, img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina. La clave es la simplicidad y la consistencia.' }
@@ -491,6 +503,12 @@
     const confirmModal = document.getElementById('confirm-modal');
     const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
     const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+    // Nuevos elementos de Misiones
+    const createMissionBtn = document.getElementById('create-mission-btn');
+    const missionTitleInput = document.getElementById('mission-title');
+    const missionDateInput = document.getElementById('mission-date');
+    const missionTimeInput = document.getElementById('mission-time');
+    const missionDescriptionInput = document.getElementById('mission-description');
 
 
     //================================================================================//
@@ -939,7 +957,7 @@
     }
 
     //================================================================================//
-    //  SECCIÓN 10: EVENTO PRINCIPAL REFACTORIZADO                                    //
+    //  SECCIÓN 10: EVENTO PRINCIPAL Y MISIONES                                       //
     //================================================================================//
     
     function validateTemporalActivity() {
@@ -1048,6 +1066,30 @@
         }
     });
 
+    createMissionBtn.addEventListener('click', () => {
+        const title = missionTitleInput.value;
+        const date = missionDateInput.value;
+        const time = missionTimeInput.value;
+        const description = missionDescriptionInput.value;
+
+        if(!title || !date || !time) {
+            addLogEntry('<span class="error">✗ Por favor, completa título, fecha y hora de la misión.</span>');
+            return;
+        }
+
+        // Formato de fecha para Google Calendar: YYYYMMDDTHHMMSS/YYYYMMDDTHHMMSS
+        const startDateTime = new Date(`${date}T${time}`);
+        const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // Añadir 1 hora de duración por defecto
+
+        // Función para formatear la fecha sin guiones ni dos puntos
+        const toGoogleFormat = (date) => date.toISOString().replace(/[-:.]/g, '').slice(0, 15);
+
+        const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${toGoogleFormat(startDateTime)}/${toGoogleFormat(endDateTime)}&details=${encodeURIComponent(description)}&sf=true&output=xml`;
+
+        window.open(googleCalendarUrl, '_blank');
+        addLogEntry(`🗓️ Recordatorio para "${title}" enviado a Google Calendar.`);
+    });
+
     //================================================================================//
     //  SECCIÓN 11: INICIALIZACIÓN PRINCIPAL DE LA APLICACIÓN                         //
     //================================================================================//
@@ -1061,4 +1103,3 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
-�
