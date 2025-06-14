@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v9.1 (Migración de Datos)</title>
+    <title>Panel de Aventurero v9.3 (Edición y Mejoras)</title>
     <!-- Importación de la librería Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -141,7 +141,7 @@
         
         .chart-container {
             position: relative;
-            min-height: 150px; /* Altura mínima para que el contenedor sea visible */
+            min-height: 150px;
             padding: 15px;
             background: #1e1e2f;
             border-radius: 5px;
@@ -181,23 +181,58 @@
         .subskill-list { list-style: none; padding: 0; }
         .subskill-list li { 
             display: flex; 
-            align-items: center; 
+            flex-direction: column;
+            align-items: flex-start; 
             background-color: #2a2a40; 
-            padding: 8px; 
+            padding: 12px; 
             border-radius: 3px; 
-            margin-bottom: 5px; 
+            margin-bottom: 8px;
             font-size: 0.9rem;
             gap: 10px;
+            border-left: 3px solid #6a4f9a;
+        }
+        .subskill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .subskill-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .session-history {
+            width: 100%;
+            margin-top: 10px;
+            border-top: 1px solid #4f4f6f;
+            padding-top: 10px;
+            font-size: 0.7rem;
+            color: #a0a0c0;
+        }
+        .session-entry {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 4px;
+            border-radius: 2px;
+        }
+        .session-entry:nth-child(odd) {
+            background-color: #33334f;
+        }
+        .xp-earned {
+            color: #32ff7e;
+            font-weight: bold;
         }
         .subskill-input-group { display: flex; gap: 10px; }
         
-        .delete-subskill-btn { 
-            background: #c23616; border: none; color: white; padding: 5px 8px;
+        .edit-subskill-btn, .delete-subskill-btn { 
+            border: none; color: white; padding: 5px 8px;
             border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 0.8rem;
             width: auto;
-            margin-left: auto;
             flex-shrink: 0;
         }
+        .edit-subskill-btn { background: #4a90e2; }
+        .delete-subskill-btn { background: #c23616; }
         
         .add-subskill-btn { flex-shrink: 0; width: auto; padding: 0 15px; font-size: 1.2rem; background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
         
@@ -255,7 +290,7 @@
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                    v9.1 (Migración de Datos)
+                    v9.3 (Edición y Mejoras)
                 </div>
             </div>
         </div>
@@ -283,6 +318,21 @@
 
                         <label for="time-input">Minutos de práctica:</label>
                         <input type="number" id="time-input" min="1" placeholder="Ej: 30">
+                        
+                        <label for="intensity-select">Intensidad:</label>
+                        <select id="intensity-select">
+                            <option value="bajo">Bajo (x0.8)</option>
+                            <option value="medio" selected>Medio (x1.0)</option>
+                            <option value="alto">Alto (x1.2)</option>
+                        </select>
+                        
+                        <label for="performance-select">Desempeño:</label>
+                        <select id="performance-select">
+                            <option value="malo">Malo (x0.7)</option>
+                            <option value="normal" selected>Normal (x1.0)</option>
+                            <option value="bueno">Bueno (x1.3)</option>
+                        </select>
+
                         <button id="register-btn">Registrar XP</button>
                     </div>
                 </div>
@@ -320,7 +370,7 @@
     //================================================================================//
     const initialSkills = {
         'Avance (Formación)': { xp: 0, level: 1, icon: '⚔️', subSkills: {}, img: 'https://placehold.co/80x80/c23616/FFFFFF?text=⚔️', category: 'combate', description: 'Todo lo que impulsa tu carrera. Estudiar, hacer networking, desarrollar un proyecto laboral, buscar un ascenso, trabajar en equipo, puntualidad.' },
-        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '💪', subSkills: {}, img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
+        'Fuerza (Salud centrada en el cuerpo)': { xp: 0, level: 1, icon: '�', subSkills: {}, img: 'https://placehold.co/80x80/e84118/FFFFFF?text=💪', category: 'combate', description: 'Entrenamiento de fuerza, levantamiento de pesas, calistenia, funcional.' },
         'Defensa (Finanzas Personales)': { xp: 0, level: 1, icon: '🛡️', subSkills: {}, img: 'https://placehold.co/80x80/4cd137/FFFFFF?text=🛡️', category: 'combate', description: 'Ahorrar, invertir, crear un presupuesto, aprender sobre economía, pagar deudas.' },
         'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: {}, img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
         'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: {}, img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
@@ -343,6 +393,13 @@
     let chartInstances = {};
     
     //================================================================================//
+    //  SECCIÓN 3: CONSTANTES DE LÓGICA DE JUEGO                                      //
+    //================================================================================//
+    const XP_PER_15_MINS = 100;
+    const INTENSITY_MULTIPLIERS = { bajo: 0.8, medio: 1.0, alto: 1.2 };
+    const PERFORMANCE_MULTIPLIERS = { malo: 0.7, normal: 1.0, bueno: 1.3 };
+
+    //================================================================================//
     //  SECCIÓN 4: REFERENCIAS A ELEMENTOS DEL HTML (DOM)                             //
     //================================================================================//
     const authBtn = document.getElementById('auth-btn');
@@ -356,6 +413,8 @@
     const skillsList = document.getElementById('skills-list');
     const logList = document.getElementById('log-list');
     const descriptionContainer = document.querySelector('#page-descripcion .description-content');
+    const intensitySelect = document.getElementById('intensity-select');
+    const performanceSelect = document.getElementById('performance-select');
     
     //================================================================================//
     //  SECCIÓN 5: LÓGICA DE NAVEGACIÓN (SPA)                                         //
@@ -414,7 +473,32 @@
         if (skill && skill.subSkills) {
             Object.entries(skill.subSkills).forEach(([subSkillName, subSkillData]) => {
                 const li = document.createElement('li');
-                li.innerHTML = `<span>${subSkillName} (${subSkillData.xp.toLocaleString()} XP)</span> <button class="delete-subskill-btn" data-name="${subSkillName}">X</button>`;
+                
+                let sessionsHTML = '<div class="session-history"><h5>Historial Reciente:</h5>';
+                if (subSkillData.sessions && subSkillData.sessions.length > 0) {
+                     subSkillData.sessions.slice().reverse().slice(0, 5).forEach(session => {
+                        const dateStr = new Date(session.date).toLocaleDateString();
+                        sessionsHTML += `
+                            <div class="session-entry">
+                                <span>🗓️ ${dateStr} (${session.time} min)</span>
+                                <span class="xp-earned">+${session.xpEarned} XP</span>
+                            </div>`;
+                     });
+                } else {
+                    sessionsHTML += '<span>No hay sesiones registradas.</span>';
+                }
+                sessionsHTML += '</div>';
+
+                li.innerHTML = `
+                    <div class="subskill-header">
+                        <span>${subSkillName} (${subSkillData.xp.toLocaleString()} XP)</span> 
+                        <div class="subskill-actions">
+                            <button class="edit-subskill-btn" data-name="${subSkillName}" title="Editar nombre">✏️</button>
+                            <button class="delete-subskill-btn" data-name="${subSkillName}" title="Eliminar">🗑️</button>
+                        </div>
+                    </div>
+                    ${sessionsHTML}
+                `;
                 listElement.appendChild(li);
             });
         }
@@ -426,7 +510,9 @@
 
     function addDescriptionPageListeners() {
         descriptionContainer.addEventListener('click', (e) => {
-            const target = e.target;
+            const target = e.target.closest('button'); // Asegurarse de capturar el botón aunque se haga clic en el ícono
+            if (!target) return;
+
             const parentItem = target.closest('.description-item');
             if (!parentItem) return;
             const skillName = parentItem.getAttribute('data-skill');
@@ -435,26 +521,46 @@
             if (target.classList.contains('add-subskill-btn')) {
                 const input = parentItem.querySelector('input[type="text"]');
                 const value = input.value.trim();
-                if (value && Object.keys(skillData.subSkills).length < 25) {
-                    skillData.subSkills[value] = { xp: 0 };
+                if (value && !skillData.subSkills.hasOwnProperty(value) && Object.keys(skillData.subSkills).length < 25) {
+                    skillData.subSkills[value] = { xp: 0, sessions: [] };
                     renderSubSkillList(skillName);
                     populateSubSkillSelect(skillSelect.value);
-                    renderDashboardCharts();
                     input.value = '';
+                } else if(skillData.subSkills.hasOwnProperty(value)) {
+                    addLogEntry('⚠️ Ya existe una habilidad con ese nombre.', 'level-up');
+                }
+            }
+            
+            if (target.classList.contains('edit-subskill-btn')) {
+                const oldName = target.getAttribute('data-name');
+                const newName = prompt('Ingresa el nuevo nombre para la habilidad:', oldName);
+
+                if (newName && newName.trim() !== '' && newName !== oldName && !skillData.subSkills.hasOwnProperty(newName)) {
+                    // Renombrar la clave del objeto sin perder los datos
+                    Object.defineProperty(skillData.subSkills, newName,
+                        Object.getOwnPropertyDescriptor(skillData.subSkills, oldName));
+                    delete skillData.subSkills[oldName];
+                    
+                    renderSubSkillList(skillName);
+                    populateSubSkillSelect(skillSelect.value);
+                    addLogEntry(`✔️ "${oldName}" renombrada a "${newName}".`);
+                } else if (newName && newName === oldName) {
+                    // No hacer nada si el nombre es el mismo
+                } else if (newName && skillData.subSkills.hasOwnProperty(newName)) {
+                    addLogEntry('⚠️ Ya existe una habilidad con ese nombre.', 'level-up');
                 }
             }
 
             if (target.classList.contains('delete-subskill-btn')) {
                 const subSkillNameToDelete = target.getAttribute('data-name');
-                const xpLost = skillData.subSkills[subSkillNameToDelete]?.xp || 0; // Get xp from the subskill to be deleted
+                // IMPORTANTE: Ya no se resta la XP de la habilidad padre al borrar una sub-habilidad.
+                // El esfuerzo general en la categoría se conserva.
                 delete skillData.subSkills[subSkillNameToDelete];
-                skillData.xp -= xpLost; // CORRECTED: Subtract the lost XP from the total.
-                if (skillData.xp < 0) skillData.xp = 0; // Failsafe
-                skillData.level = getLevelFromXp(skillData.xp);
+                
                 renderSubSkillList(skillName);
                 populateSubSkillSelect(skillSelect.value);
-                updateDisplay();
-                renderDashboardCharts();
+                // No es necesario actualizar el display general ni los gráficos, ya que el XP total no cambió.
+                addLogEntry(`🗑️ Habilidad concreta "${subSkillNameToDelete}" eliminada.`);
             }
         });
     }
@@ -464,8 +570,9 @@
     //================================================================================//
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
     const SCOPES = 'https://www.googleapis.com/auth/drive.file';
-    const FILENAME = 'progreso_agenda_v2.json'; // Nombre de archivo nuevo por cambio de estructura
-    const OLD_FILENAME = 'progreso_agenda.json'; // Nombre de archivo antiguo
+    const FILENAME = 'progreso_agenda_v3.json'; 
+    const OLD_FILENAME_V2 = 'progreso_agenda_v2.json';
+    const OLD_FILENAME_V1 = 'progreso_agenda.json';
     let tokenClient;
     let gapiInited = false, gisInited = false;
     
@@ -501,7 +608,6 @@
 
     saveBtn.onclick = async () => {
         statusDiv.textContent = 'Guardando en Google Drive...';
-        // Siempre guarda con el nuevo nombre de archivo
         const fileId = await findFileIdByName(FILENAME);
         const fileContent = JSON.stringify(skills, null, 2);
         const boundary = '-------314159265358979323846';
@@ -524,12 +630,7 @@
     loadBtn.onclick = async () => {
         statusDiv.textContent = 'Buscando archivo en Google Drive...';
         
-        let fileId = await findFileIdByName(FILENAME); // Buscar archivo nuevo
-
-        if (!fileId) {
-            statusDiv.textContent = 'Archivo v2 no encontrado, buscando v1...';
-            fileId = await findFileIdByName(OLD_FILENAME); // Si no se encuentra, buscar antiguo
-        }
+        let fileId = await findFileIdByName(FILENAME) || await findFileIdByName(OLD_FILENAME_V2) || await findFileIdByName(OLD_FILENAME_V1);
 
         if (!fileId) {
             statusDiv.textContent = 'No se encontró archivo de progreso.';
@@ -552,17 +653,24 @@
                         
                         hydratedSkills[targetSkillName].xp = savedData.xp || 0;
 
-                        if (Array.isArray(savedData.subSkills)) {
-                            migrationOccurred = true;
-                            const newSubSkills = {};
-                            savedData.subSkills.forEach(name => {
-                                newSubSkills[name] = { xp: 0 };
-                            });
-                            hydratedSkills[targetSkillName].subSkills = newSubSkills;
-                        } else {
-                            hydratedSkills[targetSkillName].subSkills = savedData.subSkills || {};
+                        const newSubSkills = {};
+                        if (savedData.subSkills && typeof savedData.subSkills === 'object') {
+                           if (Array.isArray(savedData.subSkills)) { 
+                                migrationOccurred = true;
+                                savedData.subSkills.forEach(name => {
+                                    newSubSkills[name] = { xp: 0, sessions: [] };
+                                });
+                            } else { 
+                                for (const subName in savedData.subSkills) {
+                                    const subSkillData = savedData.subSkills[subName];
+                                    newSubSkills[subName] = {
+                                        xp: subSkillData.xp || 0,
+                                        sessions: subSkillData.sessions || [] 
+                                    };
+                                }
+                            }
                         }
-
+                        hydratedSkills[targetSkillName].subSkills = newSubSkills;
                         hydratedSkills[targetSkillName].level = getLevelFromXp(hydratedSkills[targetSkillName].xp);
                     }
                 }
@@ -585,7 +693,6 @@
     //================================================================================//
     //  SECCIÓN 9: LÓGICA CENTRAL DE LA APLICACIÓN                                    //
     //================================================================================//
-    const XP_PER_15_MINS = 100;
     
     function getLevelFromXp(xp) {
         let level = 1; 
@@ -618,7 +725,7 @@
             }
 
             if (subSkillsData.length > 0) {
-                subSkillsData.sort((a, b) => a.xp - b.xp); // Ordenar para mejor visualización
+                subSkillsData.sort((a, b) => b.xp - a.xp);
                 const categoryTitle = document.createElement('h3');
                 categoryTitle.textContent = categories[categoryId];
                 const chartWrapper = document.createElement('div');
@@ -697,7 +804,7 @@
 
     function addLogEntry(message, type = '') {
         const logEntry = document.createElement('li'); 
-        logEntry.textContent = message; 
+        logEntry.innerHTML = message;
         if (type) logEntry.classList.add(type);
         logList.prepend(logEntry);
         if (logList.children.length > 20) logList.removeChild(logList.lastChild);
@@ -710,21 +817,50 @@
         const selectedSkill = skillSelect.value;
         const selectedSubSkill = subSkillSelect.value;
         const timeSpent = parseInt(timeInput.value);
-        if (!selectedSkill || subSkillSelect.disabled || !selectedSubSkill || isNaN(timeSpent) || timeSpent <= 0) { addLogEntry('Entrada inválida.', 'level-up'); return; }
+        const intensity = intensitySelect.value;
+        const performance = performanceSelect.value;
         
-        const xpGained = Math.floor((timeSpent / 15) * XP_PER_15_MINS);
+        if (!selectedSkill || subSkillSelect.disabled || !selectedSubSkill || isNaN(timeSpent) || timeSpent <= 0) {
+            addLogEntry('Entrada inválida.', 'level-up');
+            return;
+        }
+        
+        let xpGained = Math.floor((timeSpent / 15) * XP_PER_15_MINS);
+        
+        const intensityMultiplier = INTENSITY_MULTIPLIERS[intensity];
+        const performanceMultiplier = PERFORMANCE_MULTIPLIERS[performance];
+        xpGained = Math.floor(xpGained * intensityMultiplier * performanceMultiplier);
+        
         const skillData = skills[selectedSkill];
+        const subSkillData = skillData.subSkills[selectedSubSkill];
         const oldLevel = skillData.level;
 
-        skillData.subSkills[selectedSubSkill].xp += xpGained;
-        skillData.xp += xpGained; // CORRECTED: Add XP to the total, don't recalculate.
+        subSkillData.xp += xpGained;
+        skillData.xp += xpGained;
+        
+        subSkillData.sessions.push({
+            date: new Date().toISOString(),
+            time: timeSpent,
+            intensity: intensity,
+            performance: performance,
+            xpEarned: xpGained
+        });
+        
         skillData.level = getLevelFromXp(skillData.xp);
         
-        addLogEntry(`+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill} (${selectedSubSkill}) por ${timeSpent} min.`);
+        addLogEntry(
+            `+${xpGained.toLocaleString()} XP en ${skillData.icon} ${selectedSkill} (${selectedSubSkill}) ` +
+            `por ${timeSpent} min. <br><small>Int: ${intensity} | Des: ${performance}</small>`
+        );
+        
         if (skillData.level > oldLevel) {
             addLogEntry(`¡Nivel ${skillData.level} en ${selectedSkill}!`, 'level-up');
         }
+        
         timeInput.value = '';
+        intensitySelect.value = 'medio';
+        performanceSelect.value = 'normal';
+        
         updateDisplay();
         renderDashboardCharts();
         renderSubSkillList(selectedSkill);
@@ -747,3 +883,4 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
+�
