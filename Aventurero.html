@@ -445,7 +445,7 @@
         'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
         'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: {}, img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
         'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: {}, img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
-        'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: {}, img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=📚', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
+        'Estudio Profundo': { xp: 0, level: 1, icon: '📚', subSkills: {}, img: 'https://placehold.co/80x80/9b59b6/FFFFFF?text=�', category: 'artesania', description: 'Aprender una habilidad "dura" y compleja. Programación, un nuevo idioma, carpintería, edición de video.' },
         'Creación (Proyectos Creativos)': { xp: 0, level: 1, icon: '🎨', subSkills: {}, img: 'https://placehold.co/80x80/e74c3c/FFFFFF?text=🎨', category: 'artesania', description: 'Escribir, dibujar, componer música, crear contenido para tus seres queridos o las redes.' },
         'Construcción (Organización)': { xp: 0, level: 1, icon: '🏡', subSkills: {}, img: 'https://placehold.co/80x80/f39c12/FFFFFF?text=🏡', category: 'artesania', description: 'Ordenar tu casa, optimizar tu espacio de trabajo, bricolaje (DIY), minimalismo.'},
         'Grabación de Fuego (Disciplina)': { xp: 0, level: 1, icon: '🔥', subSkills: {}, img: 'https://placehold.co/80x80/d35400/FFFFFF?text=🔥', category: 'artesania', description: 'La habilidad "meta". Se enfoca en el acto de construir y mantener la rutina. La clave es la simplicidad y la consistencia.' }
@@ -634,6 +634,8 @@
     //================================================================================//
     //  SECCIÓN 7: INICIALIZACIÓN DE LA API DE GOOGLE                                 //
     //================================================================================//
+    const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+    const SCOPES = 'https://www.googleapis.com/auth/drive.file';
     const FILENAME = 'progreso_agenda_v4.json'; 
     const OLD_FILENAMES = ['progreso_agenda_v3.json', 'progreso_agenda_v2.json', 'progreso_agenda.json'];
     let tokenClient;
@@ -646,7 +648,7 @@
     function maybeEnableButtons() { 
         if (gapiInited && gisInited) { 
             authBtn.style.display = 'block';
-            resetProgressBtn.disabled = false; // Habilitar el botón de reset cuando la API está lista
+            resetProgressBtn.disabled = false;
         } 
     }
 
@@ -1059,3 +1061,4 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
+�
