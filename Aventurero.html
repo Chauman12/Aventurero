@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v9.6 (Refactorización y UI)</title>
+    <title>Panel de Aventurero v9.7 (Interfaz Flexible)</title>
     <!-- Importación de la librería Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -169,7 +169,7 @@
             padding: 10px 15px;
             margin-bottom: 8px;
             border-left: 5px solid #ffdd57;
-            display: block; /* Changed from flex */
+            display: block;
             border-radius: 4px;
         }
         .skill-info-container {
@@ -211,7 +211,6 @@
             align-items: center;
             width: 100%;
         }
-        .subskill-type-label { font-size: 0.7rem; color: #a0a0c0; }
         .subskill-actions {
             display: flex;
             gap: 5px;
@@ -318,7 +317,7 @@
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                    v9.6 (Refactorización y UI)
+                     v9.7 (Interfaz Flexible)
                 </div>
             </div>
         </div>
@@ -418,7 +417,7 @@
         'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: {}, img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
         'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: {}, img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
         'Magia (Habilidades Sociales)': { xp: 0, level: 1, icon: '✨', subSkills: {}, img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia, compañerismo' },
-        'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: {}, img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
+        'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: {}, img: 'https://placehold.co/80x80/718093/FFFFFF?text=�', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
         'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
         'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: {}, img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
         'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: {}, img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
@@ -517,7 +516,8 @@
                     const item = document.createElement('li');
                     item.className = 'description-item';
                     item.setAttribute('data-skill', skillName);
-                    item.innerHTML = `<div class="description-header"><img src="${skill.img}" alt="Icono" class="description-img"><div><strong>${skillName}:</strong> ${skill.description}</div></div><div class="subskill-container"><h4>Habilidades Concretas:</h4><ul class="subskill-list"></ul><div class="subskill-input-group"><input type="text" placeholder="Añadir habilidad..." maxlength="50"><select class="subskill-type-select"><option value="temporal">Temporal</option><option value="discrete">Discreta</option></select><button class="add-subskill-btn">+</button></div></div>`;
+                    // El selector de tipo de sub-habilidad se ha eliminado
+                    item.innerHTML = `<div class="description-header"><img src="${skill.img}" alt="Icono" class="description-img"><div><strong>${skillName}:</strong> ${skill.description}</div></div><div class="subskill-container"><h4>Habilidades Concretas:</h4><ul class="subskill-list"></ul><div class="subskill-input-group"><input type="text" placeholder="Añadir habilidad..." maxlength="50"><button class="add-subskill-btn">+</button></div></div>`;
                     categoryList.appendChild(item);
                 }
             }
@@ -547,8 +547,8 @@
                     sessionsHTML += '<span>No hay sesiones registradas.</span>';
                 }
                 sessionsHTML += '</div>';
-                const typeLabel = subSkillData.type === 'discrete' ? 'Discreta' : 'Temporal';
-                li.innerHTML = `<div class="subskill-header"><span>${subSkillName} <span class="subskill-type-label">(${typeLabel})</span></span> <div class="subskill-actions"><button class="edit-subskill-btn" data-name="${subSkillName}" title="Editar nombre">✏️</button><button class="delete-subskill-btn" data-name="${subSkillName}" title="Eliminar">🗑️</button></div></div>${sessionsHTML}`;
+                // Ya no se muestra el tipo (Temporal/Discreto) en el encabezado
+                li.innerHTML = `<div class="subskill-header"><span>${subSkillName}</span> <div class="subskill-actions"><button class="edit-subskill-btn" data-name="${subSkillName}" title="Editar nombre">✏️</button><button class="delete-subskill-btn" data-name="${subSkillName}" title="Eliminar">🗑️</button></div></div>${sessionsHTML}`;
                 listElement.appendChild(li);
             });
         }
@@ -569,11 +569,10 @@
 
             if (target.classList.contains('add-subskill-btn')) {
                 const input = parentItem.querySelector('input[type="text"]');
-                const typeSelect = parentItem.querySelector('.subskill-type-select');
                 const value = input.value.trim();
-                const type = typeSelect.value;
                 if (value && !skillData.subSkills.hasOwnProperty(value) && Object.keys(skillData.subSkills).length < 25) {
-                    skillData.subSkills[value] = { xp: 0, sessions: [], type: type };
+                    // La propiedad 'type' ya no se añade a la sub-habilidad
+                    skillData.subSkills[value] = { xp: 0, sessions: [] };
                     renderSubSkillList(skillName);
                     populateSubSkillSelect(skillSelect.value);
                     input.value = '';
@@ -698,17 +697,17 @@
                             if (Array.isArray(savedData.subSkills)) { 
                                 migrationOccurred = true;
                                 savedData.subSkills.forEach(name => {
-                                    newSubSkills[name] = { xp: 0, sessions: [], type: 'temporal' };
+                                    newSubSkills[name] = { xp: 0, sessions: [] };
                                 });
                             } else { 
                                 for (const subName in savedData.subSkills) {
                                     const subData = savedData.subSkills[subName];
                                     newSubSkills[subName] = {
                                         xp: subData.xp || 0,
-                                        sessions: subData.sessions || [],
-                                        type: subData.type || 'temporal' 
+                                        sessions: subData.sessions || []
+                                        // La propiedad 'type' ya no se necesita aquí
                                     };
-                                    if(!subData.type) migrationOccurred = true;
+                                    if(subData.type) migrationOccurred = true; // Si tenía tipo, es de una versión anterior
                                 }
                             }
                         }
@@ -756,8 +755,6 @@
             progressPercentage: xpNeededForLevel > 0 
                 ? (xpInCurrentLevel / xpNeededForLevel) * 100 
                 : 0,
-            xpForNextLevel,
-            xpInCurrentLevel
         };
     }
 
@@ -866,26 +863,9 @@
             Object.keys(subSkills).sort().forEach(subSkillName => subSkillSelect.add(new Option(subSkillName, subSkillName)));
             subSkillSelect.disabled = false;
         }
-        updateActivityInputsVisibility(skillName, subSkillSelect.value);
-    }
-    
-    function updateActivityInputsVisibility(skillName, subSkillName) {
-        if (!skillName || !subSkillName) return;
-        const subSkill = skills[skillName]?.subSkills?.[subSkillName];
-        if (!subSkill) {
-            temporalBtn.click(); // Default to temporal if no subskill
-            return;
-        };
-
-        if (subSkill.type === 'temporal') {
-            if(!temporalBtn.classList.contains('active')) temporalBtn.click();
-        } else {
-            if(!discreteBtn.classList.contains('active')) discreteBtn.click();
-        }
     }
     
     skillSelect.addEventListener('change', (e) => populateSubSkillSelect(e.target.value));
-    subSkillSelect.addEventListener('change', (e) => updateActivityInputsVisibility(skillSelect.value, e.target.value));
 
     function addLogEntry(message, type = '') {
         const logEntry = document.createElement('li');
@@ -1025,3 +1005,4 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
+�
