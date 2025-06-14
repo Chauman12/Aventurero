@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Aventurero v9.7 (Interfaz Flexible)</title>
+    <title>Panel de Aventurero v9.8 (Configuración y Reinicio)</title>
     <!-- Importación de la librería Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -96,7 +96,7 @@
         }
 
         /* ==========================================================================
-           6. ELEMENTOS DE FORMULARIO (INPUTS, SELECTS, BOTONES)
+           6. ELEMENTOS DE FORMULARIO Y BOTONES
            ========================================================================== */
 
         select, input[type="number"], input[type="text"] {
@@ -131,6 +131,7 @@
         #register-btn { background: linear-gradient(145deg, #4a90e2, #3a7ac8); border-bottom: 4px solid #2a5a9a; }
         #auth-btn { background-color: #dd4b39; border-bottom: 4px solid #c23321;}
         .gdrive-btn { background-color: #4CAF50; border-bottom: 4px solid #388E3C; }
+        #reset-progress-btn { background-color: #c23616; border-bottom: 4px solid #8e240e;}
         .nav-btn { background-color: #6a4f9a; border-bottom: 4px solid #4a2f7a; }
         .nav-btn.active { background-color: #8a6fba; transform: translateY(2px); border-bottom-width: 2px;}
         button:disabled { background-color: #555; border-bottom-color: #444; color: #888; cursor: not-allowed; }
@@ -252,7 +253,7 @@
         
         .skill-icon { margin-right: 10px; }
         
-        /* Log Panel & Progress Bar Styles */
+        /* Log Panel, Progress Bar & Modal Styles */
         .log-panel ul { max-height: 400px; }
         .log-panel li { font-size: 0.75rem; padding: 8px; border-radius: 4px; line-height: 1.5; }
         .log-panel .level-up { border-left: 3px solid #32ff7e; background-color: rgba(50, 255, 126, 0.1); }
@@ -281,6 +282,15 @@
             margin-top: 15px; padding-top: 10px;
             border-top: 1px solid #4f4f6f; line-height: 1.4;
         }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #2a2a40; padding: 30px; border-radius: 8px; border: 2px solid #ffdd57; text-align: center; max-width: 400px; }
+        .modal-content h3 { margin-top: 0; font-size: 1.2rem; }
+        .modal-content p { font-size: 0.9rem; margin-bottom: 20px; }
+        .modal-actions { display: flex; justify-content: center; gap: 15px; }
+        .modal-btn { width: 120px; }
+        .modal-btn.confirm { background-color: #c23616; border-bottom: 4px solid #8e240e; }
+        .modal-btn.cancel { background-color: #555; border-bottom: 4px solid #444; }
         
         /* ==========================================================================
            8. DISEÑO RESPONSIVO (PARA MÓVILES)
@@ -304,6 +314,7 @@
                 <button class="nav-btn" data-page="entrenamiento">Entrenamiento</button>
                 <button class="nav-btn" data-page="misiones">Misiones</button>
                 <button class="nav-btn" data-page="descripcion">Descripción</button>
+                <button class="nav-btn" data-page="configuracion">Configuración</button> <!-- Botón nuevo -->
             </div>
             
             <div class="container gdrive-section">
@@ -317,7 +328,7 @@
                 <h2>Registro</h2>
                 <ul id="log-list"></ul>
                 <div id="version-info">
-                     v9.7 (Interfaz Flexible)
+                     v9.8 (Configuración y Reinicio)
                 </div>
             </div>
         </div>
@@ -327,9 +338,7 @@
             <div id="page-dashboard" class="page-content active">
                 <div class="container">
                     <h1>Panel de Control</h1>
-                    <div id="dashboard-charts-container">
-                        <!-- Los gráficos se generarán aquí -->
-                    </div>
+                    <div id="dashboard-charts-container"></div>
                 </div>
             </div>
 
@@ -339,10 +348,8 @@
                     <div class="input-section">
                         <label for="skill-select">Habilidad General:</label>
                         <select id="skill-select"></select>
-                        
                         <label for="subskill-select">Habilidad Concreta:</label>
                         <select id="subskill-select"></select>
-                        
                         <div id="activity-type-container">
                             <label>Tipo de Actividad:</label>
                             <div class="type-selector">
@@ -350,31 +357,26 @@
                                 <button type="button" id="discrete-type-btn" class="type-btn">Unidad ✅</button>
                             </div>
                         </div>
-
                         <div id="time-input-container">
                             <label for="time-input">Minutos de práctica:</label>
                             <input type="number" id="time-input" min="1" placeholder="Ej: 30">
                         </div>
-
                         <div id="unit-input-container" style="display: none;">
                             <label for="unit-check">Actividad cumplida:</label>
                             <input type="checkbox" id="unit-check">
                         </div>
-
                         <label for="intensity-select">Intensidad:</label>
                         <select id="intensity-select">
                             <option value="bajo">Bajo (x0.8)</option>
                             <option value="medio" selected>Medio (x1.0)</option>
                             <option value="alto">Alto (x1.2)</option>
                         </select>
-                        
                         <label for="performance-select">Desempeño:</label>
                         <select id="performance-select">
                             <option value="malo">Malo (x0.7)</option>
                             <option value="normal" selected>Normal (x1.0)</option>
                             <option value="bueno">Bueno (x1.3)</option>
                         </select>
-
                         <button id="register-btn">Registrar XP</button>
                     </div>
                 </div>
@@ -393,9 +395,31 @@
             </div>
 
             <div id="page-descripcion" class="page-content">
-                <div class="container description-content">
-                    <!-- El contenido se genera dinámicamente -->
+                <div class="container description-content"></div>
+            </div>
+
+            <!-- Página de Configuración Nueva -->
+            <div id="page-configuracion" class="page-content">
+                <div class="container">
+                    <h1>Configuración</h1>
+                    <p style="text-align:center; line-height: 1.5;">Aquí puedes gestionar los datos de tu aplicación.</p>
+                    <h4>Zona de Peligro</h4>
+                    <p style="font-size: 0.8rem; color: #a0a0c0; text-align:center; line-height: 1.5;">Esta acción borrará permanentemente tu archivo de progreso de Google Drive. No se puede deshacer.</p>
+                    <button id="reset-progress-btn" disabled>Borrar Progreso en la Nube</button>
                 </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="confirm-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>¿Estás seguro?</h3>
+            <p>Todo tu progreso se borrará de Google Drive y la aplicación se reiniciará. Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button id="confirm-delete-btn" class="modal-btn confirm">Sí, borrar</button>
+                <button id="cancel-delete-btn" class="modal-btn cancel">Cancelar</button>
             </div>
         </div>
     </div>
@@ -417,7 +441,7 @@
         'Constitución (Salud y Resistencia)': { xp: 0, level: 1, icon: '❤️', subSkills: {}, img: 'https://placehold.co/80x80/ff4757/FFFFFF?text=❤️', category: 'combate', description: 'Dormir bien, mantenerse hidratado, procurar cumplir con los ciclos circadianos, chequeos médicos, baños de agua helada.' },
         'Agilidad (Salud centrada en cuerpo)': { xp: 0, level: 1, icon: '🏃', subSkills: {}, img: 'https://placehold.co/80x80/1e90ff/FFFFFF?text=🏃', category: 'combate', description: 'Actividades de Cardio y Flexibilidad como correr, nadar, yoga, ciclismo, estiramientos, gimnasia funcional.' },
         'Magia (Habilidades Sociales)': { xp: 0, level: 1, icon: '✨', subSkills: {}, img: 'https://placehold.co/80x80/8c7ae6/FFFFFF?text=✨', category: 'combate', description: 'Comunicación, oratoria, negociación, empatía, inteligencia emocional, psicoterapia, compañerismo' },
-        'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: {}, img: 'https://placehold.co/80x80/718093/FFFFFF?text=�', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
+        'Espiritual (Salud Mental)': { xp: 0, level: 1, icon: '🧘', subSkills: {}, img: 'https://placehold.co/80x80/718093/FFFFFF?text=🧘', category: 'autocuidado', description: 'Meditar, Mindfulness, escribir un diario, practicar la gratitud, terapias, plegarias, amor, amistades' },
         'Nutrición (Salud corporal)': { xp: 0, level: 1, icon: '🌿', subSkills: {}, img: 'https://placehold.co/80x80/27ae60/FFFFFF?text=🌿', category: 'autocuidado', description: 'Aprender sobre macronutrientes, planificar comidas saludables, reducir procesados.' },
         'Cocina (Práctica)': { xp: 0, level: 1, icon: '🍳', subSkills: {}, img: 'https://placehold.co/80x80/fbc531/FFFFFF?text=🍳', category: 'autocuidado', description: 'Preparar tus propias comidas, aprender nuevas recetas, batch cooking.' },
         'Hobbies y Relajación (en la Nada y en el Todo a la vez)': { xp: 0, level: 1, icon: '🌌', subSkills: {}, img: 'https://placehold.co/80x80/3498db/FFFFFF?text=🌌', category: 'autocuidado', description: 'Dedicar tiempo a pasatiempos que te relajen y disfrutes sin un fin productivo. Leer ficción, tocar un instrumento, pintar, pescar.' },
@@ -463,6 +487,11 @@
     const timeInputContainer = document.getElementById('time-input-container');
     const unitInputContainer = document.getElementById('unit-input-container');
     const unitCheck = document.getElementById('unit-check');
+    const resetProgressBtn = document.getElementById('reset-progress-btn');
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+
 
     //================================================================================//
     //  SECCIÓN 5: LÓGICA DE NAVEGACIÓN Y UI                                          //
@@ -516,7 +545,6 @@
                     const item = document.createElement('li');
                     item.className = 'description-item';
                     item.setAttribute('data-skill', skillName);
-                    // El selector de tipo de sub-habilidad se ha eliminado
                     item.innerHTML = `<div class="description-header"><img src="${skill.img}" alt="Icono" class="description-img"><div><strong>${skillName}:</strong> ${skill.description}</div></div><div class="subskill-container"><h4>Habilidades Concretas:</h4><ul class="subskill-list"></ul><div class="subskill-input-group"><input type="text" placeholder="Añadir habilidad..." maxlength="50"><button class="add-subskill-btn">+</button></div></div>`;
                     categoryList.appendChild(item);
                 }
@@ -547,7 +575,6 @@
                     sessionsHTML += '<span>No hay sesiones registradas.</span>';
                 }
                 sessionsHTML += '</div>';
-                // Ya no se muestra el tipo (Temporal/Discreto) en el encabezado
                 li.innerHTML = `<div class="subskill-header"><span>${subSkillName}</span> <div class="subskill-actions"><button class="edit-subskill-btn" data-name="${subSkillName}" title="Editar nombre">✏️</button><button class="delete-subskill-btn" data-name="${subSkillName}" title="Eliminar">🗑️</button></div></div>${sessionsHTML}`;
                 listElement.appendChild(li);
             });
@@ -571,7 +598,6 @@
                 const input = parentItem.querySelector('input[type="text"]');
                 const value = input.value.trim();
                 if (value && !skillData.subSkills.hasOwnProperty(value) && Object.keys(skillData.subSkills).length < 25) {
-                    // La propiedad 'type' ya no se añade a la sub-habilidad
                     skillData.subSkills[value] = { xp: 0, sessions: [] };
                     renderSubSkillList(skillName);
                     populateSubSkillSelect(skillSelect.value);
@@ -608,8 +634,6 @@
     //================================================================================//
     //  SECCIÓN 7: INICIALIZACIÓN DE LA API DE GOOGLE                                 //
     //================================================================================//
-    const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-    const SCOPES = 'https://www.googleapis.com/auth/drive.file';
     const FILENAME = 'progreso_agenda_v4.json'; 
     const OLD_FILENAMES = ['progreso_agenda_v3.json', 'progreso_agenda_v2.json', 'progreso_agenda.json'];
     let tokenClient;
@@ -618,7 +642,14 @@
     function gapiLoaded() { gapi.load('client', initializeGapiClient); }
     async function initializeGapiClient() { await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS }); gapiInited = true; maybeEnableButtons(); }
     function gisLoaded() { tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: '' }); gisInited = true; maybeEnableButtons(); }
-    function maybeEnableButtons() { if (gapiInited && gisInited) { authBtn.style.display = 'block'; } }
+    
+    function maybeEnableButtons() { 
+        if (gapiInited && gisInited) { 
+            authBtn.style.display = 'block';
+            resetProgressBtn.disabled = false; // Habilitar el botón de reset cuando la API está lista
+        } 
+    }
+
     function handleAuthClick() {
         tokenClient.callback = async (resp) => {
             if (resp.error !== undefined) { throw (resp); }
@@ -632,7 +663,7 @@
     authBtn.addEventListener('click', handleAuthClick);
     
     //================================================================================//
-    //  SECCIÓN 8: FUNCIONES PRINCIPALES DE GOOGLE DRIVE                              //
+    //  SECCIÓN 8: FUNCIONES DE DATOS (GOOGLE DRIVE Y LOCAL)                          //
     //================================================================================//
     
     async function findFileIdByName(name) {
@@ -676,7 +707,8 @@
 
         if (!fileId) {
             statusDiv.textContent = 'No se encontró archivo de progreso.';
-            addLogEntry('⚠️ No se encontró archivo.', 'level-up');
+            addLogEntry('⚠️ No se encontró archivo. Empezando de cero.');
+            resetLocalData();
             return;
         }
 
@@ -693,7 +725,7 @@
                         const savedData = loadedSkills[savedSkillName];
                         hydratedSkills[targetSkillName].xp = savedData.xp || 0;
                         const newSubSkills = {};
-                        if (savedData.subSkills && typeof typeof savedData.subSkills === 'object') {
+                        if (savedData.subSkills && typeof savedData.subSkills === 'object') {
                             if (Array.isArray(savedData.subSkills)) { 
                                 migrationOccurred = true;
                                 savedData.subSkills.forEach(name => {
@@ -702,12 +734,8 @@
                             } else { 
                                 for (const subName in savedData.subSkills) {
                                     const subData = savedData.subSkills[subName];
-                                    newSubSkills[subName] = {
-                                        xp: subData.xp || 0,
-                                        sessions: subData.sessions || []
-                                        // La propiedad 'type' ya no se necesita aquí
-                                    };
-                                    if(subData.type) migrationOccurred = true; // Si tenía tipo, es de una versión anterior
+                                    newSubSkills[subName] = { xp: subData.xp || 0, sessions: subData.sessions || [] };
+                                    if(subData.type) migrationOccurred = true;
                                 }
                             }
                         }
@@ -717,19 +745,59 @@
                 }
                 
                 skills = hydratedSkills;
-                updateDisplay(); 
-                populateSkillSelect(); 
-                renderDescriptionPage(); 
-                renderDashboardCharts();
                 statusDiv.textContent = '¡Progreso cargado desde Drive!'; 
                 addLogEntry('📂 Progreso cargado.');
-
                 if (migrationOccurred) {
                     addLogEntry('✨ Datos antiguos migrados. Guarda para actualizar al nuevo formato.', 'level-up');
                 }
             } else { throw new Error("Formato de datos inválido."); }
         } catch (err) { statusDiv.textContent = `Error: ${err.message}`; addLogEntry(`<span class="error">❌ Error: ${err.message}</span>`); }
+        finally {
+            updateAllUI();
+        }
     };
+
+    resetProgressBtn.addEventListener('click', () => {
+        confirmModal.style.display = 'flex';
+    });
+
+    cancelDeleteBtn.addEventListener('click', () => {
+        confirmModal.style.display = 'none';
+    });
+
+    confirmDeleteBtn.addEventListener('click', async () => {
+        confirmModal.style.display = 'none';
+        statusDiv.textContent = 'Borrando datos en la nube...';
+        addLogEntry('🗑️ Intentando borrar el progreso en la nube...');
+        try {
+            const fileId = await findFileIdByName(FILENAME);
+            if(fileId) {
+                await gapi.client.drive.files.delete({ fileId: fileId });
+                 addLogEntry('✔️ Archivo de progreso borrado de Google Drive.');
+            } else {
+                 addLogEntry('ℹ️ No se encontró archivo en la nube para borrar.');
+            }
+        } catch (err) {
+            addLogEntry(`<span class="error">❌ No se pudo borrar el archivo: ${err.message}</span>`);
+        } finally {
+            resetLocalData();
+        }
+    });
+
+    function resetLocalData() {
+        skills = JSON.parse(JSON.stringify(initialSkills));
+        logList.innerHTML = '';
+        addLogEntry('🚀 ¡Progreso reiniciado! Listo para un nuevo comienzo.');
+        updateAllUI();
+    }
+    
+    function updateAllUI() {
+        updateDisplay(); 
+        populateSkillSelect(); 
+        renderDescriptionPage(); 
+        renderDashboardCharts();
+    }
+
 
     //================================================================================//
     //  SECCIÓN 9: LÓGICA CENTRAL REFACTORIZADA                                       //
@@ -776,12 +844,7 @@
             .flatMap(([skillName, skill]) => 
                 Object.entries(skill.subSkills)
                     .filter(([, subSkill]) => subSkill.xp > 0)
-                    .map(([subSkillName, subSkill]) => ({
-                        name: subSkillName,
-                        xp: subSkill.xp,
-                        parent: skillName,
-                        category: skill.category
-                    }))
+                    .map(([subSkillName, subSkill]) => ({ name: subSkillName, xp: subSkill.xp, parent: skillName, category: skill.category }))
             );
 
         for (const [categoryId, category] of Object.entries(CATEGORIES)) {
@@ -834,9 +897,7 @@
                 li.innerHTML = `
                     <div class="skill-info-container">
                         <span class="skill-name"><span class="skill-icon">${skill.icon}</span>${skillName}</span>
-                        <div class="skill-meta">
-                            Lvl: ${skill.level}<br>${skill.xp.toLocaleString()} XP
-                        </div>
+                        <div class="skill-meta">Lvl: ${skill.level}<br>${skill.xp.toLocaleString()} XP</div>
                     </div>
                     <div class="progress-bar-bg">
                         <div class="progress-bar-fg" style="width: ${progress.progressPercentage}%;"></div>
@@ -977,9 +1038,7 @@
             intensitySelect.value = 'medio';
             performanceSelect.value = 'normal';
             
-            updateDisplay();
-            renderDashboardCharts();
-            renderSubSkillList(selectedSkill);
+            updateAllUI();
             
         } catch (error) {
             addLogEntry(`<span class="error">✗ ${error.message}</span>`);
@@ -991,13 +1050,8 @@
     //  SECCIÓN 11: INICIALIZACIÓN PRINCIPAL DE LA APLICACIÓN                         //
     //================================================================================//
     window.onload = () => { 
-        skills = JSON.parse(JSON.stringify(initialSkills));
-        populateSkillSelect();
-        updateDisplay(); 
-        renderDescriptionPage();
-        renderDashboardCharts();
+        resetLocalData();
         setupActivityTypeSwitcher();
-        addLogEntry('¡Bienvenido, aventurero!'); 
     };
     </script>
     
@@ -1005,4 +1059,3 @@
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
-�
